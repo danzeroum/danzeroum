@@ -1,0 +1,36 @@
+# ============================================================
+# Danzeroum — site comercial + portfólio (frontend Docker)
+# Clonar em /opt/btv/danzeroum e subir com: docker compose up -d
+# O ingress (/opt/btv/ingress) faz proxy para o serviço danzeroum-frontend:80.
+# ============================================================
+services:
+  danzeroum-frontend:
+    image: nginx:1.27-alpine
+    container_name: danzeroum-frontend
+    restart: unless-stopped
+    volumes:
+      - ./public:/var/www/html:ro
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - danzeroum-php
+    networks:
+      - btv-prod-net      # rede compartilhada do ingress (proxy chega por aqui)
+      - internal          # conversa com o php-fpm
+
+  danzeroum-php:
+    image: php:8.3-fpm-alpine
+    container_name: danzeroum-php
+    restart: unless-stopped
+    volumes:
+      - ./public:/var/www/html:ro
+    env_file:
+      - .env              # SMTP_* + MAIL_TO (copie de .env.example)
+    networks:
+      - internal
+
+networks:
+  # rede externa do ingress — confira o nome real com: docker network ls
+  btv-prod-net:
+    external: true
+  internal:
+    driver: bridge

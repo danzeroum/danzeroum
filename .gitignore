@@ -1,6 +1,11 @@
-# Credenciais SMTP reais nunca vão para o git (ficam fora do web root no VPS)
+# Credenciais reais nunca vão para o git (ficam no .env do VPS)
+.env
 danzeroum-smtp-config.php
 smtp-config.php
+
+# CRM — dados pessoais nunca vão para o repo público
+crm/leads.private.json
+crm/*.private.json
 
 # Lixo de SO / editor
 .DS_Store

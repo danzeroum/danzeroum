@@ -1,0 +1,38 @@
+name: CRM — sync de queries (não-pessoal)
+
+# Regenera os dados NÃO-pessoais do CRM (queries.json + pipeline.json) e commita.
+# NÃO coleta stargazers nem dados pessoais (isso é local, off por padrão).
+on:
+  schedule:
+    - cron: "0 9 * * 1"   # toda segunda às 09:00 UTC (06:00 Brasília)
+  workflow_dispatch:
+
+permissions:
+  contents: write          # necessário para o commit automático
+
+concurrency:
+  group: crm-sync
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run CRM collector (modo não-pessoal)
+        run: python scripts/crm_collector.py
+
+      - name: Commit dos dados do CRM
+        run: |
+          git config user.name "crm-bot"
+          git config user.email "crm-bot@users.noreply.github.com"
+          git add crm/queries.json crm/pipeline.json
+          git diff --staged --quiet || git commit -m "chore(crm): sync queries $(date -u +%F)"
+          git push

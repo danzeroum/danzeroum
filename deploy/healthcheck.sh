@@ -38,12 +38,12 @@ else
   fail=1
 fi
 
-# A config SMTP NÃO pode estar acessível pela web
-code=$(curl -s -o /dev/null -m 15 -w "%{http_code}" "${BASE_URL}/danzeroum-smtp-config.php")
+# Código sensível NÃO pode estar acessível pela web (lib do PHPMailer)
+code=$(curl -s -o /dev/null -m 15 -w "%{http_code}" "${BASE_URL}/lib/PHPMailer/PHPMailer.php")
 if [[ "${code}" == "404" || "${code}" == "403" ]]; then
-  echo "✅ config SMTP não exposta (-> ${code})"
+  echo "✅ /lib/ não exposto (-> ${code})"
 else
-  echo "⚠️  /danzeroum-smtp-config.php -> ${code} — verifique se a config está FORA do web root!"
+  echo "⚠️  /lib/PHPMailer/PHPMailer.php -> ${code} — o código da lib não deveria ser servido!"
   fail=1
 fi
 
