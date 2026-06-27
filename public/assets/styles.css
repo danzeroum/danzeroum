@@ -428,3 +428,9 @@ html.dark .theme-btn .i-moon{display:none}
 @media (prefers-reduced-motion: reduce){
   *{animation:none !important;transition:none !important;scroll-behavior:auto !important}
 }
+
+/* ---- Marca: logo SVG por tema (substitui o avatar DZ) ---- */
+.brand-mark{height:30px;width:auto;display:block}
+.brand-mark.dark{display:none}
+html.dark .brand-mark.light{display:none}
+html.dark .brand-mark.dark{display:block}
