@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- SEO -->
+<title>Danzeroum — IA e software sob medida com governança | da ideia ao deploy</title>
+<meta name="description" content="A Danzeroum ajuda médias empresas a colocar IA e software sob medida em produção — com governança, conformidade LGPD/EU AI Act e código aberto auditável. Da estratégia ao deploy, sênior de ponta a ponta.">
+<meta name="theme-color" content="#bd4e1c">
+<link rel="canonical" href="https://danzeroum.com/">
+<!-- Open Graph / Twitter -->
+<meta property="og:title" content="Danzeroum — IA e software sob medida com governança">
+<meta property="og:description" content="Colocamos IA e software em produção para médias empresas — com governança, LGPD e código aberto auditável. Da estratégia ao deploy.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://danzeroum.com/">
+<meta property="og:site_name" content="Danzeroum">
+<meta property="og:image" content="https://danzeroum.com/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Danzeroum — IA e software sob medida com governança">
+<meta name="twitter:description" content="Colocamos IA e software em produção para médias empresas — com governança, LGPD e código aberto auditável.">
+<meta name="twitter:image" content="https://danzeroum.com/assets/og-image.png">
+
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/styles.css">
+
+<!-- Evita "flash" de tema errado: define o tema antes da página pintar -->
+<script>
+  (function(){
+    try{
+      var t = localStorage.getItem('theme');
+      if(t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)){
+        document.documentElement.classList.add('dark');
+      }
+    }catch(e){}
+  })();
+</script>
+
+<!-- Dados estruturados (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"ProfessionalService",
+  "name":"Danzeroum",
+  "url":"https://danzeroum.com/",
+  "description":"Estúdio de engenharia de IA e software sob medida para médias empresas, com governança e conformidade (LGPD, EU AI Act, ISO 42001, NIST AI RMF).",
+  "areaServed":"BR",
+  "knowsAbout":["Governança de IA","RAG","Agentes de IA","LGPD","EU AI Act","FinTech","LegalTech","Software sob medida"],
+  "sameAs":["https://github.com/danzeroum","https://www.linkedin.com/in/daniel-lau-pereira-soares-2b702326/"],
+  "founder":{"@type":"Person","name":"Daniel Lau Pereira Soares"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"A IA fica só no protótipo ou vai mesmo para produção?","acceptedAnswer":{"@type":"Answer","text":"Nosso foco é produção. Vários cases já rodam no ar (apps em *.buildtovalue.cloud) e o código é aberto e auditável. Trabalhamos com piloto antes de escalar, justamente para chegar em produção com risco controlado."}},
+    {"@type":"Question","name":"Como a Danzeroum trata LGPD e governança de IA?","acceptedAnswer":{"@type":"Answer","text":"Governança e conformidade são embutidas desde o primeiro dia: trilha de auditoria, consentimento, minimização de dados e validação contra LGPD, EU AI Act, ISO 42001 e NIST AI RMF. Temos middleware próprio de governança open source."}},
+    {"@type":"Question","name":"Vou ficar preso a um fornecedor (lock-in)?","acceptedAnswer":{"@type":"Answer","text":"Não. Entregamos com código aberto e auditável, stacks padrão de mercado e a possibilidade de rodar self-hosted (on-prem ou nuvem privada). Você fica dono do que foi construído."}},
+    {"@type":"Question","name":"Quem executa o projeto?","acceptedAnswer":{"@type":"Answer","text":"Um especialista sênior fim a fim — produto e engenharia na mesma pessoa, com 15 anos de experiência. Sem repassar para júnior."}}
+  ]
+}
+</script>
+</head>
+<body id="top">
+
+<a class="skip-link" href="#main">Pular para o conteúdo</a>
+
+<!-- ===================== HEADER ===================== -->
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Danzeroum — início">
+      <span class="avatar" aria-hidden="true">DZ</span>
+      <span><b>Danzeroum</b><span class="brand-sub">Engenharia de IA & Software</span></span>
+    </a>
+    <nav class="nav" aria-label="Navegação principal">
+      <a href="#servicos">Serviços</a>
+      <a href="#cases">Cases</a>
+      <a href="#processo">Como trabalhamos</a>
+      <a href="#sobre">Sobre</a>
+      <a href="#contato">Contato</a>
+    </nav>
+    <div class="header-actions">
+      <a class="btn btn-primary header-cta" href="#contato">Falar com a gente</a>
+      <button class="theme-btn" id="theme" type="button" aria-label="Alternar tema claro e escuro">
+        <span class="i-moon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+        <span class="i-sun" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8l1.8-1.8M18 6l1.8-1.8"/></svg></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <!-- ===================== HERO ===================== -->
+  <section class="hero" aria-labelledby="hero-h1">
+    <div class="wrap">
+      <p class="eyebrow"><b>●</b>&nbsp; ESTÚDIO DE ENGENHARIA DE IA &amp; SOFTWARE · PARA MÉDIAS EMPRESAS</p>
+      <h1 id="hero-h1">IA e software sob medida que <em>vão para produção</em> — com governança desde o primeiro dia.</h1>
+      <p class="tagline">A Danzeroum ajuda médias empresas a transformar dados e processos em <strong>sistemas de IA confiáveis, auditáveis e em conformidade com a LGPD</strong>. Da estratégia ao deploy, com código aberto e sênior de ponta a ponta — não só protótipos.</p>
+
+      <div class="hero-cta">
+        <a class="btn btn-wa" href="https://wa.me/55XXXXXXXXXXX?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Danzeroum%20e%20quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp (abre em nova aba)">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.3 5.2 4.6.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.4zM12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2z"/></svg>
+          Falar no WhatsApp
+        </a>
+        <a class="btn btn-ghost" href="#cases">Ver cases em produção</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FAIXA DE CONFIANÇA ===================== -->
+  <div class="trust-strip">
+    <div class="wrap">
+      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg> Apps em produção, não só slides</span>
+      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg> Código aberto e auditável</span>
+      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 4v5c0 4.5-3.4 7.8-8 9-4.6-1.2-8-4.5-8-9V7z"/></svg> LGPD &amp; EU AI Act by design</span>
+      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg> Sênior fim a fim, 15 anos</span>
+    </div>
+  </div>
+
+  <!-- ===================== SERVIÇOS ===================== -->
+  <section id="servicos" class="block" aria-labelledby="serv-h">
+    <div class="wrap">
+      <p class="eyebrow"><b>01</b> — Serviços</p>
+      <h2 class="sec-title" id="serv-h">O que a Danzeroum entrega.</h2>
+      <p class="sec-intro">Ofertas produtizadas, cada uma com prova real no portfólio. Da governança de IA a sistemas FinTech/LegalTech sob medida — sempre com foco em colocar no ar.</p>
+
+      <div class="services">
+        <article class="svc">
+          <span class="svc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 4.5-3.4 7.8-8 9-4.6-1.2-8-4.5-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg></span>
+          <h3>Governança &amp; Compliance de IA</h3>
+          <p>Coloque IA em produção com trilha de auditoria, consentimento e bloqueio de violações. Conformidade com LGPD, EU AI Act, ISO 42001 e NIST AI RMF — embutida, não no fim.</p>
+          <span class="svc-for">// Para empresas com exposição regulatória e dados sensíveis</span>
+          <div class="svc-proof"><span>BuildToValue Governance</span><span>Compliance Graph RAG</span></div>
+        </article>
+
+        <article class="svc">
+          <span class="svc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg></span>
+          <h3>Plataformas de IA privadas (RAG &amp; Agentes)</h3>
+          <p>Copilots e assistentes internos sobre os dados da sua empresa — on-prem ou nuvem privada, com SSO e white-label, sem vazar informação para terceiros.</p>
+          <span class="svc-for">// Para quem quer IA sobre conhecimento próprio com privacidade</span>
+          <div class="svc-proof"><span>btvChatCorp</span><span>WhatsApp RAG</span><span>Executagent</span></div>
+        </article>
+
+        <article class="svc">
+          <span class="svc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7h18M3 12h18M3 17h18"/><circle cx="7" cy="7" r="1.4" fill="currentColor"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><circle cx="17" cy="17" r="1.4" fill="currentColor"/></svg></span>
+          <h3>LegalTech &amp; FinTech sob medida</h3>
+          <p>Conciliação financeira, automação fiscal e jurídica, detecção de fraude. Sistemas críticos com precisão decimal, integrações (adquirentes, SEFAZ) e qualidade garantida em CI.</p>
+          <span class="svc-for">// Para varejo, e-commerce, contabilidade e escritórios</span>
+          <div class="svc-proof"><span>ConciliaIA</span><span>Jurídico Platform</span><span>Criptotrade</span></div>
+        </article>
+
+        <article class="svc">
+          <span class="svc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 17l6-6-6-6"/><path d="M12 19h8"/></svg></span>
+          <h3>Software sob medida fim a fim</h3>
+          <p>Da ideia ao deploy: descoberta, UX, arquitetura e código. Full-stack com inclinação a backend e IA, entregue por quem pensa o produto e escreve o código.</p>
+          <span class="svc-for">// Para quem precisa de um produto digital novo, do zero ao ar</span>
+          <div class="svc-proof"><span>EducaDigital</span><span>Waldorf System</span><span>+ 23 cases</span></div>
+        </article>
+
+        <article class="svc">
+          <span class="svc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></span>
+          <h3>Dados &amp; Automação</h3>
+          <p>Pipelines de dados, NL→SQL com guardrails, integrações e automação de processos (BPM/MarTech). Insights confiáveis com sanitização de PII e governança.</p>
+          <span class="svc-for">// Para times de dados, marketing e operações</span>
+          <div class="svc-proof"><span>Uncover Aegis</span><span>Process Veritas</span><span>DadoSabedoria</span></div>
+        </article>
+
+        <article class="svc">
+          <span class="svc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+          <h3>Diagnóstico de governança de IA</h3>
+          <p>Entrega rápida: mapeamento de riscos, lacunas de conformidade (LGPD/EU AI Act) e um plano objetivo para usar IA com segurança. Ótimo primeiro passo, baixo compromisso.</p>
+          <span class="svc-for">// Para quem quer começar com clareza antes de investir</span>
+          <div class="svc-proof"><span>Accountability Stack</span><span>BuildToValue Framework</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PROCESSO ===================== -->
+  <section id="processo" class="block" aria-labelledby="proc-h">
+    <div class="wrap">
+      <p class="eyebrow"><b>02</b> — Como trabalhamos</p>
+      <h2 class="sec-title" id="proc-h">Do risco controlado à produção.</h2>
+      <p class="sec-intro">Um caminho previsível, pensado para reduzir o risco de quem está investindo. Você valida antes de escalar.</p>
+      <div class="steps">
+        <div class="step"><div class="num">1</div><h3>Diagnóstico</h3><p>Entendemos o problema, os dados e as restrições regulatórias. Saída: escopo claro, riscos mapeados e proposta objetiva.</p></div>
+        <div class="step"><div class="num">2</div><h3>Piloto</h3><p>Construímos a fatia de maior valor primeiro — algo testável de verdade. Validação com usuários e métricas honestas antes de escalar.</p></div>
+        <div class="step"><div class="num">3</div><h3>Produção</h3><p>Levamos ao ar com governança embutida: auditoria, conformidade, observabilidade e CI/CD. Software que roda, não slide.</p></div>
+        <div class="step"><div class="num">4</div><h3>Operação &amp; Governança</h3><p>Acompanhamento, evolução e conformidade contínua. Você fica dono do código aberto e auditável — sem lock-in.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CASES ===================== -->
+  <section id="cases" class="block" aria-labelledby="proj-h">
+    <div class="wrap">
+      <p class="eyebrow"><b>03</b> — Cases &amp; código aberto</p>
+      <h2 class="sec-title" id="proj-h">Veja funcionando — e por dentro.</h2>
+      <p class="sec-intro">23 sistemas reais, validados a partir dos repositórios públicos no GitHub — cada um com README, stack técnica de verdade e, quando aplicável, app ao vivo. Porque é open source, você pode auditar exatamente o que entregamos.</p>
+
+      <div class="projects-head">
+        <div class="projects-count"><b id="visible-count">6</b> de 23 cases visíveis</div>
+      </div>
+
+      <!-- Filtros por categoria -->
+      <div class="filters" id="filters" role="tablist" aria-label="Filtrar cases por categoria">
+        <button class="fchip active" data-filter="featured" role="tab" aria-selected="true">★ Destaques <span class="count">6</span></button>
+        <button class="fchip" data-filter="all" role="tab" aria-selected="false">Todos <span class="count">23</span></button>
+        <button class="fchip" data-filter="governance" role="tab" aria-selected="false">Governança &amp; Compliance <span class="count">4</span></button>
+        <button class="fchip" data-filter="legal" role="tab" aria-selected="false">LegalTech <span class="count">4</span></button>
+        <button class="fchip" data-filter="fintech" role="tab" aria-selected="false">FinTech &amp; Crypto <span class="count">3</span></button>
+        <button class="fchip" data-filter="ai-platforms" role="tab" aria-selected="false">Plataformas de IA <span class="count">3</span></button>
+        <button class="fchip" data-filter="civic" role="tab" aria-selected="false">CivicTech &amp; Dados <span class="count">2</span></button>
+        <button class="fchip" data-filter="education" role="tab" aria-selected="false">Educação <span class="count">2</span></button>
+        <button class="fchip" data-filter="tools" role="tab" aria-selected="false">Ferramentas &amp; Dev <span class="count">3</span></button>
+        <button class="fchip" data-filter="automation" role="tab" aria-selected="false">Automação &amp; MarTech <span class="count">2</span></button>
+      </div>
+
+      <div class="projects" id="grid"><!-- preenchido via JS --></div>
+
+      <div class="forks-note">
+        <strong>Nota sobre forks:</strong> a Danzeroum também contribui em projetos de terceiros via fork —
+        <a href="https://github.com/danzeroum/opencode" target="_blank" rel="noopener noreferrer">opencode</a>,
+        <a href="https://github.com/danzeroum/openclaw" target="_blank" rel="noopener noreferrer">openclaw</a> e
+        <a href="https://github.com/danzeroum/PerezWebSolutions" target="_blank" rel="noopener noreferrer">PerezWebSolutions</a>.
+        Esses não aparecem na lista acima por serem código de terceiros, mas refletem participação ativa na comunidade open source.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== DIFERENCIAIS ===================== -->
+  <section id="diferenciais" class="block" aria-labelledby="dif-h">
+    <div class="wrap">
+      <p class="eyebrow"><b>04</b> — Por que a Danzeroum</p>
+      <h2 class="sec-title" id="dif-h">O que nos torna diferentes.</h2>
+      <div class="diffs">
+        <div class="diff"><span class="diff-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 4.5-3.4 7.8-8 9-4.6-1.2-8-4.5-8-9V7z"/></svg></span><h3>Governança embutida</h3><p>Compliance não é checklist no fim: é parte da arquitetura. Trilha de auditoria, LGPD e EU AI Act desde o primeiro commit.</p></div>
+        <div class="diff"><span class="diff-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></span><h3>Código aberto e auditável</h3><p>Você vê funcionando e vê por dentro. Stacks padrão de mercado, self-hosted possível, sem lock-in. O que construímos, fica seu.</p></div>
+        <div class="diff"><span class="diff-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></span><h3>Sênior fim a fim</h3><p>Produto e engenharia na mesma pessoa, com 15 anos de estrada. Sem vender sênior e entregar júnior.</p></div>
+        <div class="diff"><span class="diff-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12l5 5L20 7"/></svg></span><h3>Foco em produção</h3><p>Vários cases já rodam no ar. Construímos para o deploy, não para a apresentação — com piloto antes de escalar.</p></div>
+        <div class="diff"><span class="diff-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V5M4 5h11l-2 3 2 3H4"/></svg></span><h3>Especialização regulatória BR + global</h3><p>FinTech e LegalTech com viés regulatório real: LGPD, GDPR, EU AI Act, NIST AI RMF, ISO 42001.</p></div>
+        <div class="diff"><span class="diff-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span><h3>Pesquisa própria</h3><p>Publicamos pesquisa em governança de IA (a série "Accountability Stack"). A abordagem é fundamentada, não improviso.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SOBRE (FUNDADOR) ===================== -->
+  <section id="sobre" class="block" aria-labelledby="sobre-h">
+    <div class="wrap">
+      <p class="eyebrow"><b>05</b> — Quem está por trás</p>
+      <h2 class="sec-title" id="sobre-h">Produto e engenharia, na mesma pessoa.</h2>
+      <div class="about-grid">
+        <div class="about-body">
+          <p>A Danzeroum é o estúdio do <strong>Daniel Lau</strong>, engenheiro de produto e desenvolvedor. Programando há 15 anos, ele começou na engenharia de sistemas críticos e percebeu que <strong>gosta tanto de resolver o problema certo quanto de escrevê-lo em código</strong>. Por isso a atuação é de ponta a ponta: entender o usuário, desenhar a solução e construí-la.</p>
+          <p>Tecnicamente, <strong>full-stack com inclinação a backend e IA</strong>: a robustez do Rust e do Java com a agilidade do Python e do TypeScript, para entregar produtos que rodam em produção — não só protótipos. O foco recente está em <strong>governança de IA</strong>, agentes autônomos com auditoria criptográfica, RAG em escala e aplicações FinTech/LegalTech com forte viés regulatório (LGPD, GDPR, EU AI Act, NIST AI RMF).</p>
+          <span class="stack-h">// Stack &amp; ferramentas</span>
+          <div class="chips">
+            <span class="chip">TypeScript</span>
+            <span class="chip">Python</span>
+            <span class="chip">Rust</span>
+            <span class="chip">Java</span>
+            <span class="chip">Elixir</span>
+            <span class="chip">React · Angular</span>
+            <span class="chip">Next.js</span>
+            <span class="chip">FastAPI · Spring Boot</span>
+            <span class="chip">PostgreSQL · pgvector</span>
+            <span class="chip">Docker · K8s</span>
+            <span class="chip">LLMs · RAG · Agentes</span>
+            <span class="chip">Governança de IA</span>
+            <span class="chip">LGPD · GDPR · EU AI Act</span>
+            <span class="chip">Discovery &amp; UX</span>
+            <span class="chip">Métricas &amp; A/B</span>
+          </div>
+        </div>
+        <dl class="facts" aria-label="Resumo">
+          <div class="row"><dt>Estúdio</dt><dd>Danzeroum</dd></div>
+          <div class="row"><dt>Fundador</dt><dd>Daniel Lau</dd></div>
+          <div class="row"><dt>Baseado em</dt><dd>Brasil · Remoto</dd></div>
+          <div class="row"><dt>Atuação</dt><dd>Produto + Dev</dd></div>
+          <div class="row"><dt>Experiência</dt><dd>15 anos</dd></div>
+          <div class="row"><dt>No GitHub</dt><dd>23 projetos open source</dd></div>
+          <div class="row"><dt>Domínios</dt><dd>IA · FinTech · Legal</dd></div>
+          <div class="row"><dt>Engajamento</dt><dd>Projeto · squad · diagnóstico</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== MODELOS DE ENGAJAMENTO ===================== -->
+  <section id="engajamento" class="block" aria-labelledby="eng-h">
+    <div class="wrap">
+      <p class="eyebrow"><b>06</b> — Modelos de engajamento</p>
+      <h2 class="sec-title" id="eng-h">Formatos que se adaptam ao seu momento.</h2>
+      <p class="sec-intro">Sem preço cravado em tabela — cada empresa tem um contexto. Mas dá pra começar pelo formato certo. O diagnóstico é o melhor primeiro passo.</p>
+      <div class="engage">
+        <article class="eng featured">
+          <span class="eng-k">Comece por aqui</span>
+          <h3>Diagnóstico de IA</h3>
+          <p>Entrega rápida e de baixo compromisso para clarear o caminho antes de investir pesado.</p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Mapa de riscos e oportunidades</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Lacunas de LGPD / EU AI Act</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Plano objetivo de próximos passos</li>
+          </ul>
+        </article>
+        <article class="eng">
+          <span class="eng-k">Escopo fechado</span>
+          <h3>Projeto sob medida</h3>
+          <p>Para uma necessidade bem definida, do diagnóstico ao deploy, com preço fixo por entrega.</p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Escopo, prazo e valor combinados</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Piloto antes de escalar</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Código aberto entregue a você</li>
+          </ul>
+        </article>
+        <article class="eng">
+          <span class="eng-k">Contínuo</span>
+          <h3>Squad / retainer mensal</h3>
+          <p>Capacidade sênior dedicada por mês, para evoluir produto e governança de forma contínua.</p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Prioridades acordadas por ciclo</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Evolução + operação + conformidade</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Flexível para escalar ou pausar</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FAQ ===================== -->
+  <section id="faq" class="block" aria-labelledby="faq-h">
+    <div class="wrap">
+      <p class="eyebrow"><b>07</b> — Dúvidas frequentes</p>
+      <h2 class="sec-title" id="faq-h">O que médias empresas costumam perguntar.</h2>
+      <div class="faq">
+        <details open>
+          <summary>A IA fica só no protótipo ou vai mesmo para produção?<span class="q-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></summary>
+          <div class="faq-a">Nosso foco é <strong>produção</strong>. Vários cases já rodam no ar (apps em <em>*.buildtovalue.cloud</em>) e o código é aberto e auditável. Trabalhamos com <strong>piloto antes de escalar</strong>, para chegar à produção com risco controlado — sem o clássico "ficou só no PoC".</div>
+        </details>
+        <details>
+          <summary>Como vocês tratam LGPD e governança de IA?<span class="q-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></summary>
+          <div class="faq-a">Governança é <strong>embutida desde o primeiro dia</strong>: trilha de auditoria, consentimento, minimização de dados e validação contra LGPD, EU AI Act, ISO 42001 e NIST AI RMF. Temos inclusive middleware próprio de governança de IA open source.</div>
+        </details>
+        <details>
+          <summary>Vou ficar preso a um fornecedor (lock-in)?<span class="q-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></summary>
+          <div class="faq-a">Não. Entregamos com <strong>código aberto e auditável</strong>, stacks padrão de mercado e a opção de rodar self-hosted (on-prem ou nuvem privada). Você fica dono do que foi construído.</div>
+        </details>
+        <details>
+          <summary>Quem executa o projeto, de fato?<span class="q-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></summary>
+          <div class="faq-a">Um <strong>especialista sênior fim a fim</strong> — produto e engenharia na mesma pessoa, com 15 anos de experiência. Sem repassar a parte difícil para júnior.</div>
+        </details>
+        <details>
+          <summary>Vocês atendem minha indústria?<span class="q-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></summary>
+          <div class="faq-a">O portfólio cobre FinTech, LegalTech, educação, dados públicos, MarTech e ferramentas internas. Se o seu desafio envolve <strong>dados, IA e processos que precisam ir para produção com confiança</strong>, provavelmente conseguimos ajudar. Chame para uma conversa.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTATO ===================== -->
+  <section id="contato" class="block" aria-labelledby="cont-h">
+    <div class="wrap">
+      <p class="eyebrow"><b>08</b> — Contato</p>
+      <h2 class="sec-title" id="cont-h">Vamos colocar a sua ideia em produção?</h2>
+      <p class="sec-intro">Conte o desafio em uma linha. Respondemos rápido — e o diagnóstico inicial é de baixo compromisso.</p>
+      <div class="contact-grid">
+        <div class="contact-cards">
+          <a class="contact-row" href="https://wa.me/55XXXXXXXXXXX?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Danzeroum%20e%20quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.3 5.2 4.6.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.4zM12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2z"/></svg>
+            <span class="k">WhatsApp</span><span class="v">Falar agora →</span>
+          </a>
+          <a class="contact-row" href="mailto:contato@danzeroum.com">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+            <span class="k">E-mail</span><span class="v">contato@danzeroum.com</span>
+          </a>
+          <a class="contact-row" href="https://www.linkedin.com/in/daniel-lau-pereira-soares-2b702326/" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+            <span class="k">LinkedIn</span><span class="v">/daniel-lau-pereira-soares</span>
+          </a>
+          <a class="contact-row" href="https://github.com/danzeroum" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.92 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span class="k">GitHub</span><span class="v">/danzeroum</span>
+          </a>
+        </div>
+
+        <!-- Formulário sem backend (Formspree). Troque o action pelo seu endpoint. -->
+        <form class="contact-form" action="https://formspree.io/f/SEU_ID" method="POST">
+          <h3>Conte sobre o seu projeto</h3>
+          <p class="form-sub">Preenche em 30 segundos. Sem compromisso.</p>
+          <input type="hidden" name="_subject" value="Novo contato pelo site Danzeroum">
+          <input type="hidden" name="_next" value="https://danzeroum.com/obrigado.html">
+          <div class="field">
+            <label for="nome">Nome</label>
+            <input id="nome" name="nome" type="text" autocomplete="name" required placeholder="Seu nome">
+          </div>
+          <div class="field">
+            <label for="empresa">Empresa</label>
+            <input id="empresa" name="empresa" type="text" autocomplete="organization" placeholder="Nome da empresa">
+          </div>
+          <div class="field">
+            <label for="email">E-mail corporativo</label>
+            <input id="email" name="email" type="email" autocomplete="email" required placeholder="voce@empresa.com">
+          </div>
+          <div class="field">
+            <label for="tipo">Como podemos ajudar?</label>
+            <select id="tipo" name="tipo">
+              <option>Diagnóstico de governança de IA</option>
+              <option>Plataforma de IA privada (RAG / agentes)</option>
+              <option>Sistema LegalTech / FinTech sob medida</option>
+              <option>Software sob medida (do zero ao ar)</option>
+              <option>Dados &amp; automação</option>
+              <option>Ainda não sei — quero conversar</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="mensagem">Seu desafio em uma linha</label>
+            <textarea id="mensagem" name="mensagem" required placeholder="Ex.: queremos um assistente interno sobre nossos contratos, com LGPD."></textarea>
+          </div>
+          <!-- honeypot anti-spam -->
+          <input class="hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button class="btn btn-primary" type="submit" style="width:100%;justify-content:center">Enviar mensagem</button>
+          <p class="form-note">Ao enviar, você concorda com nossa <a href="/privacidade.html">Política de Privacidade</a>. Seus dados são usados apenas para responder ao contato.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="about">
+        <a class="brand" href="#top" aria-label="Danzeroum — início">
+          <span class="avatar" aria-hidden="true">DZ</span>
+          <span><b>Danzeroum</b><span class="brand-sub">Engenharia de IA &amp; Software</span></span>
+        </a>
+        <p>Estúdio de engenharia de IA e software sob medida para médias empresas. Da estratégia ao deploy, com governança, conformidade LGPD e código aberto auditável.</p>
+      </div>
+      <div>
+        <h4>Navegação</h4>
+        <a class="fl" href="#servicos">Serviços</a>
+        <a class="fl" href="#cases">Cases</a>
+        <a class="fl" href="#processo">Como trabalhamos</a>
+        <a class="fl" href="#sobre">Sobre</a>
+        <a class="fl" href="#contato">Contato</a>
+      </div>
+      <div>
+        <h4>Conecte-se</h4>
+        <a class="fl" href="https://github.com/danzeroum" target="_blank" rel="noopener noreferrer me">GitHub</a>
+        <a class="fl" href="https://www.linkedin.com/in/daniel-lau-pereira-soares-2b702326/" target="_blank" rel="noopener noreferrer me">LinkedIn</a>
+        <a class="fl" href="mailto:contato@danzeroum.com">contato@danzeroum.com</a>
+        <a class="fl" href="/privacidade.html">Política de Privacidade</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 Danzeroum · Daniel Lau Pereira Soares</p>
+      <p>Feito com código · SP, Brasil</p>
+    </div>
+  </div>
+</footer>
+
+<script defer src="/assets/projects.js"></script>
+<script defer src="/assets/theme.js"></script>
+</body>
+</html>
