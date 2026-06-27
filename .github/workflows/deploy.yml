@@ -36,6 +36,8 @@ jobs:
           rsync -avz --delete \
             --exclude='.git' \
             --exclude='.github' \
+            --exclude='.gitignore' \
             --exclude='README.md' \
+            --exclude='smtp-config.example.php' \
             -e "ssh -p ${SSH_PORT:-22}" \
             ./ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}"
