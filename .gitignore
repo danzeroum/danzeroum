@@ -1,0 +1,8 @@
+# Credenciais SMTP reais nunca vão para o git (ficam fora do web root no VPS)
+danzeroum-smtp-config.php
+smtp-config.php
+
+# Lixo de SO / editor
+.DS_Store
+Thumbs.db
+*.swp

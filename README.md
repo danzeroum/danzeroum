@@ -17,12 +17,17 @@ acessível. Qualquer hospedagem de arquivos estáticos serve o site como está.
 
 ```
 .
-├── index.html          # landing comercial + cases
-├── privacidade.html    # Política de Privacidade (LGPD)
-├── obrigado.html       # página de agradecimento (alvo do formulário)
+├── index.html             # landing comercial + cases
+├── contato.php            # handler do formulário (SMTP via PHPMailer)
+├── smtp-config.example.php # modelo de config SMTP (copiar p/ fora do web root)
+├── privacidade.html       # Política de Privacidade (LGPD)
+├── obrigado.html          # página de agradecimento (alvo do formulário)
 ├── 404.html
 ├── robots.txt
 ├── sitemap.xml
+├── lib/PHPMailer/         # PHPMailer 6.9.3 versionado (sem Composer no servidor)
+├── .github/workflows/
+│   └── deploy.yml         # publica no VPS via SSH/rsync a cada push no main
 └── assets/
     ├── styles.css      # design system compartilhado por todas as páginas
     ├── theme.js        # alternância de tema claro/escuro
@@ -31,16 +36,24 @@ acessível. Qualquer hospedagem de arquivos estáticos serve o site como está.
     └── og-image.png    # card social 1200×630
 ```
 
-## Antes de publicar — preencher placeholders
+## Contato (WhatsApp + formulário)
 
-Há marcadores propositais para você substituir pelos dados reais:
+- **WhatsApp:** `5511996685998` (links `https://wa.me/5511996685998`).
+- **Formulário:** processado por `contato.php` no VPS — envia e-mail para
+  `contato@danzeroum.com` via **SMTP autenticado (PHPMailer)** e redireciona para
+  `/obrigado.html`. Tem honeypot anti-spam. PHPMailer 6.9.3 vai versionado em `lib/PHPMailer/`
+  (sem Composer no servidor).
+  - **Configurar o SMTP (1x no VPS):** copie `smtp-config.example.php` para **um nível acima do
+    web root**, com o nome `danzeroum-smtp-config.php`, e preencha host/porta/usuário/senha.
+    Ex.: web root em `/var/www/danzeroum.com/public_html` → config em
+    `/var/www/danzeroum.com/danzeroum-smtp-config.php`.
+    Ficar **fora do web root** garante que a senha não é acessível pela web nem apagada pelo
+    `rsync --delete`. O arquivo real está no `.gitignore` (nunca vai para o git).
+  - Hostinger (e-mail do domínio): `smtp.hostinger.com`, porta `465` (`ssl`) ou `587` (`tls`).
+  - **Fallback:** se o arquivo de config não existir, `contato.php` usa a função `mail()`.
 
-| Onde | Placeholder | Trocar por |
-|------|-------------|-----------|
-| `index.html`, `obrigado.html` | `wa.me/55XXXXXXXXXXX` | número real de WhatsApp (DDI 55 + DDD + número) |
-| `index.html` (form `action`) | `https://formspree.io/f/SEU_ID` | endpoint real do Formspree (ou trocar pelo Netlify Forms) |
-| `index.html`, `privacidade.html` | `contato@danzeroum.com` | e-mail de contato real, se diferente |
-| `index.html` (`<head>`) | — | opcional: tag de analytics sem cookie (Plausible / Cloudflare Web Analytics) |
+> Analytics (opcional): para métricas sem cookie e sem banner LGPD, adicione no `<head>` a tag
+> do Plausible ou do Cloudflare Web Analytics.
 
 ### Sobre os cases
 Os 23 cases em `assets/projects.js` correspondem **exatamente** aos repositórios
@@ -48,17 +61,34 @@ Os 23 cases em `assets/projects.js` correspondem **exatamente** aos repositório
 links quebrariam). Para destacar um projeto privado, **torne-o público primeiro** e
 adicione o objeto ao array `PROJECTS` com `featured: true`.
 
-## Deploy
+## Deploy automático para o VPS Hostinger
 
-O site é estático e host-agnóstico. Recomendado: publicar em **preview** primeiro, validar
-e só então promover para `danzeroum.com`.
+O workflow `.github/workflows/deploy.yml` publica o site no VPS **a cada push no `main`**
+(e manualmente em *Actions → Run workflow*), via SSH + `rsync`.
 
-- **GitHub Pages:** crie um arquivo `CNAME` na raiz com `danzeroum.com` e ative Pages na branch.
-- **Cloudflare Pages / Netlify / Vercel:** aponte o projeto para esta raiz; sem comando de build,
-  diretório de saída = raiz (`/`). Configure o domínio no painel do host.
+### Secrets a configurar (Settings → Secrets and variables → Actions)
+
+| Secret | O que é | Exemplo |
+|--------|---------|---------|
+| `SSH_HOST` | IP ou host do VPS | `203.0.113.10` |
+| `SSH_USER` | usuário SSH | `root` ou um usuário dedicado de deploy |
+| `SSH_PORT` | porta SSH (opcional, default `22`) | `22` |
+| `SSH_PRIVATE_KEY` | **chave privada** SSH cuja pública está em `~/.ssh/authorized_keys` do VPS | conteúdo do arquivo da chave |
+| `DEPLOY_PATH` | web root do site no VPS | `/var/www/danzeroum.com/public_html` |
+
+> ⚠️ O `rsync` usa `--delete`: o servidor fica **idêntico** ao repositório. Aponte `DEPLOY_PATH`
+> para o web root **exclusivo do site** (não a home inteira), senão arquivos fora do repo serão
+> removidos. Gere uma chave dedicada com `ssh-keygen -t ed25519 -C "deploy-danzeroum"` e adicione
+> a pública no VPS.
+
+O DNS de `danzeroum.com` continua apontando para o VPS — **nada de DNS muda** neste fluxo.
 
 ## Desenvolvimento local
 
 ```bash
-python3 -m http.server 8000   # depois abra http://localhost:8000
+# site estático
+python3 -m http.server 8000          # http://localhost:8000
+
+# com o formulário PHP funcionando
+php -S localhost:8000                 # http://localhost:8000 (requer PHP)
 ```

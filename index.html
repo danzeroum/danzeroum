@@ -104,7 +104,7 @@
       <p class="tagline">A Danzeroum ajuda médias empresas a transformar dados e processos em <strong>sistemas de IA confiáveis, auditáveis e em conformidade com a LGPD</strong>. Da estratégia ao deploy, com código aberto e sênior de ponta a ponta — não só protótipos.</p>
 
       <div class="hero-cta">
-        <a class="btn btn-wa" href="https://wa.me/55XXXXXXXXXXX?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Danzeroum%20e%20quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp (abre em nova aba)">
+        <a class="btn btn-wa" href="https://wa.me/5511996685998?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Danzeroum%20e%20quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp (abre em nova aba)">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.3 5.2 4.6.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.4zM12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2z"/></svg>
           Falar no WhatsApp
         </a>
@@ -371,7 +371,7 @@
       <p class="sec-intro">Conte o desafio em uma linha. Respondemos rápido — e o diagnóstico inicial é de baixo compromisso.</p>
       <div class="contact-grid">
         <div class="contact-cards">
-          <a class="contact-row" href="https://wa.me/55XXXXXXXXXXX?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Danzeroum%20e%20quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener noreferrer">
+          <a class="contact-row" href="https://wa.me/5511996685998?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Danzeroum%20e%20quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener noreferrer">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.3 5.2 4.6.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.4zM12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2z"/></svg>
             <span class="k">WhatsApp</span><span class="v">Falar agora →</span>
           </a>
@@ -389,12 +389,11 @@
           </a>
         </div>
 
-        <!-- Formulário sem backend (Formspree). Troque o action pelo seu endpoint. -->
-        <form class="contact-form" action="https://formspree.io/f/SEU_ID" method="POST">
+        <!-- Formulário processado por contato.php no próprio VPS (envia e-mail e redireciona). -->
+        <form class="contact-form" action="/contato.php" method="POST">
           <h3>Conte sobre o seu projeto</h3>
           <p class="form-sub">Preenche em 30 segundos. Sem compromisso.</p>
-          <input type="hidden" name="_subject" value="Novo contato pelo site Danzeroum">
-          <input type="hidden" name="_next" value="https://danzeroum.com/obrigado.html">
+          <p id="form-erro" role="alert" hidden style="font-size:.85rem;color:#b3261e;background:rgba(179,38,30,.08);border:1px solid rgba(179,38,30,.3);border-radius:9px;padding:10px 14px;margin-bottom:15px">Não foi possível enviar agora. Revise os campos ou fale com a gente no WhatsApp.</p>
           <div class="field">
             <label for="nome">Nome</label>
             <input id="nome" name="nome" type="text" autocomplete="name" required placeholder="Seu nome">
@@ -467,6 +466,13 @@
   </div>
 </footer>
 
+<script>
+  // Mostra o aviso de erro do formulário se contato.php redirecionou com ?erro=1
+  if (location.search.indexOf('erro=1') !== -1) {
+    var fe = document.getElementById('form-erro');
+    if (fe) { fe.hidden = false; }
+  }
+</script>
 <script defer src="/assets/projects.js"></script>
 <script defer src="/assets/theme.js"></script>
 </body>
