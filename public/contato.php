@@ -3,12 +3,12 @@
  * Handler do formulário de contato da Danzeroum.
  * Envia por SMTP autenticado usando PHPMailer (entrega confiável, SPF/DKIM).
  *
- * As credenciais SMTP ficam num arquivo FORA do web root, carregado abaixo:
- *   __DIR__ . '/../danzeroum-smtp-config.php'
- * Assim a senha nunca vai para o git e o `rsync --delete` do deploy (que só
- * mexe no web root) não apaga o arquivo. Veja smtp-config.example.php.
+ * As credenciais SMTP vêm de VARIÁVEIS DE AMBIENTE (injetadas pelo Docker via o
+ * arquivo .env do projeto): SMTP_HOST, SMTP_PORT, SMTP_ENCRYPTION, SMTP_USER,
+ * SMTP_PASS, SMTP_FROM, SMTP_FROM_NAME, MAIL_TO. A senha nunca vai para o git
+ * nem para a imagem. Veja .env.example.
  *
- * Se o arquivo de config não existir, cai num fallback com a função mail().
+ * Se SMTP_HOST não estiver definido, cai num fallback com a função mail().
  *
  * Sucesso  -> 303 /obrigado.html
  * Falha    -> 303 /index.html?erro=1#contato
@@ -21,8 +21,12 @@ require __DIR__ . '/lib/PHPMailer/Exception.php';
 require __DIR__ . '/lib/PHPMailer/PHPMailer.php';
 require __DIR__ . '/lib/PHPMailer/SMTP.php';
 
-// ---- Configuração ----
-const DESTINO = 'contato@danzeroum.com';   // quem recebe os contatos
+// ---- Configuração (via ambiente) ----
+function env($k, $default = '') {
+    $v = getenv($k);
+    return ($v === false || $v === '') ? $default : $v;
+}
+$DESTINO = env('MAIL_TO', 'contato@danzeroum.com');   // quem recebe os contatos
 const SUCESSO = '/obrigado.html';
 const FALHA   = '/index.html?erro=1#contato';
 
@@ -71,35 +75,34 @@ $corpo .= "Interesse: " . ($tipo !== '' ? $tipo : '—') . "\n";
 $corpo .= str_repeat('-', 40) . "\n";
 $corpo .= "Mensagem:\n{$mensagem}\n";
 
-// ---- Carrega config SMTP (fora do web root) ----
-$smtpConfigPath = __DIR__ . '/../danzeroum-smtp-config.php';
-$smtp = is_readable($smtpConfigPath) ? require $smtpConfigPath : null;
+// ---- Config SMTP via variáveis de ambiente (.env do Docker) ----
+$smtpHost = env('SMTP_HOST');
 
 $enviado = false;
 
-if (is_array($smtp) && !empty($smtp['host'])) {
+if ($smtpHost !== '') {
     // ---- Envio via SMTP autenticado (PHPMailer) ----
     $mail = new PHPMailer(true);
     try {
         $mail->isSMTP();
-        $mail->Host       = $smtp['host'];
-        $mail->Port       = (int)($smtp['port'] ?? 587);
+        $mail->Host       = $smtpHost;
+        $mail->Port       = (int)env('SMTP_PORT', '587');
         $mail->SMTPAuth   = true;
-        $mail->Username   = $smtp['username'] ?? '';
-        $mail->Password   = $smtp['password'] ?? '';
+        $mail->Username   = env('SMTP_USER');
+        $mail->Password   = env('SMTP_PASS');
         $mail->CharSet    = PHPMailer::CHARSET_UTF8;
 
-        $enc = strtolower($smtp['encryption'] ?? 'tls');
+        $enc = strtolower(env('SMTP_ENCRYPTION', 'tls'));
         if ($enc === 'ssl' || $enc === 'smtps') {
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;      // porta 465
         } elseif ($enc === 'tls' || $enc === 'starttls') {
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;   // porta 587
         }
 
-        $from     = $smtp['from']      ?? ($smtp['username'] ?? DESTINO);
-        $fromName = $smtp['from_name'] ?? 'Site Danzeroum';
+        $from     = env('SMTP_FROM', env('SMTP_USER', $DESTINO));
+        $fromName = env('SMTP_FROM_NAME', 'Site Danzeroum');
         $mail->setFrom($from, $fromName);
-        $mail->addAddress(DESTINO);
+        $mail->addAddress($DESTINO);
         $mail->addReplyTo($email, $nome);
 
         $mail->Subject = $assunto;
@@ -114,11 +117,11 @@ if (is_array($smtp) && !empty($smtp['host'])) {
 } else {
     // ---- Fallback: função mail() (caso o SMTP ainda não esteja configurado) ----
     $headers   = [];
-    $headers[] = 'From: Site Danzeroum <' . DESTINO . '>';
+    $headers[] = 'From: Site Danzeroum <' . $DESTINO . '>';
     $headers[] = 'Reply-To: ' . $nome . ' <' . $email . '>';
     $headers[] = 'Content-Type: text/plain; charset=UTF-8';
     $enviado = @mail(
-        DESTINO,
+        $DESTINO,
         '=?UTF-8?B?' . base64_encode($assunto) . '?=',
         $corpo,
         implode("\r\n", $headers)
