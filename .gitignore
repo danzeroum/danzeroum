@@ -3,6 +3,10 @@
 danzeroum-smtp-config.php
 smtp-config.php
 
+# CRM — dados pessoais nunca vão para o repo público
+crm/leads.private.json
+crm/*.private.json
+
 # Lixo de SO / editor
 .DS_Store
 Thumbs.db

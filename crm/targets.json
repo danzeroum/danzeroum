@@ -1,0 +1,46 @@
+{
+  "_comment": "Matriz de alvos de prospecção por case. NÃO contém dados pessoais — só cargos-alvo, setores, keywords e templates. É a fonte que o crm_collector.py usa para gerar queries.json.",
+  "location_default": "Brasil",
+  "targets": [
+    {
+      "repo": "buildtovalue-governance",
+      "repo_url": "https://github.com/danzeroum/buildtovalue-governance",
+      "titles": ["CTO", "Head of AI", "Chief Compliance Officer", "Diretor de Riscos"],
+      "industries": ["Financial Services", "Health Care", "Insurance"],
+      "keywords": ["AI governance", "NIST AI RMF", "EU AI Act", "LGPD"],
+      "message_template": "Olá {nome}! Desenvolvemos um middleware open source de governança de IA (NIST AI RMF + EU AI Act, ISO 42001). Pelo seu trabalho com {keyword}, faria sentido trocarmos uma ideia?"
+    },
+    {
+      "repo": "ConciliaIA",
+      "repo_url": "https://github.com/danzeroum/ConciliaIA",
+      "titles": ["Diretor Jurídico", "Head of Legal Tech", "Legal Operations", "Diretor Financeiro"],
+      "industries": ["Legal Services", "Insurance", "Retail"],
+      "keywords": ["conciliação financeira", "legal tech", "reconciliação de cartões"],
+      "message_template": "Olá {nome}! O ConciliaIA concilia vendas com adquirentes (Cielo/Rede/Stone) e detecta divergências automaticamente. Dado seu trabalho com {keyword}, posso mostrar como funciona?"
+    },
+    {
+      "repo": "financial-ai-pipeline-poc",
+      "repo_url": "https://github.com/danzeroum/financial-ai-pipeline-poc",
+      "titles": ["Head of Engineering", "CTO", "Fraud Prevention Lead", "Head of Data"],
+      "industries": ["Financial Services", "Banking"],
+      "keywords": ["fraud detection", "Kafka", "pipeline financeiro em tempo real"],
+      "message_template": "Olá {nome}! Construímos um pipeline de detecção de fraude em tempo real (Java + Kafka + IA). Dado seu trabalho com {keyword}, acho que valeria conversar."
+    },
+    {
+      "repo": "btvChatCorp",
+      "repo_url": "https://github.com/danzeroum/btvChatCorp",
+      "titles": ["Head of Digital", "CTO", "Digital Transformation Lead", "Head of Customer Experience"],
+      "industries": ["Retail", "Banking", "Telecommunications"],
+      "keywords": ["IA privada", "chatbot corporativo", "RAG enterprise"],
+      "message_template": "Olá {nome}! Temos uma plataforma de IA privada (RAG sobre os dados da empresa, SSO, white-label). Vi que você lidera {keyword} — posso mostrar uma demo?"
+    },
+    {
+      "repo": "executagent",
+      "repo_url": "https://github.com/danzeroum/executagent",
+      "titles": ["CTO", "Engineering Manager", "AI Product Lead"],
+      "industries": ["Technology", "SaaS"],
+      "keywords": ["autonomous agents", "AI orchestration", "agentes de IA"],
+      "message_template": "Olá {nome}! O Executagent é um framework de execução de tarefas por skills de IA. Vejo seu trabalho com {keyword} — posso compartilhar o repo?"
+    }
+  ]
+}

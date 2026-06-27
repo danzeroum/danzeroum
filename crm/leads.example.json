@@ -1,0 +1,17 @@
+[
+  {
+    "id": "lead_exemplo",
+    "nome": "(preencher manualmente após a pesquisa)",
+    "cargo": "Head of AI",
+    "empresa": "Empresa Exemplo Ltda",
+    "linkedin_url": "https://www.linkedin.com/in/...",
+    "setor": "Financial Services",
+    "origem_repo": "buildtovalue-governance",
+    "keywords": ["AI governance"],
+    "mensagem_conexao": "(gerada a partir do template em targets.json)",
+    "data_captacao": "2026-06-27T00:00:00Z",
+    "status": "novo",
+    "tags": ["buildtovalue-governance"],
+    "notas": ""
+  }
+]

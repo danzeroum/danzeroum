@@ -5,6 +5,11 @@ name: Deploy para o VPS (Docker)
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'crm/**'
+      - 'scripts/**'
+      - '.github/workflows/crm_collect.yml'
+      - 'README.md'
   workflow_dispatch:
 
 concurrency:
