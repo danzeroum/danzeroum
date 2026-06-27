@@ -3,30 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- SEO -->
-<title>Danzeroum — IA e software sob medida com governança | da ideia ao deploy</title>
-<meta name="description" content="A Danzeroum ajuda médias empresas a colocar IA e software sob medida em produção — com governança, conformidade LGPD/EU AI Act e código aberto auditável. Da estratégia ao deploy, sênior de ponta a ponta.">
+<!-- SEO básico -->
+<title>Daniel Lau — Engenheiro de Produto &amp; Desenvolvedor</title>
+<meta name="description" content="Daniel Lau — engenheiro de produto e desenvolvedor. Construo projetos próprios de IA e produto, da ideia ao deploy. Veja a demo ao vivo e o código público no GitHub.">
 <meta name="theme-color" content="#bd4e1c">
-<link rel="canonical" href="https://danzeroum.com/">
-<!-- Open Graph / Twitter -->
-<meta property="og:title" content="Danzeroum — IA e software sob medida com governança">
-<meta property="og:description" content="Colocamos IA e software em produção para médias empresas — com governança, LGPD e código aberto auditável. Da estratégia ao deploy.">
+<!-- Favicon: monograma D + escudo (SVG vetorial) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='7 8 45 48'%3E%3Cpath d='M10 11 H28 C41 11 49 20.5 49 32 C49 43.5 40 53 28 53 H10 Z' fill='%23bd4e1c'/%3E%3Cpath d='M27 18 L37 21.6 V31 C37 38 32.5 42.4 27 45 C21.5 42.4 17 38 17 31 V21.6 Z' fill='%2324324a' stroke='%23fbf7f1' stroke-width='2.4' stroke-linejoin='round'/%3E%3Cpath d='M21.8 31 L25.2 34.4 L31 28' fill='none' stroke='%23fbf7f1' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<meta property="og:title" content="Daniel Lau — Engenheiro de Produto &amp; Desenvolvedor">
+<meta property="og:description" content="Construo projetos próprios de IA e produto — da ideia ao deploy. Código público no GitHub e demo ao vivo.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://danzeroum.com/">
-<meta property="og:site_name" content="Danzeroum">
-<meta property="og:image" content="https://danzeroum.com/assets/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Danzeroum — IA e software sob medida com governança">
-<meta name="twitter:description" content="Colocamos IA e software em produção para médias empresas — com governança, LGPD e código aberto auditável.">
-<meta name="twitter:image" content="https://danzeroum.com/assets/og-image.png">
-
-<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/styles.css">
 
 <!-- Evita "flash" de tema errado: define o tema antes da página pintar -->
 <script>
@@ -40,325 +28,443 @@
   })();
 </script>
 
-<!-- Dados estruturados (JSON-LD) -->
-<script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@type":"ProfessionalService",
-  "name":"Danzeroum",
-  "url":"https://danzeroum.com/",
-  "description":"Estúdio de engenharia de IA e software sob medida para médias empresas, com governança e conformidade (LGPD, EU AI Act, ISO 42001, NIST AI RMF).",
-  "areaServed":"BR",
-  "knowsAbout":["Governança de IA","RAG","Agentes de IA","LGPD","EU AI Act","FinTech","LegalTech","Software sob medida"],
-  "sameAs":["https://github.com/danzeroum","https://www.linkedin.com/in/daniel-lau-pereira-soares-2b702326/"],
-  "founder":{"@type":"Person","name":"Daniel Lau Pereira Soares"}
+<style>
+/* ============================================================
+   SISTEMA DE DESIGN — paleta quente "golden hour" (terracota +
+   âmbar + teal de acento), tipografia IBM Plex. Mobile-first.
+   ============================================================ */
+:root{
+  /* neutros quentes (creme / areia) */
+  --bg:#fbf7f1;
+  --bg-2:#f4ece1;
+  --ink:#231a14;        /* títulos / texto forte */
+  --text:#4a3d33;       /* corpo */
+  --muted:#7a6a5b;      /* secundário */
+  --faint:#9c8a78;      /* rótulos */
+  --line:#e6dccd;       /* divisórias */
+  --line-2:#d3c4ae;
+  /* marca */
+  --brand:#bd4e1c;      /* terracota */
+  --brand-ink:#b3470f;  /* terracota p/ texto (contraste AA) */
+  --accent:#0f7d6b;     /* teal de mar */
+  --on-brand:#fff8f1;   /* texto sobre a marca */
+  /* logo */
+  --logo-d:#bd4e1c; --logo-shield:#24324a; --logo-circuit:#24324a; --logo-ink:#fbf7f1;
+  /* métricas */
+  --maxw:1080px;
+  --gut:clamp(22px,5vw,40px);
+  --ease:cubic-bezier(.2,.7,.3,1);
+  color-scheme:light;
 }
-</script>
-<script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@type":"FAQPage",
-  "mainEntity":[
-    {"@type":"Question","name":"A IA fica só no protótipo ou vai mesmo para produção?","acceptedAnswer":{"@type":"Answer","text":"Nosso foco é produção. Vários cases já rodam no ar (apps em *.buildtovalue.cloud) e o código é aberto e auditável. Trabalhamos com piloto antes de escalar, justamente para chegar em produção com risco controlado."}},
-    {"@type":"Question","name":"Como a Danzeroum trata LGPD e governança de IA?","acceptedAnswer":{"@type":"Answer","text":"Governança e conformidade são embutidas desde o primeiro dia: trilha de auditoria, consentimento, minimização de dados e validação contra LGPD, EU AI Act, ISO 42001 e NIST AI RMF. Temos middleware próprio de governança open source."}},
-    {"@type":"Question","name":"Vou ficar preso a um fornecedor (lock-in)?","acceptedAnswer":{"@type":"Answer","text":"Não. Entregamos com código aberto e auditável, stacks padrão de mercado e a possibilidade de rodar self-hosted (on-prem ou nuvem privada). Você fica dono do que foi construído."}},
-    {"@type":"Question","name":"Quem executa o projeto?","acceptedAnswer":{"@type":"Answer","text":"Um especialista sênior fim a fim — produto e engenharia na mesma pessoa, com 15 anos de experiência. Sem repassar para júnior."}}
-  ]
+/* Tema escuro (marrom-carvão quente) */
+html.dark{
+  --bg:#141009;
+  --bg-2:#1d160e;
+  --ink:#f6ede1;
+  --text:#d6c6b4;
+  --muted:#a8957f;
+  --faint:#82705d;
+  --line:#2e2418;
+  --line-2:#41331f;
+  --brand:#e8772f;
+  --brand-ink:#f0934d;
+  --accent:#36c0a4;
+  --on-brand:#1a1106;
+  --logo-d:#e8772f; --logo-shield:#fbf7f1; --logo-circuit:#e8772f; --logo-ink:#24324a;
+  color-scheme:dark;
 }
-</script>
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'IBM Plex Sans',system-ui,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  transition:background-color .3s,color .3s;
+}
+::selection{background:var(--brand);color:#fff}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
+.mono{font-family:'IBM Plex Mono',monospace}
+
+/* utilitários de layout */
+.wrap{max-width:var(--maxw);margin:0 auto;padding-left:var(--gut);padding-right:var(--gut)}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--faint);
+}
+.eyebrow b{color:var(--brand-ink);font-weight:500}
+
+/* ---------- botões ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;font:inherit;font-weight:600;font-size:.95rem;
+  padding:13px 22px;border:1px solid transparent;border-radius:10px;cursor:pointer;
+  transition:background .18s,border-color .18s,color .18s,transform .12s;
+}
+.btn svg{width:18px;height:18px;flex-shrink:0}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--brand);color:var(--on-brand)}
+.btn-primary:hover{background:var(--brand-ink)}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line-2)}
+.btn-ghost:hover{border-color:var(--ink);background:var(--bg-2)}
+
+/* ============================================================
+   HEADER + NAV
+   ============================================================ */
+.site-header{
+  position:sticky;top:0;z-index:100;
+  background:color-mix(in srgb,var(--bg) 86%,transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.site-header .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
+.brand{display:flex;align-items:center;gap:12px}
+/* ---- Logo (D + escudo + circuito), cores adaptáveis ao tema ---- */
+.brand-logo{width:48px;height:auto;flex-shrink:0;display:block}
+.brand-logo .c-line{stroke:var(--logo-circuit);stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.brand-logo .c-node{fill:var(--logo-circuit)}
+.brand-logo .d-fill{fill:var(--logo-d)}
+.brand-logo .sh-fill{fill:var(--logo-shield);stroke:var(--logo-ink);stroke-width:2.4;stroke-linejoin:round}
+.brand-logo .sh-check{fill:none;stroke:var(--logo-ink);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+/* animação de "roteamento" — toca uma vez ao carregar; D e escudo ficam sempre visíveis */
+@media (prefers-reduced-motion:no-preference){
+  html.anim-logo .brand-logo .c-line path,html.anim-logo .brand-logo .sh-check{stroke-dasharray:1;animation:logoDraw .7s var(--ease) both}
+  html.anim-logo .brand-logo .in1{animation-delay:.05s}
+  html.anim-logo .brand-logo .in2{animation-delay:.18s}
+  html.anim-logo .brand-logo .out{animation-delay:.34s}
+  html.anim-logo .brand-logo .sh-check{animation-delay:.64s}
+  html.anim-logo .brand-logo .c-node{animation:logoPop .3s ease both}
+  html.anim-logo .brand-logo .nIn{animation-delay:0s}
+  html.anim-logo .brand-logo .nOut{animation-delay:.5s}
+}
+@keyframes logoDraw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes logoPop{from{opacity:0}to{opacity:1}}
+.brand b{font-weight:600;font-size:1rem;color:var(--ink);letter-spacing:-.01em}
+.nav{display:none;align-items:center;gap:4px}
+.nav a{font-size:.92rem;font-weight:500;color:var(--muted);padding:8px 12px;border-radius:8px;transition:color .15s,background .15s}
+.nav a:hover{color:var(--ink);background:var(--bg-2)}
+.theme-btn{
+  width:40px;height:40px;border:1px solid var(--line-2);border-radius:10px;
+  background:transparent;color:var(--ink);cursor:pointer;display:grid;place-items:center;
+  transition:background .15s,border-color .15s;
+}
+.theme-btn:hover{background:var(--bg-2)}
+.theme-btn svg{width:18px;height:18px}
+.i-sun{display:none}
+html.dark .i-sun{display:block}
+html.dark .i-moon{display:none}
+@media(min-width:768px){ .nav{display:flex} }
+
+/* ============================================================
+   HERO — acima da dobra: nome, título, tagline e links principais
+   ============================================================ */
+.hero{padding:clamp(56px,11vw,120px) 0 clamp(48px,8vw,88px);position:relative;overflow:hidden}
+/* brilho âmbar sutil de "golden hour" no canto */
+.hero::before{
+  content:'';position:absolute;top:-20%;right:-10%;width:60%;height:120%;pointer-events:none;z-index:0;
+  background:radial-gradient(closest-side, color-mix(in srgb,var(--brand) 16%,transparent), transparent 72%);
+}
+.hero .wrap{position:relative;z-index:1}
+.hero h1{
+  font-size:clamp(2.3rem,6.4vw,3.8rem);line-height:1.06;letter-spacing:-.03em;
+  color:var(--ink);font-weight:600;margin:20px 0 22px;max-width:16ch;text-wrap:balance;
+}
+.hero h1 em{font-style:normal;color:var(--brand-ink)}
+.hero .tagline{font-size:clamp(1.05rem,2.4vw,1.25rem);color:var(--muted);max-width:60ch;text-wrap:pretty}
+
+/* ---------- Links principais (também no rodapé) ---------- */
+.primary-links{display:grid;grid-template-columns:1fr;gap:14px;margin-top:36px;max-width:760px}
+.plink{
+  display:flex;align-items:center;gap:18px;
+  padding:20px 22px;border:1px solid var(--line-2);border-radius:14px;
+  background:var(--bg);position:relative;overflow:hidden;
+  transition:border-color .18s,transform .14s,box-shadow .18s;
+}
+.plink:hover{transform:translateY(-2px);border-color:var(--brand);box-shadow:0 10px 30px -16px color-mix(in srgb,var(--brand) 60%,transparent)}
+.plink .ico{
+  width:48px;height:48px;flex-shrink:0;border-radius:11px;display:grid;place-items:center;
+}
+.plink .ico svg{width:24px;height:24px}
+.plink.prod .ico{background:var(--brand);color:var(--on-brand)}
+.plink.repo .ico{background:var(--bg-2);color:var(--ink);border:1px solid var(--line)}
+.plink .tx{display:flex;flex-direction:column;gap:3px;min-width:0}
+.plink .tx .t{font-weight:600;font-size:1rem;color:var(--ink);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.plink .tx .s{font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.badge{
+  font-family:'IBM Plex Mono',monospace;font-size:.6rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 7px;border-radius:5px;color:var(--accent);
+  border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);
+  background:color-mix(in srgb,var(--accent) 10%,transparent);
+}
+.plink .arr{margin-left:auto;flex-shrink:0;color:var(--faint);transition:transform .18s,color .18s}
+.plink .arr svg{width:20px;height:20px;display:block}
+.plink:hover .arr{color:var(--brand-ink);transform:translate(3px,-3px)}
+@media(min-width:640px){ .primary-links{grid-template-columns:1fr 1fr} }
+
+/* ============================================================
+   SEÇÕES GENÉRICAS
+   ============================================================ */
+section{scroll-margin-top:80px}
+.block{padding:clamp(56px,9vw,96px) 0;border-top:1px solid var(--line)}
+.sec-title{font-size:clamp(1.6rem,3.6vw,2.2rem);line-height:1.12;letter-spacing:-.025em;color:var(--ink);font-weight:600;margin:14px 0 0;text-wrap:balance}
+.sec-intro{color:var(--muted);font-size:1.05rem;max-width:60ch;margin-top:14px;text-wrap:pretty}
+
+/* ---------- Sobre ---------- */
+.about-grid{display:grid;grid-template-columns:1fr;gap:clamp(28px,5vw,56px);margin-top:clamp(28px,4vw,44px)}
+.about-body p{font-size:1.08rem;color:var(--text);margin-bottom:18px;text-wrap:pretty}
+.about-body strong{color:var(--ink);font-weight:600}
+.facts{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;align-self:start}
+.facts .row{display:flex;justify-content:space-between;gap:16px;padding:15px 20px;border-bottom:1px solid var(--line)}
+.facts .row:last-child{border-bottom:none}
+.facts dt{font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--muted)}
+.facts dd{font-weight:600;font-size:.92rem;color:var(--ink);text-align:right}
+.stack-h{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);display:block;margin:30px 0 14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--muted);background:var(--bg-2);border:1px solid var(--line);border-radius:8px;padding:7px 12px;transition:border-color .15s,color .15s}
+.chip:hover{border-color:var(--brand);color:var(--ink)}
+.chips.life .chip{color:var(--brand-ink);border-color:color-mix(in srgb,var(--brand) 26%,var(--line))}
+/* ---- Experiência (setores) ---- */
+.xp-grid{display:grid;grid-template-columns:1fr;gap:24px;margin-top:8px}
+.xp-label{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);display:block;margin-bottom:12px}
+@media(min-width:680px){ .xp-grid{grid-template-columns:1fr 1fr;gap:28px 44px} }
+@media(min-width:880px){ .about-grid{grid-template-columns:1.4fr .9fr} }
+
+/* ---------- Projetos ---------- */
+.projects{display:grid;grid-template-columns:1fr;gap:16px;margin-top:clamp(28px,4vw,44px)}
+.card{
+  display:flex;flex-direction:column;
+  border:1px solid var(--line);border-radius:16px;padding:26px 26px 20px;background:var(--bg);
+  transition:border-color .2s,transform .16s,box-shadow .2s;
+}
+.card:hover{transform:translateY(-3px);border-color:var(--line-2);box-shadow:0 16px 40px -24px rgba(0,0,0,.4)}
+.card .ctop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.card .tag{font-family:'IBM Plex Mono',monospace;font-size:.68rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--brand-ink);background:color-mix(in srgb,var(--brand) 9%,transparent);border:1px solid color-mix(in srgb,var(--brand) 22%,transparent);border-radius:6px;padding:4px 9px}
+.card .status{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--muted);display:inline-flex;align-items:center;gap:7px}
+.card .status::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.card h3{font-size:1.28rem;color:var(--ink);font-weight:600;letter-spacing:-.015em;margin-bottom:4px}
+.card .slug{font-family:'IBM Plex Mono',monospace;font-size:.74rem;color:var(--faint);margin-bottom:12px}
+.card p{font-size:.96rem;color:var(--muted);line-height:1.6;flex-grow:1}
+.card .tech{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0 18px}
+.card .tech span{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:3px 8px}
+.card .clinks{display:flex;gap:18px;align-items:center;padding-top:16px;border-top:1px solid var(--line)}
+.clink{display:inline-flex;align-items:center;gap:7px;font-size:.86rem;font-weight:600;color:var(--muted);transition:color .15s,gap .15s}
+.clink svg{width:15px;height:15px;transition:transform .15s}
+.clink:hover{color:var(--brand-ink)}
+.clink.demo:hover svg{transform:translate(2px,-2px)}
+@media(min-width:680px){ .projects{grid-template-columns:1fr 1fr} }
+
+/* ---------- Bloco "Links principais" dedicado ---------- */
+.links-block .primary-links{margin-top:clamp(28px,4vw,40px)}
+
+/* ---------- Contato ---------- */
+.contact-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:clamp(28px,4vw,40px);max-width:620px}
+.contact-row{
+  display:flex;align-items:center;gap:16px;padding:18px 20px;
+  border:1px solid var(--line);border-radius:12px;background:var(--bg);
+  transition:border-color .18s,background .18s;
+}
+.contact-row:hover{border-color:var(--brand);background:var(--bg-2)}
+.contact-row svg{width:20px;height:20px;color:var(--brand-ink);flex-shrink:0}
+.contact-row .k{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);width:84px;flex-shrink:0}
+.contact-row .v{font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis}
+
+/* ============================================================
+   FOOTER — links principais repetidos + navegação
+   ============================================================ */
+.site-footer{border-top:1px solid var(--line);background:var(--bg-2);padding:clamp(44px,6vw,72px) 0 28px}
+.footer-cta{margin-bottom:clamp(36px,5vw,52px)}
+.footer-cta .primary-links{margin-top:18px}
+.footer-grid{display:grid;grid-template-columns:1fr;gap:28px;padding-top:clamp(28px,4vw,40px);border-top:1px solid var(--line)}
+.footer-grid .about p{font-size:.92rem;color:var(--muted);max-width:38ch;margin-top:12px}
+.footer-grid h4{font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
+.footer-grid a.fl{display:block;font-size:.92rem;color:var(--muted);padding:5px 0;transition:color .15s}
+.footer-grid a.fl:hover{color:var(--brand-ink)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-top:clamp(32px,4vw,44px);padding-top:22px;border-top:1px solid var(--line)}
+.footer-bottom p{font-family:'IBM Plex Mono',monospace;font-size:.74rem;color:var(--faint)}
+@media(min-width:760px){ .footer-grid{grid-template-columns:2fr 1fr 1fr} }
+</style>
 </head>
 <body id="top">
-
-<a class="skip-link" href="#main">Pular para o conteúdo</a>
 
 <!-- ===================== HEADER ===================== -->
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="#top" aria-label="Danzeroum — início">
-      <img class="brand-mark light" src="/assets/logo-danzeroum.svg" alt="" width="40" height="32" aria-hidden="true"><img class="brand-mark dark" src="/assets/logo-danzeroum-dark.svg" alt="" width="40" height="32" aria-hidden="true">
-      <span><b>Danzeroum</b><span class="brand-sub">Engenharia de IA & Software</span></span>
+    <a class="brand" href="#top" aria-label="Daniel Lau — início">
+      <svg class="brand-logo" viewBox="-10 0 80 64" role="img" aria-label="Logo Danzeroum">
+        <g class="c-line">
+          <path class="in1" pathLength="1" d="M-8 21 L1 26"/><path class="in1" pathLength="1" d="M1 26 L10 31"/>
+          <path class="in2" pathLength="1" d="M-8 43 L1 38"/><path class="in2" pathLength="1" d="M1 38 L10 33"/>
+          <path class="out" pathLength="1" d="M49 32 L60 19"/><path class="out" pathLength="1" d="M49 32 H62"/><path class="out" pathLength="1" d="M49 32 L60 45"/>
+        </g>
+        <g><circle class="c-node nIn" cx="-9" cy="20" r="2.4"/><circle class="c-node nIn" cx="-9" cy="44" r="2.4"/><circle class="c-node nOut" cx="62" cy="18" r="2.6"/><circle class="c-node nOut" cx="64" cy="32" r="2.6"/><circle class="c-node nOut" cx="62" cy="46" r="2.6"/></g>
+        <path class="d-fill" d="M10 11 H28 C41 11 49 20.5 49 32 C49 43.5 40 53 28 53 H10 Z"/>
+        <path class="sh-fill" d="M27 18 L37 21.6 V31 C37 38 32.5 42.4 27 45 C21.5 42.4 17 38 17 31 V21.6 Z"/>
+        <path class="sh-check" pathLength="1" d="M21.8 31 L25.2 34.4 L31 28"/>
+      </svg>
+      <b>Daniel Lau</b>
     </a>
     <nav class="nav" aria-label="Navegação principal">
-      <a href="#servicos">Serviços</a>
-      <a href="#cases">Cases</a>
-      <a href="#processo">Como trabalhamos</a>
       <a href="#sobre">Sobre</a>
+      <a href="#experiencia">Experiência</a>
+      <a href="#projetos">Projetos</a>
+      <a href="#links">Links</a>
       <a href="#contato">Contato</a>
     </nav>
-    <div class="header-actions">
-      <a class="btn btn-primary header-cta" href="#contato">Falar com a gente</a>
-      <button class="theme-btn" id="theme" type="button" aria-label="Alternar tema claro e escuro">
-        <span class="i-moon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
-        <span class="i-sun" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8l1.8-1.8M18 6l1.8-1.8"/></svg></span>
-      </button>
-    </div>
+    <button class="theme-btn" id="theme" type="button" aria-label="Alternar tema claro e escuro">
+      <span class="i-moon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+      <span class="i-sun" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8l1.8-1.8M18 6l1.8-1.8"/></svg></span>
+    </button>
   </div>
 </header>
 
-<main id="main">
+<main>
   <!-- ===================== HERO ===================== -->
   <section class="hero" aria-labelledby="hero-h1">
     <div class="wrap">
-      <p class="eyebrow"><b>●</b>&nbsp; ESTÚDIO DE ENGENHARIA DE IA &amp; SOFTWARE · PARA MÉDIAS EMPRESAS</p>
-      <h1 id="hero-h1">IA e software sob medida que <em>vão para produção</em> — com governança desde o primeiro dia.</h1>
-      <p class="tagline">A Danzeroum ajuda médias empresas a transformar dados e processos em <strong>sistemas de IA confiáveis, auditáveis e em conformidade com a LGPD</strong>. Da estratégia ao deploy, com código aberto e sênior de ponta a ponta — não só protótipos.</p>
+      <p class="eyebrow"><b>●</b>&nbsp; ENGENHEIRO DE PRODUTO · DESENVOLVEDOR</p>
+      <h1 id="hero-h1">Desenho e construo <em>produtos digitais</em> — da ideia ao deploy.</h1>
+      <p class="tagline">Sou o Daniel. Há 15 anos trabalho com software — boa parte como consultor terceirizado (outsourcing) para diversas empresas. Hoje construo meus próprios projetos de IA e produto, do desenho ao deploy: é o que você vê aqui.</p>
 
-      <div class="hero-cta">
-        <a class="btn btn-wa" href="https://wa.me/5511996685998?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Danzeroum%20e%20quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener noreferrer" aria-label="Falar no WhatsApp (abre em nova aba)">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.3 5.2 4.6.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.4zM12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2z"/></svg>
-          Falar no WhatsApp
+      <!-- Links principais (acima da dobra) -->
+      <div class="primary-links">
+        <a class="plink prod" href="https://demo.buildtovalue.cloud" target="_blank" rel="noopener noreferrer" aria-label="Ver demo ao vivo (abre em nova aba)">
+          <span class="ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.7 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.7-3.8-9S9.5 5.5 12 3z"/></svg>
+          </span>
+          <span class="tx">
+            <span class="t">Ver demo ao vivo</span>
+            <span class="s">demo.buildtovalue.cloud</span>
+          </span>
+          <span class="arr" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
         </a>
-        <a class="btn btn-ghost" href="#cases">Ver cases em produção</a>
+        <a class="plink repo" href="https://github.com/danzeroum" target="_blank" rel="noopener noreferrer" aria-label="Ver código no GitHub (abre em nova aba)">
+          <span class="ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.92 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          </span>
+          <span class="tx">
+            <span class="t">Ver código no GitHub <span class="badge">Código público</span></span>
+            <span class="s">github.com/danzeroum</span>
+          </span>
+          <span class="arr" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- ===================== FAIXA DE CONFIANÇA ===================== -->
-  <div class="trust-strip">
-    <div class="wrap">
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 7"/></svg> Apps em produção, não só slides</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg> Código aberto e auditável</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 4v5c0 4.5-3.4 7.8-8 9-4.6-1.2-8-4.5-8-9V7z"/></svg> LGPD &amp; EU AI Act by design</span>
-      <span class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg> Sênior fim a fim, 15 anos</span>
-    </div>
-  </div>
-
-  <!-- ===================== SERVIÇOS ===================== -->
-  <section id="servicos" class="block" aria-labelledby="serv-h">
-    <div class="wrap">
-      <p class="eyebrow"><b>01</b> — Serviços</p>
-      <h2 class="sec-title" id="serv-h">O que a Danzeroum entrega.</h2>
-      <p class="sec-intro">Ofertas produtizadas, cada uma com prova real no portfólio. Da governança de IA a sistemas FinTech/LegalTech sob medida — sempre com foco em colocar no ar.</p>
-
-      <div class="services">
-        <article class="svc">
-          <span class="svc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 4.5-3.4 7.8-8 9-4.6-1.2-8-4.5-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg></span>
-          <h3>Governança &amp; Compliance de IA</h3>
-          <p>Coloque IA em produção com trilha de auditoria, consentimento e bloqueio de violações. Conformidade com LGPD, EU AI Act, ISO 42001 e NIST AI RMF — embutida, não no fim.</p>
-          <span class="svc-for">// Para empresas com exposição regulatória e dados sensíveis</span>
-          <div class="svc-proof"><span>BuildToValue Governance</span><span>Compliance Graph RAG</span></div>
-        </article>
-
-        <article class="svc">
-          <span class="svc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 12h8M12 8v8"/></svg></span>
-          <h3>Plataformas de IA privadas (RAG &amp; Agentes)</h3>
-          <p>Copilots e assistentes internos sobre os dados da sua empresa — on-prem ou nuvem privada, com SSO e white-label, sem vazar informação para terceiros.</p>
-          <span class="svc-for">// Para quem quer IA sobre conhecimento próprio com privacidade</span>
-          <div class="svc-proof"><span>btvChatCorp</span><span>WhatsApp RAG</span><span>Executagent</span></div>
-        </article>
-
-        <article class="svc">
-          <span class="svc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 7h18M3 12h18M3 17h18"/><circle cx="7" cy="7" r="1.4" fill="currentColor"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><circle cx="17" cy="17" r="1.4" fill="currentColor"/></svg></span>
-          <h3>LegalTech &amp; FinTech sob medida</h3>
-          <p>Conciliação financeira, automação fiscal e jurídica, detecção de fraude. Sistemas críticos com precisão decimal, integrações (adquirentes, SEFAZ) e qualidade garantida em CI.</p>
-          <span class="svc-for">// Para varejo, e-commerce, contabilidade e escritórios</span>
-          <div class="svc-proof"><span>ConciliaIA</span><span>Jurídico Platform</span><span>Criptotrade</span></div>
-        </article>
-
-        <article class="svc">
-          <span class="svc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 17l6-6-6-6"/><path d="M12 19h8"/></svg></span>
-          <h3>Software sob medida fim a fim</h3>
-          <p>Da ideia ao deploy: descoberta, UX, arquitetura e código. Full-stack com inclinação a backend e IA, entregue por quem pensa o produto e escreve o código.</p>
-          <span class="svc-for">// Para quem precisa de um produto digital novo, do zero ao ar</span>
-          <div class="svc-proof"><span>EducaDigital</span><span>Waldorf System</span><span>+ 23 cases</span></div>
-        </article>
-
-        <article class="svc">
-          <span class="svc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></span>
-          <h3>Dados &amp; Automação</h3>
-          <p>Pipelines de dados, NL→SQL com guardrails, integrações e automação de processos (BPM/MarTech). Insights confiáveis com sanitização de PII e governança.</p>
-          <span class="svc-for">// Para times de dados, marketing e operações</span>
-          <div class="svc-proof"><span>Uncover Aegis</span><span>Process Veritas</span><span>DadoSabedoria</span></div>
-        </article>
-
-        <article class="svc">
-          <span class="svc-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
-          <h3>Diagnóstico de governança de IA</h3>
-          <p>Entrega rápida: mapeamento de riscos, lacunas de conformidade (LGPD/EU AI Act) e um plano objetivo para usar IA com segurança. Ótimo primeiro passo, baixo compromisso.</p>
-          <span class="svc-for">// Para quem quer começar com clareza antes de investir</span>
-          <div class="svc-proof"><span>Accountability Stack</span><span>BuildToValue Framework</span></div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== PROCESSO ===================== -->
-  <section id="processo" class="block" aria-labelledby="proc-h">
-    <div class="wrap">
-      <p class="eyebrow"><b>02</b> — Como trabalhamos</p>
-      <h2 class="sec-title" id="proc-h">Do risco controlado à produção.</h2>
-      <p class="sec-intro">Um caminho previsível, pensado para reduzir o risco de quem está investindo. Você valida antes de escalar.</p>
-      <div class="steps">
-        <div class="step"><div class="num">1</div><h3>Diagnóstico</h3><p>Entendemos o problema, os dados e as restrições regulatórias. Saída: escopo claro, riscos mapeados e proposta objetiva.</p></div>
-        <div class="step"><div class="num">2</div><h3>Piloto</h3><p>Construímos a fatia de maior valor primeiro — algo testável de verdade. Validação com usuários e métricas honestas antes de escalar.</p></div>
-        <div class="step"><div class="num">3</div><h3>Produção</h3><p>Levamos ao ar com governança embutida: auditoria, conformidade, observabilidade e CI/CD. Software que roda, não slide.</p></div>
-        <div class="step"><div class="num">4</div><h3>Operação &amp; Governança</h3><p>Acompanhamento, evolução e conformidade contínua. Você fica dono do código aberto e auditável — sem lock-in.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== CASES ===================== -->
-  <section id="cases" class="block" aria-labelledby="proj-h">
-    <div class="wrap">
-      <p class="eyebrow"><b>03</b> — Cases &amp; código aberto</p>
-      <h2 class="sec-title" id="proj-h">Veja funcionando — e por dentro.</h2>
-      <p class="sec-intro">23 sistemas reais, validados a partir dos repositórios públicos no GitHub — cada um com README, stack técnica de verdade e, quando aplicável, app ao vivo. Porque é open source, você pode auditar exatamente o que entregamos.</p>
-
-      <div class="projects-head">
-        <div class="projects-count"><b id="visible-count">6</b> de 23 cases visíveis</div>
-      </div>
-
-      <!-- Filtros por categoria -->
-      <div class="filters" id="filters" role="tablist" aria-label="Filtrar cases por categoria">
-        <button class="fchip active" data-filter="featured" role="tab" aria-selected="true">★ Destaques <span class="count">6</span></button>
-        <button class="fchip" data-filter="all" role="tab" aria-selected="false">Todos <span class="count">23</span></button>
-        <button class="fchip" data-filter="governance" role="tab" aria-selected="false">Governança &amp; Compliance <span class="count">4</span></button>
-        <button class="fchip" data-filter="legal" role="tab" aria-selected="false">LegalTech <span class="count">4</span></button>
-        <button class="fchip" data-filter="fintech" role="tab" aria-selected="false">FinTech &amp; Crypto <span class="count">3</span></button>
-        <button class="fchip" data-filter="ai-platforms" role="tab" aria-selected="false">Plataformas de IA <span class="count">3</span></button>
-        <button class="fchip" data-filter="civic" role="tab" aria-selected="false">CivicTech &amp; Dados <span class="count">2</span></button>
-        <button class="fchip" data-filter="education" role="tab" aria-selected="false">Educação <span class="count">2</span></button>
-        <button class="fchip" data-filter="tools" role="tab" aria-selected="false">Ferramentas &amp; Dev <span class="count">3</span></button>
-        <button class="fchip" data-filter="automation" role="tab" aria-selected="false">Automação &amp; MarTech <span class="count">2</span></button>
-      </div>
-
-      <div class="projects" id="grid"><!-- preenchido via JS --></div>
-
-      <div class="forks-note">
-        <strong>Nota sobre forks:</strong> a Danzeroum também contribui em projetos de terceiros via fork —
-        <a href="https://github.com/danzeroum/opencode" target="_blank" rel="noopener noreferrer">opencode</a>,
-        <a href="https://github.com/danzeroum/openclaw" target="_blank" rel="noopener noreferrer">openclaw</a> e
-        <a href="https://github.com/danzeroum/PerezWebSolutions" target="_blank" rel="noopener noreferrer">PerezWebSolutions</a>.
-        Esses não aparecem na lista acima por serem código de terceiros, mas refletem participação ativa na comunidade open source.
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== DIFERENCIAIS ===================== -->
-  <section id="diferenciais" class="block" aria-labelledby="dif-h">
-    <div class="wrap">
-      <p class="eyebrow"><b>04</b> — Por que a Danzeroum</p>
-      <h2 class="sec-title" id="dif-h">O que nos torna diferentes.</h2>
-      <div class="diffs">
-        <div class="diff"><span class="diff-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l8 4v5c0 4.5-3.4 7.8-8 9-4.6-1.2-8-4.5-8-9V7z"/></svg></span><h3>Governança embutida</h3><p>Compliance não é checklist no fim: é parte da arquitetura. Trilha de auditoria, LGPD e EU AI Act desde o primeiro commit.</p></div>
-        <div class="diff"><span class="diff-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></span><h3>Código aberto e auditável</h3><p>Você vê funcionando e vê por dentro. Stacks padrão de mercado, self-hosted possível, sem lock-in. O que construímos, fica seu.</p></div>
-        <div class="diff"><span class="diff-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></span><h3>Sênior fim a fim</h3><p>Produto e engenharia na mesma pessoa, com 15 anos de estrada. Sem vender sênior e entregar júnior.</p></div>
-        <div class="diff"><span class="diff-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M5 12l5 5L20 7"/></svg></span><h3>Foco em produção</h3><p>Vários cases já rodam no ar. Construímos para o deploy, não para a apresentação — com piloto antes de escalar.</p></div>
-        <div class="diff"><span class="diff-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19V5M4 5h11l-2 3 2 3H4"/></svg></span><h3>Especialização regulatória BR + global</h3><p>FinTech e LegalTech com viés regulatório real: LGPD, GDPR, EU AI Act, NIST AI RMF, ISO 42001.</p></div>
-        <div class="diff"><span class="diff-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span><h3>Pesquisa própria</h3><p>Publicamos pesquisa em governança de IA (a série "Accountability Stack"). A abordagem é fundamentada, não improviso.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== SOBRE (FUNDADOR) ===================== -->
+  <!-- ===================== SOBRE ===================== -->
   <section id="sobre" class="block" aria-labelledby="sobre-h">
     <div class="wrap">
-      <p class="eyebrow"><b>05</b> — Quem está por trás</p>
+      <p class="eyebrow"><b>01</b> — Sobre</p>
       <h2 class="sec-title" id="sobre-h">Produto e engenharia, na mesma pessoa.</h2>
       <div class="about-grid">
         <div class="about-body">
-          <p>A Danzeroum é o estúdio do <strong>Daniel Lau</strong>, engenheiro de produto e desenvolvedor. Programando há 15 anos, ele começou na engenharia de sistemas críticos e percebeu que <strong>gosta tanto de resolver o problema certo quanto de escrevê-lo em código</strong>. Por isso a atuação é de ponta a ponta: entender o usuário, desenhar a solução e construí-la.</p>
-          <p>Tecnicamente, <strong>full-stack com inclinação a backend e IA</strong>: a robustez do Rust e do Java com a agilidade do Python e do TypeScript, para entregar produtos que rodam em produção — não só protótipos. O foco recente está em <strong>governança de IA</strong>, agentes autônomos com auditoria criptográfica, RAG em escala e aplicações FinTech/LegalTech com forte viés regulatório (LGPD, GDPR, EU AI Act, NIST AI RMF).</p>
+          <p>Programo há 15 anos. Boa parte da minha experiência veio como <strong>consultor terceirizado (outsourcing)</strong>, ajudando empresas em sistemas críticos e integração de dados. Em paralelo, estudo a fundo e construo meus próprios projetos — é onde testo ideias e mostro o que sei fazer de ponta a ponta.</p>
+          <p>Tecnicamente sou <strong>full-stack com inclinação a backend e IA</strong>. Uno a robustez do Rust e do Java à agilidade do Python e do TypeScript para tirar ideias do papel: protótipos que viram aplicações rodando de verdade na minha VPS — todas com código público.</p>
           <span class="stack-h">// Stack &amp; ferramentas</span>
           <div class="chips">
             <span class="chip">TypeScript</span>
             <span class="chip">Python</span>
             <span class="chip">Rust</span>
             <span class="chip">Java</span>
-            <span class="chip">Elixir</span>
-            <span class="chip">React · Angular</span>
-            <span class="chip">Next.js</span>
-            <span class="chip">FastAPI · Spring Boot</span>
-            <span class="chip">PostgreSQL · pgvector</span>
-            <span class="chip">Docker · K8s</span>
-            <span class="chip">LLMs · RAG · Agentes</span>
-            <span class="chip">Governança de IA</span>
-            <span class="chip">LGPD · GDPR · EU AI Act</span>
+            <span class="chip">React</span>
+            <span class="chip">Node · FastAPI</span>
+            <span class="chip">PostgreSQL</span>
+            <span class="chip">Docker</span>
+            <span class="chip">LLMs · RAG</span>
             <span class="chip">Discovery &amp; UX</span>
             <span class="chip">Métricas &amp; A/B</span>
           </div>
+          <span class="stack-h">// Fora do código</span>
+          <div class="chips life">
+            <span class="chip">Viagens</span>
+            <span class="chip">Fotografia</span>
+            <span class="chip">Música ao vivo</span>
+            <span class="chip">Trilhas</span>
+            <span class="chip">Pôr do sol</span>
+            <span class="chip">Gatos</span>
+          </div>
         </div>
         <dl class="facts" aria-label="Resumo">
-          <div class="row"><dt>Estúdio</dt><dd>Danzeroum</dd></div>
-          <div class="row"><dt>Fundador</dt><dd>Daniel Lau</dd></div>
           <div class="row"><dt>Baseado em</dt><dd>Brasil · Remoto</dd></div>
           <div class="row"><dt>Atuação</dt><dd>Produto + Dev</dd></div>
           <div class="row"><dt>Experiência</dt><dd>15 anos</dd></div>
-          <div class="row"><dt>No GitHub</dt><dd>23 projetos open source</dd></div>
-          <div class="row"><dt>Domínios</dt><dd>IA · FinTech · Legal</dd></div>
-          <div class="row"><dt>Engajamento</dt><dd>Projeto · squad · diagnóstico</dd></div>
+          <div class="row"><dt>Linguagens</dt><dd>TS · Python · Rust</dd></div>
+          <div class="row"><dt>Repositórios</dt><dd>27 públicos</dd></div>
+          <div class="row"><dt>Disponível</dt><dd>Fixo · freela</dd></div>
         </dl>
       </div>
     </div>
   </section>
 
-  <!-- ===================== MODELOS DE ENGAJAMENTO ===================== -->
-  <section id="engajamento" class="block" aria-labelledby="eng-h">
+  <!-- ===================== EXPERIÊNCIA ===================== -->
+  <section id="experiencia" class="block" aria-labelledby="xp-h">
     <div class="wrap">
-      <p class="eyebrow"><b>06</b> — Modelos de engajamento</p>
-      <h2 class="sec-title" id="eng-h">Formatos que se adaptam ao seu momento.</h2>
-      <p class="sec-intro">Sem preço cravado em tabela — cada empresa tem um contexto. Mas dá pra começar pelo formato certo. O diagnóstico é o melhor primeiro passo.</p>
-      <div class="engage">
-        <article class="eng featured">
-          <span class="eng-k">Comece por aqui</span>
-          <h3>Diagnóstico de IA</h3>
-          <p>Entrega rápida e de baixo compromisso para clarear o caminho antes de investir pesado.</p>
-          <ul>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Mapa de riscos e oportunidades</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Lacunas de LGPD / EU AI Act</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Plano objetivo de próximos passos</li>
-          </ul>
-        </article>
-        <article class="eng">
-          <span class="eng-k">Escopo fechado</span>
-          <h3>Projeto sob medida</h3>
-          <p>Para uma necessidade bem definida, do diagnóstico ao deploy, com preço fixo por entrega.</p>
-          <ul>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Escopo, prazo e valor combinados</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Piloto antes de escalar</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Código aberto entregue a você</li>
-          </ul>
-        </article>
-        <article class="eng">
-          <span class="eng-k">Contínuo</span>
-          <h3>Squad / retainer mensal</h3>
-          <p>Capacidade sênior dedicada por mês, para evoluir produto e governança de forma contínua.</p>
-          <ul>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Prioridades acordadas por ciclo</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Evolução + operação + conformidade</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg> Flexível para escalar ou pausar</li>
-          </ul>
-        </article>
+      <p class="eyebrow"><b>02</b> — Experiência</p>
+      <h2 class="sec-title" id="xp-h">Processos críticos, empresas grandes.</h2>
+      <p class="sec-intro">Como <strong>consultor terceirizado</strong> — através de consultorias especializadas — passei anos em projetos de <strong>automação de processos de negócio (BPM)</strong> para grandes empresas. Lidei com processos complexos e críticos em <strong>bancos, energia, indústria, varejo e saúde</strong>, sobre plataformas IBM (BAW, BPM, FileNet), Java e Pipefy, em times ágeis.</p>
+      <div class="xp-grid">
+        <div>
+          <span class="xp-label">// Bancos &amp; financeiro</span>
+          <div class="chips"><span class="chip">Bradesco</span><span class="chip">Banco Votorantim</span><span class="chip">Rabobank</span><span class="chip">Banco Fibra</span><span class="chip">Alelo</span><span class="chip">CSU</span></div>
+        </div>
+        <div>
+          <span class="xp-label">// Energia &amp; indústria</span>
+          <div class="chips"><span class="chip">Copel</span><span class="chip">Grendene</span><span class="chip">Gestamp</span><span class="chip">ICL</span><span class="chip">Multotec</span><span class="chip">Aeris</span></div>
+        </div>
+        <div>
+          <span class="xp-label">// Varejo &amp; imobiliário</span>
+          <div class="chips"><span class="chip">Multiplan</span><span class="chip">Autoglass</span><span class="chip">Iron Mountain</span></div>
+        </div>
+        <div>
+          <span class="xp-label">// Serviços &amp; saúde</span>
+          <div class="chips"><span class="chip">KPMG</span><span class="chip">Unimed</span><span class="chip">Fraport</span><span class="chip">FIEP</span><span class="chip">FIERGS</span></div>
+        </div>
       </div>
+      <span class="stack-h">// Atuei através de</span>
+      <div class="chips"><span class="chip">NTT Data</span><span class="chip">Entelgy</span><span class="chip">Habber Tec</span><span class="chip">Certys</span><span class="chip">Viaflow</span></div>
+      <span class="stack-h">// Plataformas &amp; métodos</span>
+      <div class="chips life"><span class="chip">IBM BAW</span><span class="chip">IBM BPM</span><span class="chip">IBM FileNet</span><span class="chip">Java</span><span class="chip">Pipefy</span><span class="chip">Scrum</span><span class="chip">Playback</span></div>
     </div>
   </section>
 
-  <!-- ===================== FAQ ===================== -->
-  <section id="faq" class="block" aria-labelledby="faq-h">
+  <!-- ===================== PROJETOS ===================== -->
+  <section id="projetos" class="block" aria-labelledby="proj-h">
     <div class="wrap">
-      <p class="eyebrow"><b>07</b> — Dúvidas frequentes</p>
-      <h2 class="sec-title" id="faq-h">O que médias empresas costumam perguntar.</h2>
-      <div class="faq">
-        <details open>
-          <summary>A IA fica só no protótipo ou vai mesmo para produção?<span class="q-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></summary>
-          <div class="faq-a">Nosso foco é <strong>produção</strong>. Vários cases já rodam no ar (apps em <em>*.buildtovalue.cloud</em>) e o código é aberto e auditável. Trabalhamos com <strong>piloto antes de escalar</strong>, para chegar à produção com risco controlado — sem o clássico "ficou só no PoC".</div>
-        </details>
-        <details>
-          <summary>Como vocês tratam LGPD e governança de IA?<span class="q-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></summary>
-          <div class="faq-a">Governança é <strong>embutida desde o primeiro dia</strong>: trilha de auditoria, consentimento, minimização de dados e validação contra LGPD, EU AI Act, ISO 42001 e NIST AI RMF. Temos inclusive middleware próprio de governança de IA open source.</div>
-        </details>
-        <details>
-          <summary>Vou ficar preso a um fornecedor (lock-in)?<span class="q-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></summary>
-          <div class="faq-a">Não. Entregamos com <strong>código aberto e auditável</strong>, stacks padrão de mercado e a opção de rodar self-hosted (on-prem ou nuvem privada). Você fica dono do que foi construído.</div>
-        </details>
-        <details>
-          <summary>Quem executa o projeto, de fato?<span class="q-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></summary>
-          <div class="faq-a">Um <strong>especialista sênior fim a fim</strong> — produto e engenharia na mesma pessoa, com 15 anos de experiência. Sem repassar a parte difícil para júnior.</div>
-        </details>
-        <details>
-          <summary>Vocês atendem minha indústria?<span class="q-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></span></summary>
-          <div class="faq-a">O portfólio cobre FinTech, LegalTech, educação, dados públicos, MarTech e ferramentas internas. Se o seu desafio envolve <strong>dados, IA e processos que precisam ir para produção com confiança</strong>, provavelmente conseguimos ajudar. Chame para uma conversa.</div>
-        </details>
+      <p class="eyebrow"><b>03</b> — Projetos</p>
+      <h2 class="sec-title" id="proj-h">Projetos que desenhei e construí.</h2>
+      <p class="sec-intro">Os 6 projetos que mantenho fixados no GitHub — construídos por mim, com código público e uma demo rodando na minha VPS (ainda não em uso por clientes). Há outros <a href="https://github.com/danzeroum?tab=repositories" target="_blank" rel="noopener noreferrer" style="color:var(--brand-ink);font-weight:600">27 repositórios públicos no perfil</a>.</p>
+      <div class="projects" id="grid"><!-- preenchido via JS --></div>
+    </div>
+  </section>
+
+  <!-- ===================== LINKS PRINCIPAIS (dedicado) ===================== -->
+  <section id="links" class="block links-block" aria-labelledby="links-h">
+    <div class="wrap">
+      <p class="eyebrow"><b>04</b> — Links principais</p>
+      <h2 class="sec-title" id="links-h">Veja funcionando — e por dentro.</h2>
+      <p class="sec-intro">A demo está rodando na minha VPS e o código é público. Dá pra testar e ver exatamente como foi construído — não é um case de cliente, é trabalho autoral e aberto.</p>
+      <div class="primary-links">
+        <a class="plink prod" href="https://demo.buildtovalue.cloud" target="_blank" rel="noopener noreferrer" aria-label="Ver demo ao vivo (abre em nova aba)">
+          <span class="ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.7 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.7-3.8-9S9.5 5.5 12 3z"/></svg>
+          </span>
+          <span class="tx">
+            <span class="t">Ver demo ao vivo</span>
+            <span class="s">demo.buildtovalue.cloud</span>
+          </span>
+          <span class="arr" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+        </a>
+        <a class="plink repo" href="https://github.com/danzeroum" target="_blank" rel="noopener noreferrer" aria-label="Ver código no GitHub (abre em nova aba)">
+          <span class="ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.92 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          </span>
+          <span class="tx">
+            <span class="t">Ver código no GitHub <span class="badge">Código público</span></span>
+            <span class="s">github.com/danzeroum</span>
+          </span>
+          <span class="arr" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+        </a>
       </div>
     </div>
   </section>
@@ -366,66 +472,22 @@
   <!-- ===================== CONTATO ===================== -->
   <section id="contato" class="block" aria-labelledby="cont-h">
     <div class="wrap">
-      <p class="eyebrow"><b>08</b> — Contato</p>
-      <h2 class="sec-title" id="cont-h">Vamos colocar a sua ideia em produção?</h2>
-      <p class="sec-intro">Conte o desafio em uma linha. Respondemos rápido — e o diagnóstico inicial é de baixo compromisso.</p>
+      <p class="eyebrow"><b>05</b> — Contato</p>
+      <h2 class="sec-title" id="cont-h">Bora construir algo juntos?</h2>
+      <p class="sec-intro">Tô sempre afim de trocar ideia sobre produto, IA ou um projeto novo. É só chamar.</p>
       <div class="contact-grid">
-        <div class="contact-cards">
-          <a class="contact-row" href="https://wa.me/5511996685998?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Danzeroum%20e%20quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener noreferrer">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.3 5.2 4.6.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.4zM12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2z"/></svg>
-            <span class="k">WhatsApp</span><span class="v">Falar agora →</span>
-          </a>
-          <a class="contact-row" href="mailto:contato@danzeroum.com">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-            <span class="k">E-mail</span><span class="v">contato@danzeroum.com</span>
-          </a>
-          <a class="contact-row" href="https://www.linkedin.com/in/daniel-lau-pereira-soares-2b702326/" target="_blank" rel="noopener noreferrer">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
-            <span class="k">LinkedIn</span><span class="v">/daniel-lau-pereira-soares</span>
-          </a>
-          <a class="contact-row" href="https://github.com/danzeroum" target="_blank" rel="noopener noreferrer">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.92 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-            <span class="k">GitHub</span><span class="v">/danzeroum</span>
-          </a>
-        </div>
-
-        <!-- Formulário processado por contato.php no próprio VPS (envia e-mail e redireciona). -->
-        <form class="contact-form" action="/contato.php" method="POST">
-          <h3>Conte sobre o seu projeto</h3>
-          <p class="form-sub">Preenche em 30 segundos. Sem compromisso.</p>
-          <p id="form-erro" role="alert" hidden style="font-size:.85rem;color:#b3261e;background:rgba(179,38,30,.08);border:1px solid rgba(179,38,30,.3);border-radius:9px;padding:10px 14px;margin-bottom:15px">Não foi possível enviar agora. Revise os campos ou fale com a gente no WhatsApp.</p>
-          <div class="field">
-            <label for="nome">Nome</label>
-            <input id="nome" name="nome" type="text" autocomplete="name" required placeholder="Seu nome">
-          </div>
-          <div class="field">
-            <label for="empresa">Empresa</label>
-            <input id="empresa" name="empresa" type="text" autocomplete="organization" placeholder="Nome da empresa">
-          </div>
-          <div class="field">
-            <label for="email">E-mail corporativo</label>
-            <input id="email" name="email" type="email" autocomplete="email" required placeholder="voce@empresa.com">
-          </div>
-          <div class="field">
-            <label for="tipo">Como podemos ajudar?</label>
-            <select id="tipo" name="tipo">
-              <option>Diagnóstico de governança de IA</option>
-              <option>Plataforma de IA privada (RAG / agentes)</option>
-              <option>Sistema LegalTech / FinTech sob medida</option>
-              <option>Software sob medida (do zero ao ar)</option>
-              <option>Dados &amp; automação</option>
-              <option>Ainda não sei — quero conversar</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="mensagem">Seu desafio em uma linha</label>
-            <textarea id="mensagem" name="mensagem" required placeholder="Ex.: queremos um assistente interno sobre nossos contratos, com LGPD."></textarea>
-          </div>
-          <!-- honeypot anti-spam -->
-          <input class="hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true">
-          <button class="btn btn-primary" type="submit" style="width:100%;justify-content:center">Enviar mensagem</button>
-          <p class="form-note">Ao enviar, você concorda com nossa <a href="/privacidade.html">Política de Privacidade</a>. Seus dados são usados apenas para responder ao contato.</p>
-        </form>
+        <a class="contact-row" href="mailto:contato@danzeroum.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          <span class="k">Email</span><span class="v">contato@danzeroum.com</span>
+        </a>
+        <a class="contact-row" href="https://www.linkedin.com/in/daniel-lau-pereira-soares" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+          <span class="k">LinkedIn</span><span class="v">/daniel-lau-pereira-soares</span>
+        </a>
+        <a class="contact-row" href="https://github.com/danzeroum" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.92 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span class="k">GitHub</span><span class="v">/danzeroum</span>
+        </a>
       </div>
     </div>
   </section>
@@ -434,46 +496,126 @@
 <!-- ===================== FOOTER ===================== -->
 <footer class="site-footer">
   <div class="wrap">
+    <!-- Links principais repetidos -->
+    <div class="footer-cta">
+      <p class="eyebrow">Acesso rápido</p>
+      <div class="primary-links">
+        <a class="plink prod" href="https://demo.buildtovalue.cloud" target="_blank" rel="noopener noreferrer" aria-label="Ver demo ao vivo (abre em nova aba)">
+          <span class="ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.7 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.7-3.8-9S9.5 5.5 12 3z"/></svg>
+          </span>
+          <span class="tx">
+            <span class="t">Demo ao vivo</span>
+            <span class="s">demo.buildtovalue.cloud</span>
+          </span>
+          <span class="arr" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+        </a>
+        <a class="plink repo" href="https://github.com/danzeroum" target="_blank" rel="noopener noreferrer" aria-label="Ver código no GitHub (abre em nova aba)">
+          <span class="ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.92 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          </span>
+          <span class="tx">
+            <span class="t">Código no GitHub <span class="badge">Código público</span></span>
+            <span class="s">github.com/danzeroum</span>
+          </span>
+          <span class="arr" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
+        </a>
+      </div>
+    </div>
+
     <div class="footer-grid">
       <div class="about">
-        <a class="brand" href="#top" aria-label="Danzeroum — início">
-          <img class="brand-mark light" src="/assets/logo-danzeroum.svg" alt="" width="40" height="32" aria-hidden="true"><img class="brand-mark dark" src="/assets/logo-danzeroum-dark.svg" alt="" width="40" height="32" aria-hidden="true">
-          <span><b>Danzeroum</b><span class="brand-sub">Engenharia de IA &amp; Software</span></span>
+        <a class="brand" href="#top" aria-label="Daniel Lau — início">
+          <svg class="brand-logo" viewBox="-10 0 80 64" role="img" aria-label="Logo Danzeroum">
+            <g class="c-line">
+              <path pathLength="1" d="M-8 21 L1 26"/><path pathLength="1" d="M1 26 L10 31"/>
+              <path pathLength="1" d="M-8 43 L1 38"/><path pathLength="1" d="M1 38 L10 33"/>
+              <path pathLength="1" d="M49 32 L60 19"/><path pathLength="1" d="M49 32 H62"/><path pathLength="1" d="M49 32 L60 45"/>
+            </g>
+            <g><circle class="c-node" cx="-9" cy="20" r="2.4"/><circle class="c-node" cx="-9" cy="44" r="2.4"/><circle class="c-node" cx="62" cy="18" r="2.6"/><circle class="c-node" cx="64" cy="32" r="2.6"/><circle class="c-node" cx="62" cy="46" r="2.6"/></g>
+            <path class="d-fill" d="M10 11 H28 C41 11 49 20.5 49 32 C49 43.5 40 53 28 53 H10 Z"/>
+            <path class="sh-fill" d="M27 18 L37 21.6 V31 C37 38 32.5 42.4 27 45 C21.5 42.4 17 38 17 31 V21.6 Z"/>
+            <path class="sh-check" d="M21.8 31 L25.2 34.4 L31 28"/>
+          </svg>
+          <b>Daniel Lau</b>
         </a>
-        <p>Estúdio de engenharia de IA e software sob medida para médias empresas. Da estratégia ao deploy, com governança, conformidade LGPD e código aberto auditável.</p>
+        <p>Engenheiro de produto e desenvolvedor. Construo meus próprios projetos de IA e produto — todos com código público no GitHub.</p>
       </div>
       <div>
         <h4>Navegação</h4>
-        <a class="fl" href="#servicos">Serviços</a>
-        <a class="fl" href="#cases">Cases</a>
-        <a class="fl" href="#processo">Como trabalhamos</a>
         <a class="fl" href="#sobre">Sobre</a>
+        <a class="fl" href="#projetos">Projetos</a>
+        <a class="fl" href="#links">Links principais</a>
         <a class="fl" href="#contato">Contato</a>
       </div>
       <div>
         <h4>Conecte-se</h4>
-        <a class="fl" href="https://github.com/danzeroum" target="_blank" rel="noopener noreferrer me">GitHub</a>
-        <a class="fl" href="https://www.linkedin.com/in/daniel-lau-pereira-soares-2b702326/" target="_blank" rel="noopener noreferrer me">LinkedIn</a>
-        <a class="fl" href="mailto:contato@danzeroum.com">contato@danzeroum.com</a>
-        <a class="fl" href="/privacidade.html">Política de Privacidade</a>
+        <a class="fl" href="https://github.com/danzeroum" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a class="fl" href="https://www.linkedin.com/in/daniel-lau-pereira-soares" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a class="fl" href="mailto:contato@danzeroum.com">Email</a>
       </div>
     </div>
 
     <div class="footer-bottom">
-      <p>© 2026 Danzeroum · Daniel Lau Pereira Soares</p>
+      <p>© 2026 Daniel Lau Pereira Soares</p>
       <p>Feito com código · SP, Brasil</p>
     </div>
   </div>
 </footer>
 
-<script>
-  // Mostra o aviso de erro do formulário se contato.php redirecionou com ?erro=1
-  if (location.search.indexOf('erro=1') !== -1) {
-    var fe = document.getElementById('form-erro');
-    if (fe) { fe.hidden = false; }
+<!-- ===================== JS (mínimo, ~0.8 KB) ===================== -->
+<script defer>
+  // --- Projetos: os 6 repositórios fixados (pinned) no GitHub, validados em 27/06/2026 ---
+  var PROJECTS = [
+    {name:'btvChatCorp', slug:'btvChatCorp', tag:'SaaS · IA corporativa', status:'Demo ao vivo',
+     desc:'IA privada para empresas: RAG sobre os próprios dados, multi-tenant, com SSO corporativo e API compatível com OpenAI — pensada para rodar on-premise.',
+     tech:['TypeScript','Python','FastAPI','Qdrant'], demo:'https://chatcorp.buildtovalue.cloud', gh:'https://github.com/danzeroum/btvChatCorp'},
+    {name:'BuildToValue Governance', slug:'BuildToValueGovernance', tag:'Middleware · Governança de IA', status:'Demo ao vivo',
+     desc:'Middleware de governança que aplica as regras do NIST AI RMF e do EU AI Act em tempo de execução: kill switch de emergência, logs de auditoria assinados (HMAC) e validação de ameaças. Com casos de uso pensados para Fintech e Saúde.',
+     tech:['Python','NIST AI RMF','EU AI Act'], demo:'https://demo.buildtovalue.cloud', gh:'https://github.com/danzeroum/BuildToValueGovernance'},
+    {name:'Central de Inteligência Jurídica', slug:'Central_Inteligencia_Juridica', tag:'LegalTech · Multiagente', status:'Beta · demo',
+     desc:'Plataforma multiagente para o setor jurídico: agentes por tribunal coordenam decisões de forma autônoma, sob supervisão humana e com auditoria completa.',
+     tech:['Python','Multi-Agentes','LLMs'], demo:'https://juridico.buildtovalue.cloud', gh:'https://github.com/danzeroum/Central_Inteligencia_Juridica'},
+    {name:'ConciliaIA', slug:'ConciliaIA', tag:'LegalTech · Conciliação', status:'Demo ao vivo',
+     desc:'Ambiente virtual de conciliação com sugestões inteligentes de acordos, focado em reduzir litígios e otimizar negociações.',
+     tech:['Python','LLM','Web'], demo:'https://conciliaia.buildtovalue.cloud', gh:'https://github.com/danzeroum/ConciliaIA'},
+    {name:'CriptoTrade', slug:'Criptotrade', tag:'FinTech · Trading', status:'Demo ao vivo',
+     desc:'Painel para negociação de criptomoedas com bots automatizados, sinais em tempo real e análise de sentimento de mercado.',
+     tech:['Python','Realtime','Trading'], demo:'https://criptotrade.buildtovalue.cloud', gh:'https://github.com/danzeroum/Criptotrade'},
+    {name:'ExecutAgent', slug:'executagent', tag:'Automação · Agentes', status:'Demo ao vivo',
+     desc:'Agente inteligente para automatizar fluxos de trabalho corporativos, executando tarefas em linguagem natural e integrando ferramentas de equipe.',
+     tech:['TypeScript','Agentes','Workflow'], demo:'https://executagent.buildtovalue.cloud', gh:'https://github.com/danzeroum/executagent'}
+  ];
+  var GH = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.92 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>';
+  var ARR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>';
+  document.getElementById('grid').innerHTML = PROJECTS.map(function(p){
+    // "Ver demo" só aparece quando há demo ao vivo; o link do repositório é sempre presente
+    var demoLink = p.demo
+      ? '<a class="clink demo" href="'+p.demo+'" target="_blank" rel="noopener noreferrer" aria-label="Ver demo de '+p.name+' (abre em nova aba)">Ver demo '+ARR+'</a>'
+      : '';
+    return '<article class="card">'
+      + '<div class="ctop"><span class="tag">'+p.tag+'</span><span class="status">'+p.status+'</span></div>'
+      + '<h3>'+p.name+'</h3>'
+      + '<div class="slug">danzeroum/'+p.slug+'</div>'
+      + '<p>'+p.desc+'</p>'
+      + '<div class="tech">'+p.tech.map(function(t){return '<span>'+t+'</span>';}).join('')+'</div>'
+      + '<div class="clinks">'
+      +   demoLink
+      +   '<a class="clink" href="'+p.gh+'" target="_blank" rel="noopener noreferrer" aria-label="Repositório de '+p.name+' no GitHub (abre em nova aba)">'+GH+' Repositório</a>'
+      + '</div></article>';
+  }).join('');
+
+  // --- Alternância de tema (claro/escuro), persistida no navegador ---
+  var root = document.documentElement;
+  document.getElementById('theme').addEventListener('click', function(){
+    root.classList.toggle('dark');
+    localStorage.setItem('theme', root.classList.contains('dark') ? 'dark' : 'light');
+  });
+
+  // --- Anima o logo só depois que a página realmente pinta (nunca deixa o circuito oculto) ---
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ root.classList.add('anim-logo'); }); });
   }
 </script>
-<script defer src="/assets/projects.js"></script>
-<script defer src="/assets/theme.js"></script>
 </body>
 </html>

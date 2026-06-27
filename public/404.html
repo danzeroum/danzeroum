@@ -3,55 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Página não encontrada — Danzeroum</title>
+<title>Página não encontrada — Daniel Lau</title>
 <meta name="theme-color" content="#bd4e1c">
 <meta name="robots" content="noindex, follow">
-<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='7 8 45 48'%3E%3Cpath d='M10 11 H28 C41 11 49 20.5 49 32 C49 43.5 40 53 28 53 H10 Z' fill='%23bd4e1c'/%3E%3Cpath d='M27 18 L37 21.6 V31 C37 38 32.5 42.4 27 45 C21.5 42.4 17 38 17 31 V21.6 Z' fill='%2324324a' stroke='%23fbf7f1' stroke-width='2.4' stroke-linejoin='round'/%3E%3Cpath d='M21.8 31 L25.2 34.4 L31 28' fill='none' stroke='%23fbf7f1' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/styles.css">
 <script>(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark');}}catch(e){}})();</script>
+<style>
+:root{--bg:#fbf7f1;--ink:#231a14;--muted:#7a6a5b;--brand:#bd4e1c;--brand-ink:#b3470f;--on-brand:#fff8f1}
+html.dark{--bg:#141009;--ink:#f6ede1;--muted:#a8957f;--brand:#e8772f;--brand-ink:#f0934d;--on-brand:#1a1106}
+*{margin:0;box-sizing:border-box}
+body{font-family:'IBM Plex Sans',system-ui,sans-serif;background:var(--bg);color:var(--muted);min-height:100vh;display:grid;place-items:center;text-align:center;padding:24px;line-height:1.6}
+.big{font-family:'IBM Plex Mono',monospace;font-size:clamp(3rem,12vw,6rem);font-weight:600;color:var(--brand);line-height:1}
+h1{font-size:clamp(1.4rem,4vw,2rem);color:var(--ink);font-weight:600;letter-spacing:-.02em;margin:8px 0 14px;max-width:20ch}
+p{max-width:46ch;margin-inline:auto}
+a.btn{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:.95rem;padding:13px 22px;border-radius:10px;background:var(--brand);color:var(--on-brand);margin-top:26px;transition:transform .12s,background .18s}
+a.btn:hover{transform:translateY(-2px);background:var(--brand-ink)}
+</style>
 </head>
-<body id="top">
-<header class="site-header">
-  <div class="wrap">
-    <a class="brand" href="/" aria-label="Danzeroum — início">
-      <img class="brand-mark light" src="/assets/logo-danzeroum.svg" alt="" width="40" height="32" aria-hidden="true"><img class="brand-mark dark" src="/assets/logo-danzeroum-dark.svg" alt="" width="40" height="32" aria-hidden="true">
-      <span><b>Danzeroum</b><span class="brand-sub">Engenharia de IA &amp; Software</span></span>
-    </a>
-    <div class="header-actions">
-      <a class="btn btn-primary header-cta" href="/#contato">Falar com a gente</a>
-      <button class="theme-btn" id="theme" type="button" aria-label="Alternar tema claro e escuro">
-        <span class="i-moon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
-        <span class="i-sun" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8l1.8-1.8M18 6l1.8-1.8"/></svg></span>
-      </button>
-    </div>
+<body>
+  <div>
+    <p class="big">404</p>
+    <h1>Esta página não existe.</h1>
+    <p>O endereço que você tentou abrir não foi encontrado. Vamos te levar de volta ao início.</p>
+    <a class="btn" href="/">Voltar ao início</a>
   </div>
-</header>
-
-<main id="main" class="block">
-  <div class="wrap centered">
-    <div>
-      <p class="big">404</p>
-      <h1 style="max-width:18ch;margin-inline:auto">Esta página não existe (ou foi para produção em outro lugar).</h1>
-      <p class="tagline" style="margin-inline:auto">O endereço que você tentou abrir não foi encontrado. Vamos te levar de volta ao caminho certo.</p>
-      <div class="hero-cta" style="justify-content:center">
-        <a class="btn btn-primary" href="/">Voltar ao início</a>
-        <a class="btn btn-ghost" href="/#cases">Ver cases</a>
-      </div>
-    </div>
-  </div>
-</main>
-
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-bottom" style="margin-top:0;border-top:none">
-      <p>© 2026 Danzeroum · Daniel Lau Pereira Soares</p>
-      <p>Feito com código · SP, Brasil</p>
-    </div>
-  </div>
-</footer>
-<script defer src="/assets/theme.js"></script>
 </body>
 </html>
