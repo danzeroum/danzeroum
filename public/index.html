@@ -301,6 +301,17 @@ section{scroll-margin-top:80px}
 .form-note{font-size:.78rem;color:var(--faint);margin-top:10px}
 #form-erro{font-size:.85rem;color:#c2410c;background:color-mix(in srgb,#c2410c 9%,transparent);border:1px solid color-mix(in srgb,#c2410c 32%,transparent);border-radius:9px;padding:10px 14px;margin-bottom:14px}
 @media(min-width:880px){ .contact-layout{grid-template-columns:.85fr 1.15fr;align-items:start} }
+
+/* ---------- Filtros de projetos ---------- */
+.proj-head{margin-top:clamp(20px,3vw,28px)}
+.proj-count-wrap{font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--muted)}
+.proj-count-wrap b{color:var(--brand-ink);font-weight:600}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px;padding-bottom:24px;border-bottom:1px solid var(--line)}
+.fchip{font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:8px;padding:7px 13px;cursor:pointer;transition:border-color .15s,color .15s,background .15s;display:inline-flex;align-items:center;gap:7px}
+.fchip:hover{border-color:var(--brand);color:var(--ink)}
+.fchip.active{background:color-mix(in srgb,var(--brand) 10%,transparent);border-color:color-mix(in srgb,var(--brand) 32%,transparent);color:var(--brand-ink);font-weight:600}
+.fchip .fcount{font-size:.66rem;opacity:.75;background:color-mix(in srgb,var(--muted) 16%,transparent);padding:1px 6px;border-radius:5px}
+.fchip.active .fcount{background:color-mix(in srgb,var(--brand) 20%,transparent);opacity:1}
 </style>
 </head>
 <body id="top">
@@ -449,7 +460,9 @@ section{scroll-margin-top:80px}
     <div class="wrap">
       <p class="eyebrow"><b>03</b> — Projetos</p>
       <h2 class="sec-title" id="proj-h">Projetos que desenhei e construí.</h2>
-      <p class="sec-intro">Os 6 projetos que mantenho fixados no GitHub — construídos por mim, com código público e uma demo rodando na minha VPS (ainda não em uso por clientes). Há outros <a href="https://github.com/danzeroum?tab=repositories" target="_blank" rel="noopener noreferrer" style="color:var(--brand-ink);font-weight:600">27 repositórios públicos no perfil</a>.</p>
+      <p class="sec-intro">Projetos próprios: código público no GitHub e, quando há, uma demo rodando na minha VPS (ainda não em uso por clientes). Use os filtros para navegar por categoria — ao todo são <a href="https://github.com/danzeroum?tab=repositories" target="_blank" rel="noopener noreferrer" style="color:var(--brand-ink);font-weight:600">27 repositórios públicos no perfil</a>.</p>
+      <div class="proj-head"><span class="proj-count-wrap"><b id="proj-count">6</b> projeto(s)</span></div>
+      <div class="filters" id="proj-filters" role="tablist" aria-label="Filtrar projetos por categoria"></div>
       <div class="projects" id="grid"><!-- preenchido via JS --></div>
     </div>
   </section>
@@ -600,43 +613,118 @@ section{scroll-margin-top:80px}
 <script defer>
   // --- Projetos: os 6 repositórios fixados (pinned) no GitHub, validados em 27/06/2026 ---
   var PROJECTS = [
-    {name:'btvChatCorp', slug:'btvChatCorp', tag:'SaaS · IA corporativa', status:'Demo ao vivo',
+    {name:'btvChatCorp', slug:'btvChatCorp', cat:'ai-platforms', featured:true, tag:'SaaS · IA corporativa', status:'Demo ao vivo',
      desc:'IA privada para empresas: RAG sobre os próprios dados, multi-tenant, com SSO corporativo e API compatível com OpenAI — pensada para rodar on-premise.',
      tech:['TypeScript','Python','FastAPI','Qdrant'], demo:'https://chatcorp.buildtovalue.cloud', gh:'https://github.com/danzeroum/btvChatCorp'},
-    {name:'BuildToValue Governance', slug:'BuildToValueGovernance', tag:'Middleware · Governança de IA', status:'Demo ao vivo',
+    {name:'BuildToValue Governance', slug:'BuildToValueGovernance', cat:'governance', featured:true, tag:'Middleware · Governança de IA', status:'Demo ao vivo',
      desc:'Middleware de governança que aplica as regras do NIST AI RMF e do EU AI Act em tempo de execução: kill switch de emergência, logs de auditoria assinados (HMAC) e validação de ameaças. Com casos de uso pensados para Fintech e Saúde.',
      tech:['Python','NIST AI RMF','EU AI Act'], demo:'https://demo.buildtovalue.cloud', gh:'https://github.com/danzeroum/BuildToValueGovernance'},
-    {name:'Central de Inteligência Jurídica', slug:'Central_Inteligencia_Juridica', tag:'LegalTech · Multiagente', status:'Beta · demo',
+    {name:'Central de Inteligência Jurídica', slug:'Central_Inteligencia_Juridica', cat:'legal', featured:true, tag:'LegalTech · Multiagente', status:'Beta · demo',
      desc:'Plataforma multiagente para o setor jurídico: agentes por tribunal coordenam decisões de forma autônoma, sob supervisão humana e com auditoria completa.',
      tech:['Python','Multi-Agentes','LLMs'], demo:'https://juridico.buildtovalue.cloud', gh:'https://github.com/danzeroum/Central_Inteligencia_Juridica'},
-    {name:'ConciliaIA', slug:'ConciliaIA', tag:'LegalTech · Conciliação', status:'Demo ao vivo',
+    {name:'ConciliaIA', slug:'ConciliaIA', cat:'legal', featured:true, tag:'LegalTech · Conciliação', status:'Demo ao vivo',
      desc:'Ambiente virtual de conciliação com sugestões inteligentes de acordos, focado em reduzir litígios e otimizar negociações.',
      tech:['Python','LLM','Web'], demo:'https://conciliaia.buildtovalue.cloud', gh:'https://github.com/danzeroum/ConciliaIA'},
-    {name:'CriptoTrade', slug:'Criptotrade', tag:'FinTech · Trading', status:'Demo ao vivo',
+    {name:'CriptoTrade', slug:'Criptotrade', cat:'fintech', featured:true, tag:'FinTech · Trading', status:'Demo ao vivo',
      desc:'Painel para negociação de criptomoedas com bots automatizados, sinais em tempo real e análise de sentimento de mercado.',
      tech:['Python','Realtime','Trading'], demo:'https://criptotrade.buildtovalue.cloud', gh:'https://github.com/danzeroum/Criptotrade'},
-    {name:'ExecutAgent', slug:'executagent', tag:'Automação · Agentes', status:'Demo ao vivo',
+    {name:'ExecutAgent', slug:'executagent', cat:'automation', featured:true, tag:'Automação · Agentes', status:'Demo ao vivo',
      desc:'Agente inteligente para automatizar fluxos de trabalho corporativos, executando tarefas em linguagem natural e integrando ferramentas de equipe.',
-     tech:['TypeScript','Agentes','Workflow'], demo:'https://executagent.buildtovalue.cloud', gh:'https://github.com/danzeroum/executagent'}
+     tech:['TypeScript','Agentes','Workflow'], demo:'https://executagent.buildtovalue.cloud', gh:'https://github.com/danzeroum/executagent'},
+    {name:'BuildToValue Framework', slug:'buildtovalue-governance', cat:'governance', tag:'Governança · ISO 42001', status:'Código público',
+     desc:'Framework de governança de IA mapeado para ISO 42001, EU AI Act e NIST AI RMF, com arquitetura de 3 agentes (técnico, regulatório e ético) e kill switch de emergência.',
+     tech:['Python','ISO 42001','NIST AI RMF'], gh:'https://github.com/danzeroum/buildtovalue-governance'},
+    {name:'Compliance Graph RAG', slug:'compliance-graph-rag', cat:'governance', tag:'Governança cognitiva', status:'PoC · código público',
+     desc:'Governança cognitiva com ontologias OWL combinadas a LLMs: modela regras de compliance como grafo consultável para decisões de IA explicáveis.',
+     tech:['Python','OWL','RAG'], gh:'https://github.com/danzeroum/compliance-graph-rag'},
+    {name:'The Accountability Stack', slug:'silent-decisions-proof', cat:'governance', tag:'Pesquisa · Papers', status:'Acadêmico',
+     desc:'Série de papers sobre accountability algorítmica: tipos lineares em Rust para evidência em compile-time, persistência Merkle e provas ZK em Noir.',
+     tech:['LaTeX','Rust','ZK'], gh:'https://github.com/danzeroum/silent-decisions-proof'},
+    {name:'Jurídico Platform', slug:'juridico-platform', cat:'legal', tag:'LegalTech · Plataforma', status:'Código público',
+     desc:'Plataforma jurídico-contábil Docker-first com vários produtos de IA aplicada ao direito brasileiro: rating, auditoria, compliance e predição tributária.',
+     tech:['Python','FastAPI','Neo4j','Docker'], gh:'https://github.com/danzeroum/juridico-platform'},
+    {name:'NotaFiscal — NFe', slug:'NotaFiscal', cat:'legal', tag:'Fiscal · Spring Boot', status:'Código público',
+     desc:'Processador de lotes de NF-e: upload de ZIP com XML/PDF, validação, exportação Excel padrão ERP e integração SEFAZ via certificado A1.',
+     tech:['Java','Spring Boot','Maven'], gh:'https://github.com/danzeroum/NotaFiscal'},
+    {name:'Financial AI Pipeline', slug:'financial-ai-pipeline-poc', cat:'fintech', tag:'FinTech · Microsserviços', status:'PoC · código público',
+     desc:'Pipeline de detecção de fraude com microsserviços Java/Spring e Kafka: um serviço valida e publica eventos, outro consome e classifica via IA.',
+     tech:['Java','Spring Boot','Kafka'], gh:'https://github.com/danzeroum/financial-ai-pipeline-poc'},
+    {name:'Conciliação de Transações', slug:'conciliacao-transacoes-lab', cat:'fintech', tag:'FinTech · Hexagonal', status:'Lab · código público',
+     desc:'Microsserviço para arquivos EDI de conciliação bancária e de cartões: arquitetura hexagonal, precisão decimal 100% e quality gate de cobertura em CI.',
+     tech:['Java','Spring Boot','JUnit'], gh:'https://github.com/danzeroum/conciliacao-transacoes-lab'},
+    {name:'WhatsApp RAG Broker', slug:'whatsapp-rag-broker', cat:'ai-platforms', tag:'PoC · Messaging + RAG', status:'PoC · código público',
+     desc:'Assistente integrado à API oficial do WhatsApp (Meta): webhook valida a assinatura, fila Redis, worker consulta base vetorial (RAG) e responde.',
+     tech:['Python','FastAPI','Redis','RAG'], gh:'https://github.com/danzeroum/whatsapp-rag-broker'},
+    {name:'DadoSabedoria', slug:'dadosabedoria', cat:'civic', tag:'CivicTech · Dados públicos', status:'Código público',
+     desc:'Inteligência de dados públicos brasileiros (CAGED, BCB, IBGE) com mapa coroplético, IA citável e runtime de consentimento LGPD com k-anonimato.',
+     tech:['Python','Next.js','PostGIS'], gh:'https://github.com/danzeroum/dadosabedoria'},
+    {name:'CulturaSP Adapter', slug:'culturasp-adapter', cat:'civic', tag:'CivicTech · Open data', status:'Código público',
+     desc:'Adaptador read-only de dados culturais públicos de SP, estruturados em JSON-LD e expostos via API REST, iCal e RSS, com scraping ético.',
+     tech:['Python','FastAPI','JSON-LD'], gh:'https://github.com/danzeroum/culturasp-adapter'},
+    {name:'EducaDigital', slug:'educadigital', cat:'education', tag:'EdTech · EJA', status:'Código público',
+     desc:'Educação adaptativa offline-first para EJA: diagnóstico multimodal, trilha por LLM, tutor virtual e predição de risco de evasão. PWA para Android antigo.',
+     tech:['Python','Next.js','Whisper'], gh:'https://github.com/danzeroum/educadigital'},
+    {name:'Waldorf School System', slug:'waldorf-school-system', cat:'education', tag:'EdTech · Gestão escolar', status:'Código público',
+     desc:'Gestão escolar para escolas Waldorf (pedagogia, financeiro, comunidade): backend Spring Boot, frontend Angular e mobile Flutter.',
+     tech:['Java','Angular','Flutter'], gh:'https://github.com/danzeroum/waldorf-school-system'},
+    {name:'Prompte', slug:'prompte', cat:'tools', tag:'Dev Tool · PWA', status:'Demo ao vivo',
+     desc:'Ferramenta web offline-first para análise de domínios e geração de prompts de engenharia, com 25 templates e playground. Instalável como PWA.',
+     tech:['JavaScript','PWA','Vite'], demo:'https://prompte.buildtovalue.cloud', gh:'https://github.com/danzeroum/prompte'},
+    {name:'Gravador de Reunião', slug:'gravadorlegendas', cat:'tools', tag:'Tool · IA em tempo real', status:'Código público',
+     desc:'Captura, transcreve, traduz e resume reuniões em tempo real: OCR multi-idioma, Whisper, diarização de falantes e LLM plugável.',
+     tech:['Python','Whisper','Tesseract'], gh:'https://github.com/danzeroum/gravadorlegendas'},
+    {name:'Família em Equilíbrio', slug:'familia-em-equilibrio-web', cat:'tools', tag:'Web App · Família', status:'Código público',
+     desc:'App de gestão doméstica familiar com 6 módulos (rotina, casa, saúde, agenda e finanças). Next.js 14 + Supabase + shadcn/ui.',
+     tech:['Next.js','Supabase','Tailwind'], gh:'https://github.com/danzeroum/familia-em-equilibrio-web'},
+    {name:'Uncover Aegis', slug:'uncover-aegis-nif', cat:'automation', tag:'MarTech · NL→SQL', status:'PoC · código público',
+     desc:'Pipeline de insights para MarTech: linguagem natural → SQL → guardrail em Rust (Rustler) → banco, com sanitização de PII. Phoenix LiveView + GraphQL.',
+     tech:['Elixir','Phoenix','Rust'], gh:'https://github.com/danzeroum/uncover-aegis-nif'},
+    {name:'Process Veritas', slug:'process-veritas', cat:'automation', tag:'BPM · IBM BAW', status:'Código público',
+     desc:'Análise e documentação de processos IBM Business Automation Workflow, otimizada para interpretabilidade por IA (BPMN moderno e legado Teamworks).',
+     tech:['Java','BPMN','IBM BAW'], gh:'https://github.com/danzeroum/process-veritas'}
+  ];
+  var CATS = [
+    {k:'featured', l:'★ Destaques'},{k:'all', l:'Todos'},
+    {k:'governance', l:'Governança · IA'},{k:'legal', l:'LegalTech'},{k:'fintech', l:'FinTech'},
+    {k:'ai-platforms', l:'Plataformas de IA'},{k:'civic', l:'CivicTech · Dados'},
+    {k:'education', l:'Educação'},{k:'tools', l:'Ferramentas · Dev'},{k:'automation', l:'Automação'}
   ];
   var GH = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.92 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>';
   var ARR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>';
-  document.getElementById('grid').innerHTML = PROJECTS.map(function(p){
-    // "Ver demo" só aparece quando há demo ao vivo; o link do repositório é sempre presente
-    var demoLink = p.demo
-      ? '<a class="clink demo" href="'+p.demo+'" target="_blank" rel="noopener noreferrer" aria-label="Ver demo de '+p.name+' (abre em nova aba)">Ver demo '+ARR+'</a>'
-      : '';
-    return '<article class="card">'
+  function matchCat(p,f){ return f==='all' ? true : (f==='featured' ? !!p.featured : p.cat===f); }
+  function projCount(k){ return PROJECTS.filter(function(p){return matchCat(p,k);}).length; }
+  function cardHTML(p){
+    var demoLink = p.demo ? '<a class="clink demo" href="'+p.demo+'" target="_blank" rel="noopener noreferrer" aria-label="Ver demo de '+p.name+' (abre em nova aba)">Ver demo '+ARR+'</a>' : '';
+    return '<article class="card" data-cat="'+p.cat+'">'
       + '<div class="ctop"><span class="tag">'+p.tag+'</span><span class="status">'+p.status+'</span></div>'
       + '<h3>'+p.name+'</h3>'
       + '<div class="slug">danzeroum/'+p.slug+'</div>'
       + '<p>'+p.desc+'</p>'
       + '<div class="tech">'+p.tech.map(function(t){return '<span>'+t+'</span>';}).join('')+'</div>'
-      + '<div class="clinks">'
-      +   demoLink
+      + '<div class="clinks">'+demoLink
       +   '<a class="clink" href="'+p.gh+'" target="_blank" rel="noopener noreferrer" aria-label="Repositório de '+p.name+' no GitHub (abre em nova aba)">'+GH+' Repositório</a>'
       + '</div></article>';
-  }).join('');
+  }
+  function renderChips(active){
+    document.getElementById('proj-filters').innerHTML = CATS.map(function(c){
+      var n=projCount(c.k); if(!n) return '';
+      var on = c.k===active;
+      return '<button class="fchip'+(on?' active':'')+'" type="button" data-f="'+c.k+'" role="tab" aria-selected="'+on+'">'+c.l+' <span class="fcount">'+n+'</span></button>';
+    }).join('');
+  }
+  function renderGrid(f){
+    var items = PROJECTS.filter(function(p){return matchCat(p,f);});
+    document.getElementById('grid').innerHTML = items.map(cardHTML).join('');
+    document.getElementById('proj-count').textContent = items.length;
+  }
+  var projFilter='featured';
+  renderChips(projFilter); renderGrid(projFilter);
+  document.getElementById('proj-filters').addEventListener('click', function(e){
+    var btn = e.target.closest ? e.target.closest('.fchip') : null;
+    if(!btn) return;
+    projFilter = btn.getAttribute('data-f');
+    renderChips(projFilter); renderGrid(projFilter);
+  });
 
   // --- Alternância de tema (claro/escuro), persistida no navegador ---
   var root = document.documentElement;
