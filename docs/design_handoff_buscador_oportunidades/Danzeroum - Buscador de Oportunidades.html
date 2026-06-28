@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Danzeroum — Buscador de Oportunidades</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app/app.css">
+<style>
+  .spin { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  input[type=range] { height: 6px; cursor: pointer; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<template id="__bundler_thumbnail">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <rect width="100" height="100" fill="#fbf7f1"/>
+    <path d="M30 28 H46 C58 28 64 36 64 50 C64 64 56 72 46 72 H30 Z" fill="#bd4e1c"/>
+    <path d="M44 36 L54 39.6 V50 C54 58 49 62.4 44 65 C39 62.4 34 58 34 50 V39.6 Z" fill="#24324a" stroke="#fbf7f1" stroke-width="2.5"/>
+    <path d="M39 50 L43 54 L49 47" fill="none" stroke="#fbf7f1" stroke-width="2.6" stroke-linecap="round"/>
+  </svg>
+</template>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<!-- dados (plain JS, executa primeiro) -->
+<script src="app/data.js"></script>
+
+<!-- componentes (babel) -->
+<script type="text/babel" src="app/tweaks-panel.jsx"></script>
+<script type="text/babel" src="app/icons.jsx"></script>
+<script type="text/babel" src="app/screens-core.jsx"></script>
+<script type="text/babel" src="app/screens-list.jsx"></script>
+<script type="text/babel" src="app/screens-detail.jsx"></script>
+<script type="text/babel" src="app/screens-ops.jsx"></script>
+<script type="text/babel" src="app/screens-config.jsx"></script>
+<script type="text/babel" src="app/screens-biz.jsx"></script>
+<script type="text/babel" src="app/shell.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "terracota",
+  "density": "regular",
+  "badge": "outline",
+  "radius": 1
+}/*EDITMODE-END*/;
+
+const ACCENTS = {
+  terracota: { light: ['#bd4e1c', '#b3470f', '#bd4e1c14'], dark: ['#e8772f', '#f0934d', '#e8772f1c'] },
+  teal:      { light: ['#0f7d6b', '#0d6a5b', '#0f7d6b16'], dark: ['#36c0a4', '#48d2b6', '#36c0a41e'] },
+  marinho:   { light: ['#34466a', '#2c3c5c', '#34466a18'], dark: ['#6f8fc4', '#8aa6d4', '#6f8fc422'] },
+};
+const DENSITY = { compact: 8, regular: 12, comfy: 16 };
+
+function Root() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  React.useEffect(() => {
+    const r = document.documentElement;
+    const applyAccent = () => {
+      const mode = r.classList.contains('dark') ? 'dark' : 'light';
+      const [a, ink, wash] = (ACCENTS[t.accent] || ACCENTS.terracota)[mode];
+      r.style.setProperty('--accent', a);
+      r.style.setProperty('--accent-ink', ink);
+      r.style.setProperty('--accent-wash', wash);
+    };
+    applyAccent();
+    r.style.setProperty('--row-py', (DENSITY[t.density] || 12) + 'px');
+    r.style.setProperty('--rscale', t.radius);
+    r.setAttribute('data-badge', t.badge);
+    const obs = new MutationObserver(applyAccent);
+    obs.observe(r, { attributes: true, attributeFilter: ['class'] });
+    return () => obs.disconnect();
+  }, [t]);
+
+  return (
+    <React.Fragment>
+      <DZApp />
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Identidade" />
+        <TweakRadio label="Cor de acento" value={t.accent}
+          options={['terracota', 'teal', 'marinho']}
+          onChange={(v) => setTweak('accent', v)} />
+        <TweakSlider label="Raio dos cantos" value={t.radius} min={0.4} max={1.6} step={0.1}
+          onChange={(v) => setTweak('radius', v)} />
+        <TweakSection label="Tabelas & dados" />
+        <TweakRadio label="Densidade" value={t.density}
+          options={['compact', 'regular', 'comfy']}
+          onChange={(v) => setTweak('density', v)} />
+        <TweakSection label="Componentes" />
+        <TweakRadio label="Badge GO/REVIEW/SKIP" value={t.badge}
+          options={['outline', 'solid', 'minimal']}
+          onChange={(v) => setTweak('badge', v)} />
+      </TweaksPanel>
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Root />);
+</script>
+</body>
+</html>
