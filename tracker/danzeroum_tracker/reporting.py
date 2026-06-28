@@ -46,6 +46,14 @@ def _money(value: Any) -> str:
         return "—"
 
 
+def _fit(value: Any) -> str:
+    """Formata aderência (0-1). Aceita float, int e Decimal (Postgres NUMERIC)."""
+    try:
+        return f"{float(value):.2f}"
+    except (TypeError, ValueError):
+        return "—"
+
+
 def render_text(report: dict[str, Any]) -> str:
     lines = [
         "Relatório de Oportunidades — Danzeroum",
@@ -58,8 +66,7 @@ def render_text(report: dict[str, Any]) -> str:
     if not report["top"]:
         lines.append("  (nenhuma oportunidade pontuada ainda — rode 'collect')")
     for i, r in enumerate(report["top"], 1):
-        fit = r.get("fit_score")
-        fit_s = f"{fit:.2f}" if isinstance(fit, int | float) else "—"
+        fit_s = _fit(r.get("fit_score"))
         lines.append(
             f"  {i}. [{r.get('recommendation') or '—'} fit={fit_s}] "
             f"{(r.get('title') or '')[:80]} | {_money(r.get('budget_estimate'))} | "
@@ -87,8 +94,7 @@ def render_markdown(report: dict[str, Any]) -> str:
         "|---|------|-----|--------|-------|-------|------|",
     ]
     for i, r in enumerate(report["top"], 1):
-        fit = r.get("fit_score")
-        fit_s = f"{fit:.2f}" if isinstance(fit, int | float) else "—"
+        fit_s = _fit(r.get("fit_score"))
         title = (r.get("title") or "").replace("|", "/")[:80]
         out.append(
             f"| {i} | {r.get('recommendation') or '—'} | {fit_s} | {title} | "
