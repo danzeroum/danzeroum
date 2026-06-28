@@ -7,6 +7,7 @@ injetável, então dá para testar sem rede.
 
 from __future__ import annotations
 
+import html
 import smtplib
 from abc import ABC, abstractmethod
 from collections.abc import Callable
@@ -36,13 +37,16 @@ def format_alerts(result: dict) -> tuple[str, str, str]:
         deadline = a.get("deadline") or "—"
         text_lines.append(f"- [{rec} fit={fit_s}] {title}")
         text_lines.append(f"  prazo={deadline} | {url}")
+        # Escapa os valores interpolados (títulos/URLs de editais podem ter & < >).
+        e_title, e_url = html.escape(title), html.escape(url)
+        e_rec, e_deadline = html.escape(rec), html.escape(str(deadline))
         html_rows.append(
-            f"<li><b>[{rec} fit={fit_s}]</b> {title}<br>"
-            f"<small>prazo={deadline} · <a href='{url}'>{url}</a></small></li>"
+            f"<li><b>[{e_rec} fit={fit_s}]</b> {e_title}<br>"
+            f"<small>prazo={e_deadline} · <a href='{e_url}'>{e_url}</a></small></li>"
         )
     text = "\n".join(text_lines)
-    html = f"<p>{n} oportunidade(s) com boa aderência:</p><ul>{''.join(html_rows)}</ul>"
-    return subject, text, html
+    html_body = f"<p>{n} oportunidade(s) com boa aderência:</p><ul>{''.join(html_rows)}</ul>"
+    return subject, text, html_body
 
 
 class Notifier(ABC):

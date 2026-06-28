@@ -30,6 +30,27 @@ def test_format_alerts():
     assert "<ul>" in html and "Suporte de TI" in html
 
 
+def test_format_alerts_escapes_html():
+    result = {
+        "alerts": [
+            {
+                "title": "Suporte <TI> & Redes",
+                "url": "http://x/?a=1&b=2",
+                "deadline": "2026-12-30",
+                "fit_score": 0.8,
+                "recommendation": "GO",
+            }
+        ]
+    }
+    _subject, text, html_body = format_alerts(result)
+    # HTML escapado: sem '<TI>' cru nem '&' solto.
+    assert "<TI>" not in html_body
+    assert "&lt;TI&gt;" in html_body
+    assert "&amp;" in html_body
+    # O corpo texto preserva o original (não é HTML).
+    assert "Suporte <TI> & Redes" in text
+
+
 def test_null_notifier_noop():
     assert NullNotifier().notify(RESULT) == 0
 
