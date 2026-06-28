@@ -8,6 +8,12 @@ def test_defaults_when_env_empty():
     assert s.scorer == "heuristic"
     assert s.collect_interval_hours == 24.0
     assert s.keywords == DEFAULT_KEYWORDS
+    assert s.sources == ["pncp"]  # Compras.gov existe mas não é default
+
+
+def test_sources_override():
+    s = Settings.from_env({"TRACKER_SOURCES": "PNCP, ComprasGov"})
+    assert s.sources == ["pncp", "comprasgov"]
 
 
 def test_env_overrides():

@@ -1,11 +1,8 @@
-"""Adaptador PNCP (Portal Nacional de Contratações Públicas).
+"""Adaptador Compras.gov.br (Dados Abertos / SIASG).
 
-A API de consulta do PNCP filtra por modalidade/data/UF, não por palavra-chave,
-então a filtragem por palavra-chave é feita no cliente, sobre o objeto do edital.
-
-O ``parse_tender`` é resiliente: aceita variações de nomes de campo (camelCase da
-API real e snake_case) porque o contrato exato pode mudar entre versões da API.
-A coleta de rede fica isolada em ``fetch_raw``; o parsing é puro (testável offline).
+Mesma estratégia do PNCP: rede isolada em ``fetch_raw``, parsing puro e resiliente
+a variações de nomes de campo. O endpoint/params exatos devem ser confirmados na
+primeira execução real (a API de Dados Abertos evolui entre versões).
 """
 
 from __future__ import annotations
@@ -27,37 +24,26 @@ from danzeroum_tracker.adapters.common import (
 )
 from danzeroum_tracker.models import Tender
 
-# Aliases mantidos para compatibilidade (uso interno e testes).
-_first = first
-_safe_float = safe_float
-_parse_datetime = parse_datetime
-
-__all__ = [
-    "PNCPAdapter",
-    "PNCPError",
-    "infer_category",
-    "map_status",
-    "matches_keywords",
-]
+__all__ = ["ComprasGovAdapter", "ComprasGovError"]
 
 
-class PNCPError(AdapterError):
-    """Falha específica do adaptador PNCP."""
+class ComprasGovError(AdapterError):
+    """Falha específica do adaptador Compras.gov.br."""
 
 
-class PNCPAdapter(OrgaoAdapter):
-    source = "PNCP"
+class ComprasGovAdapter(OrgaoAdapter):
+    source = "COMPRAS_GOV"
 
     def __init__(
         self,
-        base_url: str = "https://pncp.gov.br/api/consulta/v1",
+        base_url: str = "https://dadosabertos.compras.gov.br",
         uf: str = "SP",
         keywords: Iterable[str] | None = None,
         page_size: int = 50,
         max_pages: int = 5,
         timeout: int = 30,
         session: requests.Session | None = None,
-        endpoint: str = "/contratacoes/publicacao",
+        endpoint: str = "/modulo-contratacoes/1_consultarContratacoes",
     ) -> None:
         self.base_url = base_url.rstrip("/")
         self.uf = uf.upper()
@@ -72,7 +58,7 @@ class PNCPAdapter(OrgaoAdapter):
     def fetch_raw(self) -> Iterable[dict[str, Any]]:
         for page in range(1, self.max_pages + 1):
             payload = self._fetch_page(page)
-            records = self._extract_records(payload)
+            records = extract_records(payload)
             if not records:
                 break
             yield from records
@@ -95,20 +81,26 @@ class PNCPAdapter(OrgaoAdapter):
             resp.raise_for_status()
             return resp.json()
         except requests.RequestException as exc:
-            raise PNCPError(f"falha ao consultar PNCP (página {page}): {exc}") from exc
+            raise ComprasGovError(f"falha ao consultar Compras.gov (página {page}): {exc}") from exc
         except ValueError as exc:
-            raise PNCPError(f"resposta inválida do PNCP (página {page}): {exc}") from exc
-
-    @staticmethod
-    def _extract_records(payload: Any) -> list[dict[str, Any]]:
-        return extract_records(payload)
+            raise ComprasGovError(
+                f"resposta inválida do Compras.gov (página {page}): {exc}"
+            ) from exc
 
     # ── parsing (puro) ──────────────────────────────────────────────────────
     def parse_tender(self, raw: dict[str, Any]) -> Tender:
-        objeto = first(raw, "objetoCompra", "objeto", "objeto_compra", "descricaoCompleta") or ""
-        external_id = first(raw, "numeroControlePNCP", "numeroControlePncp", "id", "external_id")
+        objeto = first(raw, "objetoCompra", "descricaoCompra", "objeto", "descricao") or ""
+        external_id = first(
+            raw,
+            "numeroControlePNCP",
+            "identificadorCompra",
+            "idCompra",
+            "numeroCompra",
+            "id",
+            "external_id",
+        )
         if external_id is None:
-            raise PNCPError("registro do PNCP sem identificador (numeroControlePNCP/id)")
+            raise ComprasGovError("registro do Compras.gov sem identificador")
 
         unidade = raw.get("unidadeOrgao") if isinstance(raw.get("unidadeOrgao"), dict) else {}
         uf = first(raw, "uf", "ufSigla") or unidade.get("ufSigla") or self.uf
@@ -116,34 +108,26 @@ class PNCPAdapter(OrgaoAdapter):
         return Tender(
             source=self.source,
             external_id=str(external_id),
-            title=str(objeto)[:255] if objeto else f"Edital {external_id}",
-            description=first(raw, "descricaoCompleta", "descricao", "descricao_geral") or objeto,
-            status=map_status(
-                first(raw, "situacaoCompraNome", "situacao", "status", "modalidadeNome")
-            ),
+            title=str(objeto)[:255] if objeto else f"Contratação {external_id}",
+            description=first(raw, "descricaoCompleta", "descricao", "objetoCompra") or objeto,
+            status=map_status(first(raw, "situacaoCompraNome", "situacao", "status")),
             category=infer_category(str(objeto)),
             budget_estimate=safe_float(
-                first(raw, "valorTotalEstimado", "valor_estimado", "valorEstimado")
+                first(raw, "valorTotalEstimado", "valorEstimado", "valorTotalHomologado")
             ),
             publish_date=parse_datetime(
-                first(raw, "dataPublicacaoPncp", "data_publicacao", "dataInclusao")
+                first(raw, "dataPublicacaoPncp", "dataPublicacao", "dataInclusao")
             ),
             deadline=parse_datetime(
-                first(
-                    raw,
-                    "dataEncerramentoProposta",
-                    "data_limite_proposta",
-                    "dataAberturaProposta",
-                )
+                first(raw, "dataEncerramentoProposta", "dataAberturaProposta", "dataLimiteProposta")
             ),
-            url=first(raw, "linkSistemaOrigem", "url_edital", "url")
-            or f"https://pncp.gov.br/app/editais?q={external_id}",
+            url=first(raw, "linkSistemaOrigem", "urlCompra", "url")
+            or f"https://www.gov.br/compras/pt-br?q={external_id}",
             uf=str(uf).upper() if uf else None,
             raw_json=raw,
         )
 
     def collect(self) -> Iterator[Tender]:
-        """Coleta + filtro por palavra-chave (a API não filtra por palavra)."""
         for raw in self.fetch_raw():
             tender = self.parse_tender(raw)
             if not self.keywords or matches_keywords(tender, self.keywords):

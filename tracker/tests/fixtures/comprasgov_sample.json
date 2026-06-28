@@ -1,0 +1,25 @@
+{
+  "resultado": [
+    {
+      "identificadorCompra": "CG-2026-000123",
+      "objetoCompra": "Serviço de desenvolvimento e sustentação de sistemas de informação",
+      "descricao": "Fábrica de software com atestado de capacidade técnica e certidão negativa.",
+      "situacaoCompraNome": "Aberta",
+      "valorTotalEstimado": 350000.00,
+      "dataPublicacao": "2026-06-05T09:00:00",
+      "dataEncerramentoProposta": "2026-12-28T18:00:00",
+      "unidadeOrgao": { "ufSigla": "SP" },
+      "linkSistemaOrigem": "https://www.gov.br/compras/edital/123"
+    },
+    {
+      "idCompra": 456,
+      "objetoCompra": "Aquisição de mobiliário de escritório",
+      "situacaoCompraNome": "Aberta",
+      "valorTotalEstimado": 20000.00,
+      "dataPublicacao": "2026-06-08T09:00:00",
+      "dataEncerramentoProposta": "2026-12-15T18:00:00",
+      "uf": "SP"
+    }
+  ],
+  "totalPaginas": 1
+}

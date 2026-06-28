@@ -7,7 +7,9 @@ single-tenant (só Danzeroum). Desenho para crescer — ver `../docs/buscador-op
 
 ## O que a V1 entrega
 
-- **Adaptador PNCP** (API oficial), com parsing resiliente e filtro por palavra-chave.
+- **Adaptadores PNCP e Compras.gov.br** (ambos via API, parsing resiliente e filtro
+  por palavra-chave). Helpers de parsing compartilhados em `adapters/common.py`.
+  Fontes ativas controladas por `TRACKER_SOURCES` (default `pncp`).
 - **Scorer heurístico** (sem LLM, sem custo, sem chave de API) — interface agnóstica,
   pronta para plugar OpenAI/Gemini/Claude/Ollama numa rodada futura.
 - **PostgreSQL** com dedupe por `(source, external_id)` e schema versionado (`sql/schema.sql`).
@@ -45,6 +47,8 @@ DATABASE_URL=postgresql://danzeroum:danzeroum@localhost:5432/oportunidades \
 |---|---|---|
 | `DATABASE_URL` | *(vazio → memória)* | Conexão PostgreSQL. Vazio usa repositório em memória. |
 | `PNCP_BASE_URL` | `https://pncp.gov.br/api/consulta/v1` | Base da API do PNCP. |
+| `COMPRAS_GOV_BASE_URL` | `https://dadosabertos.compras.gov.br` | Base da API do Compras.gov.br. |
+| `TRACKER_SOURCES` | `pncp` | Fontes ativas (CSV): `pncp`, `comprasgov`. |
 | `TRACKER_UF` | `SP` | UF de busca. |
 | `TRACKER_KEYWORDS` | *(perfil de TI)* | CSV de palavras-chave; vazio usa o default embutido. |
 | `TRACKER_SCORER` | `heuristic` | Scorer ativo. |
