@@ -16,6 +16,29 @@ def test_sources_override():
     assert s.sources == ["pncp", "comprasgov"]
 
 
+def test_empty_string_env_falls_back_to_default():
+    # Cenário Docker: ${VAR:-} injeta variável vazia — deve usar o default, não "".
+    s = Settings.from_env(
+        {
+            "PNCP_BASE_URL": "",
+            "TRACKER_PAGE_SIZE": "",
+            "TRACKER_UF": "",
+            "SMTP_PORT": "",
+            "TRACKER_SCORER": "",
+        }
+    )
+    assert s.pncp_base_url == "https://pncp.gov.br/api/consulta/v1"
+    assert s.page_size == 50
+    assert s.uf == "SP"
+    assert s.smtp_port == 465
+    assert s.scorer == "heuristic"
+
+
+def test_base_url_override_when_set():
+    s = Settings.from_env({"PNCP_BASE_URL": "https://example.test/api"})
+    assert s.pncp_base_url == "https://example.test/api"
+
+
 def test_env_overrides():
     s = Settings.from_env(
         {

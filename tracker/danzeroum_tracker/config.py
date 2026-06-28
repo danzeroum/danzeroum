@@ -31,6 +31,16 @@ def _split_csv(value: str | None, default: list[str]) -> list[str]:
     return [item.strip() for item in value.split(",") if item.strip()]
 
 
+def _env(e: dict[str, str], key: str, default: str) -> str:
+    """Valor da env tratando string vazia como 'não definido' (usa o default).
+
+    Importante para o Docker: ``${VAR:-}`` injeta a variável vazia, e sem isso um
+    base_url/porta vazios sobrescreveriam o default e quebrariam a coleta.
+    """
+    value = e.get(key)
+    return value if value not in (None, "") else default
+
+
 @dataclass
 class Settings:
     """Configuração efetiva do rastreador."""
@@ -64,25 +74,25 @@ class Settings:
         e = env if env is not None else os.environ
         return cls(
             database_url=e.get("DATABASE_URL", ""),
-            pncp_base_url=e.get("PNCP_BASE_URL", cls.pncp_base_url),
-            comprasgov_base_url=e.get("COMPRAS_GOV_BASE_URL", cls.comprasgov_base_url),
-            comprassp_base_url=e.get("COMPRAS_SP_BASE_URL", cls.comprassp_base_url),
-            prefsp_base_url=e.get("PREF_SP_BASE_URL", cls.prefsp_base_url),
+            pncp_base_url=_env(e, "PNCP_BASE_URL", cls.pncp_base_url),
+            comprasgov_base_url=_env(e, "COMPRAS_GOV_BASE_URL", cls.comprasgov_base_url),
+            comprassp_base_url=_env(e, "COMPRAS_SP_BASE_URL", cls.comprassp_base_url),
+            prefsp_base_url=_env(e, "PREF_SP_BASE_URL", cls.prefsp_base_url),
             sources=[s.lower() for s in _split_csv(e.get("TRACKER_SOURCES"), ["pncp"])],
-            uf=e.get("TRACKER_UF", "SP").upper(),
+            uf=_env(e, "TRACKER_UF", "SP").upper(),
             keywords=_split_csv(e.get("TRACKER_KEYWORDS"), DEFAULT_KEYWORDS),
-            scorer=e.get("TRACKER_SCORER", "heuristic"),
-            collect_interval_hours=float(e.get("COLLECT_INTERVAL_HOURS", "24")),
-            min_fit_alert=float(e.get("TRACKER_MIN_FIT", "0.4")),
-            page_size=int(e.get("TRACKER_PAGE_SIZE", "50")),
-            max_pages=int(e.get("TRACKER_MAX_PAGES", "5")),
-            request_timeout=int(e.get("TRACKER_REQUEST_TIMEOUT", "30")),
+            scorer=_env(e, "TRACKER_SCORER", "heuristic"),
+            collect_interval_hours=float(_env(e, "COLLECT_INTERVAL_HOURS", "24")),
+            min_fit_alert=float(_env(e, "TRACKER_MIN_FIT", "0.4")),
+            page_size=int(_env(e, "TRACKER_PAGE_SIZE", "50")),
+            max_pages=int(_env(e, "TRACKER_MAX_PAGES", "5")),
+            request_timeout=int(_env(e, "TRACKER_REQUEST_TIMEOUT", "30")),
             smtp_host=e.get("SMTP_HOST", ""),
-            smtp_port=int(e.get("SMTP_PORT", "465")),
+            smtp_port=int(_env(e, "SMTP_PORT", "465")),
             smtp_user=e.get("SMTP_USER", ""),
             smtp_pass=e.get("SMTP_PASS", ""),
             smtp_from=e.get("SMTP_FROM", ""),
-            smtp_from_name=e.get("SMTP_FROM_NAME", "Rastreador Danzeroum"),
-            smtp_encryption=e.get("SMTP_ENCRYPTION", "ssl"),
+            smtp_from_name=_env(e, "SMTP_FROM_NAME", "Rastreador Danzeroum"),
+            smtp_encryption=_env(e, "SMTP_ENCRYPTION", "ssl"),
             mail_to=e.get("MAIL_TO", ""),
         )
