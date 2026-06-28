@@ -6,6 +6,7 @@ from typing import Generator
 
 import psycopg
 from psycopg.rows import dict_row
+from fastapi import HTTPException
 
 from danzeroum_tracker.config import Settings
 
@@ -21,5 +22,10 @@ def get_settings() -> Settings:
 
 def get_conn() -> Generator[psycopg.Connection, None, None]:
     cfg = get_settings()
-    with psycopg.connect(cfg.database_url, row_factory=dict_row) as conn:
-        yield conn
+    if not cfg.database_url:
+        raise HTTPException(503, "DATABASE_URL não configurado — banco indisponível")
+    try:
+        with psycopg.connect(cfg.database_url, row_factory=dict_row) as conn:
+            yield conn
+    except psycopg.OperationalError as exc:
+        raise HTTPException(503, f"Banco indisponível: {exc}") from exc
