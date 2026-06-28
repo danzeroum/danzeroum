@@ -1,0 +1,151 @@
+"""Notificações de alertas (oportunidades de alta aderência).
+
+Interface agnóstica: ``NullNotifier`` (default, no-op seguro) e ``EmailNotifier``
+(SMTP via smtplib, reusa as variáveis SMTP_* do site). O transporte SMTP é
+injetável, então dá para testar sem rede.
+"""
+
+from __future__ import annotations
+
+import smtplib
+from abc import ABC, abstractmethod
+from collections.abc import Callable
+from email.message import EmailMessage
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from danzeroum_tracker.config import Settings
+
+Transport = Callable[..., None]
+
+
+def format_alerts(result: dict) -> tuple[str, str, str]:
+    """Monta (assunto, corpo_texto, corpo_html) a partir do resultado da coleta."""
+    alerts = result.get("alerts", [])
+    n = len(alerts)
+    subject = f"[Danzeroum] {n} nova(s) oportunidade(s) de licitação"
+
+    text_lines = [f"{n} oportunidade(s) com boa aderência:", ""]
+    html_rows = []
+    for a in alerts:
+        title = a.get("title") or ""
+        fit = a.get("fit_score")
+        fit_s = f"{fit:.2f}" if isinstance(fit, int | float) else "—"
+        rec = a.get("recommendation") or "—"
+        url = a.get("url") or ""
+        deadline = a.get("deadline") or "—"
+        text_lines.append(f"- [{rec} fit={fit_s}] {title}")
+        text_lines.append(f"  prazo={deadline} | {url}")
+        html_rows.append(
+            f"<li><b>[{rec} fit={fit_s}]</b> {title}<br>"
+            f"<small>prazo={deadline} · <a href='{url}'>{url}</a></small></li>"
+        )
+    text = "\n".join(text_lines)
+    html = f"<p>{n} oportunidade(s) com boa aderência:</p><ul>{''.join(html_rows)}</ul>"
+    return subject, text, html
+
+
+class Notifier(ABC):
+    name = "abstract"
+
+    @abstractmethod
+    def notify(self, result: dict) -> int:
+        """Envia alertas do resultado da coleta. Retorna quantos foram enviados."""
+
+
+class NullNotifier(Notifier):
+    """No-op seguro: não envia nada (default quando SMTP não está configurado)."""
+
+    name = "null"
+
+    def notify(self, result: dict) -> int:
+        return 0
+
+
+def _smtplib_transport(
+    *,
+    host: str,
+    port: int,
+    encryption: str,
+    user: str,
+    password: str,
+    message: EmailMessage,
+) -> None:  # pragma: no cover - exercitado só com SMTP real
+    enc = (encryption or "").lower()
+    if enc == "ssl":
+        with smtplib.SMTP_SSL(host, port, timeout=30) as smtp:
+            if user:
+                smtp.login(user, password)
+            smtp.send_message(message)
+    else:
+        with smtplib.SMTP(host, port, timeout=30) as smtp:
+            if enc in ("tls", "starttls"):
+                smtp.starttls()
+            if user:
+                smtp.login(user, password)
+            smtp.send_message(message)
+
+
+class EmailNotifier(Notifier):
+    name = "email"
+
+    def __init__(
+        self,
+        *,
+        host: str,
+        port: int,
+        user: str,
+        password: str,
+        from_addr: str,
+        from_name: str,
+        to_addr: str,
+        encryption: str = "ssl",
+        transport: Transport | None = None,
+    ) -> None:
+        self.host = host
+        self.port = port
+        self.user = user
+        self.password = password
+        self.from_addr = from_addr
+        self.from_name = from_name
+        self.to_addr = to_addr
+        self.encryption = encryption
+        self._transport = transport or _smtplib_transport
+
+    def notify(self, result: dict) -> int:
+        alerts = result.get("alerts", [])
+        if not alerts:
+            return 0
+        subject, text, html = format_alerts(result)
+        msg = EmailMessage()
+        msg["Subject"] = subject
+        msg["From"] = f"{self.from_name} <{self.from_addr}>" if self.from_name else self.from_addr
+        msg["To"] = self.to_addr
+        msg.set_content(text)
+        msg.add_alternative(html, subtype="html")
+        self._transport(
+            host=self.host,
+            port=self.port,
+            encryption=self.encryption,
+            user=self.user,
+            password=self.password,
+            message=msg,
+        )
+        return len(alerts)
+
+
+def build_notifier(settings: Settings, transport: Transport | None = None) -> Notifier:
+    """E-mail se SMTP_HOST + MAIL_TO estiverem configurados; senão, no-op."""
+    if settings.smtp_host and settings.mail_to:
+        return EmailNotifier(
+            host=settings.smtp_host,
+            port=settings.smtp_port,
+            user=settings.smtp_user,
+            password=settings.smtp_pass,
+            from_addr=settings.smtp_from or settings.smtp_user,
+            from_name=settings.smtp_from_name,
+            to_addr=settings.mail_to,
+            encryption=settings.smtp_encryption,
+            transport=transport,
+        )
+    return NullNotifier()

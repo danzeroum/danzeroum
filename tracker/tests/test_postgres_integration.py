@@ -80,3 +80,8 @@ def test_upsert_is_idempotent_and_scores_persist(repo):
     assert len(rows) == 1
     assert rows[0]["source"] == "PNCP"
     assert rows[0]["category"] == "TI"
+
+    scored = repo.list_scored(limit=10)
+    assert len(scored) == 1
+    assert float(scored[0]["fit_score"]) == 0.8
+    assert scored[0]["recommendation"] == "GO"

@@ -25,7 +25,9 @@ from danzeroum_tracker.adapters.comprasgov import ComprasGovAdapter
 from danzeroum_tracker.adapters.pncp import PNCPAdapter
 from danzeroum_tracker.adapters.scraper import ComprasSPAdapter, PrefeituraSPAdapter
 from danzeroum_tracker.config import Settings
+from danzeroum_tracker.notifications import Notifier, build_notifier
 from danzeroum_tracker.pipeline import run_collection
+from danzeroum_tracker.reporting import build_report, render_markdown, render_text
 from danzeroum_tracker.scoring import SCORE_SCHEMA, Scorer, get_scorer
 from danzeroum_tracker.storage import build_repository
 from danzeroum_tracker.storage.base import TenderRepository
@@ -98,13 +100,37 @@ def cmd_collect(
     repo: TenderRepository | None = None,
     adapters: Iterable[OrgaoAdapter] | None = None,
     scorer: Scorer | None = None,
+    notifier: Notifier | None = None,
     out: TextIO = sys.stdout,
 ) -> int:
     repo = repo if repo is not None else build_repository(settings.database_url)
     adapters = adapters if adapters is not None else build_adapters(settings)
     scorer = scorer or get_scorer(settings.scorer)
+    notifier = notifier if notifier is not None else build_notifier(settings)
     result = run_collection(adapters, repo, scorer, min_fit_alert=settings.min_fit_alert)
-    _emit(result.to_dict(), out)
+    payload = result.to_dict()
+    payload["notified"] = notifier.notify(payload)
+    _emit(payload, out)
+    return 0
+
+
+def cmd_report(
+    settings: Settings,
+    *,
+    limit: int = 10,
+    fmt: str = "text",
+    repo: TenderRepository | None = None,
+    out: TextIO = sys.stdout,
+) -> int:
+    repo = repo if repo is not None else build_repository(settings.database_url)
+    rows = repo.list_scored(limit=5000)  # estatísticas sobre o acervo; top-N no display
+    report = build_report(rows, top_n=limit)
+    if fmt == "json":
+        _emit(report, out)
+    elif fmt in ("md", "markdown"):
+        out.write(render_markdown(report) + "\n")
+    else:
+        out.write(render_text(report) + "\n")
     return 0
 
 
@@ -126,6 +152,7 @@ def cmd_schedule(
     repo: TenderRepository | None = None,
     adapters: Iterable[OrgaoAdapter] | None = None,
     scorer: Scorer | None = None,
+    notifier: Notifier | None = None,
     iterations: int | None = None,
     sleep_fn=time.sleep,
     out: TextIO = sys.stdout,
@@ -135,7 +162,9 @@ def cmd_schedule(
     interval_s = max(settings.collect_interval_hours, 0.0) * 3600.0
     count = 0
     while True:
-        cmd_collect(settings, repo=repo, adapters=adapters, scorer=scorer, out=out)
+        cmd_collect(
+            settings, repo=repo, adapters=adapters, scorer=scorer, notifier=notifier, out=out
+        )
         count += 1
         if iterations is not None and count >= iterations:
             return 0
@@ -157,6 +186,10 @@ def build_parser() -> argparse.ArgumentParser:
     lp = sub.add_parser("list", help="lista editais persistidos")
     lp.add_argument("--limit", type=int, default=50)
 
+    rp = sub.add_parser("report", help="relatório de oportunidades (do acervo)")
+    rp.add_argument("--limit", type=int, default=10)
+    rp.add_argument("--format", dest="fmt", choices=["text", "md", "json"], default="text")
+
     sub.add_parser("schedule", help="loop periódico (Docker)")
     return p
 
@@ -173,6 +206,8 @@ def main(argv: list[str] | None = None, out: TextIO = sys.stdout) -> int:
         return cmd_collect(settings, out=out)
     if args.command == "list":
         return cmd_list(settings, limit=args.limit, out=out)
+    if args.command == "report":
+        return cmd_report(settings, limit=args.limit, fmt=args.fmt, out=out)
     if args.command == "schedule":
         return cmd_schedule(settings, out=out)
     return 2
