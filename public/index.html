@@ -254,6 +254,100 @@ section{scroll-margin-top:80px}
 .clink.demo:hover svg{transform:translate(2px,-2px)}
 @media(min-width:680px){ .projects{grid-template-columns:1fr 1fr} }
 
+/* ============================================================
+   PROJETOR DE SLIDES — overlay aberto ao clicar num card
+   ============================================================ */
+.card[data-slug]{cursor:pointer}
+.card .clink.cue{color:var(--brand-ink);font-weight:600;margin-right:auto}
+.card .clink.cue svg{width:14px;height:14px}
+.card[data-slug]:hover .clink.cue{gap:9px}
+html.deck-lock{overflow:hidden}
+
+.deckwrap{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:clamp(12px,3vw,32px)}
+.deckwrap.show{display:flex}
+.deck-scrim{position:absolute;inset:0;background:color-mix(in srgb,#0c0703 78%,transparent);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);animation:dkfade .25s var(--ease)}
+html.dark .deck-scrim{background:color-mix(in srgb,#000 80%,transparent)}
+
+.deck-panel{position:relative;width:min(960px,100%);max-height:min(680px,calc(100vh - 32px));display:flex;flex-direction:column;
+  background:var(--bg);border:1px solid var(--line-2);border-radius:20px;overflow:hidden;
+  box-shadow:0 40px 120px -30px rgba(0,0,0,.65);animation:dkpop .32s var(--ease)}
+.deck-panel:focus{outline:none}
+
+.deck-top{display:flex;align-items:center;gap:12px;padding:14px 14px 14px 18px;border-bottom:1px solid var(--line)}
+.deck-switch{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;flex:1;-ms-overflow-style:none}
+.deck-switch::-webkit-scrollbar{display:none}
+.deck-pill{flex:0 0 auto;font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:500;color:var(--muted);
+  background:transparent;border:1px solid var(--line);border-radius:999px;padding:6px 13px;cursor:pointer;white-space:nowrap;
+  transition:color .15s,border-color .15s,background .15s}
+.deck-pill:hover{color:var(--ink);border-color:var(--line-2)}
+.deck-pill.on{color:var(--on-brand);background:var(--brand);border-color:var(--brand)}
+.deck-x{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;
+  background:transparent;border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:color .15s,border-color .15s,background .15s}
+.deck-x svg{width:18px;height:18px}
+.deck-x:hover{color:var(--ink);border-color:var(--line-2);background:var(--bg-2)}
+
+.deck-stagearea{flex:1;overflow-y:auto;padding:clamp(28px,4.5vw,52px)}
+.deck-nav{display:flex;align-items:center;gap:16px;padding:14px 18px;border-top:1px solid var(--line)}
+.deck-arrow{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:11px;
+  background:transparent;border:1px solid var(--line-2);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s,opacity .15s,transform .12s}
+.deck-arrow svg{width:20px;height:20px}
+.deck-arrow:hover:not(:disabled){background:var(--bg-2);transform:translateY(-1px)}
+.deck-arrow:disabled{opacity:.32;cursor:not-allowed}
+.deck-dots{display:flex;gap:8px;align-items:center;justify-content:center;flex:1}
+.deck-dot{width:8px;height:8px;padding:0;border-radius:50%;border:none;background:var(--line-2);cursor:pointer;transition:background .18s,transform .18s}
+.deck-dot:hover{background:var(--muted)}
+.deck-dot.on{background:var(--brand);transform:scale(1.35)}
+
+/* ---- slides ---- */
+.ds{max-width:760px;margin:0 auto}
+.ds.in{animation:dkslide .4s var(--ease)}
+.ds-label{color:var(--brand-ink);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;margin-bottom:18px}
+.ds-idx{display:block;margin-top:30px;color:var(--faint);font-size:.74rem;letter-spacing:.08em}
+.ds-title{font-size:clamp(1.7rem,3.4vw,2.5rem);line-height:1.12;letter-spacing:-.02em;color:var(--ink);font-weight:600;text-wrap:balance}
+.ds-title.sm{font-size:clamp(1.45rem,2.7vw,2rem)}
+.ds-body{margin-top:20px;font-size:clamp(1.02rem,1.5vw,1.2rem);line-height:1.62;color:var(--text);max-width:62ch;text-wrap:pretty}
+
+.ds-cover{display:flex;flex-direction:column;min-height:300px;justify-content:center}
+.ds-coverhead{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:26px}
+.ds-tag{font-size:.72rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--brand-ink);
+  background:color-mix(in srgb,var(--brand) 9%,transparent);border:1px solid color-mix(in srgb,var(--brand) 24%,transparent);border-radius:7px;padding:5px 11px}
+.ds-status{font-size:.74rem;color:var(--muted);display:inline-flex;align-items:center;gap:7px}
+.ds-status::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.ds-name{font-size:clamp(2.4rem,5.2vw,3.7rem);line-height:1.04;letter-spacing:-.03em;color:var(--ink);font-weight:600}
+.ds-line{margin-top:18px;font-size:clamp(1.15rem,2vw,1.5rem);line-height:1.4;color:var(--text);max-width:24ch;font-weight:500;text-wrap:balance}
+.ds-coverfoot{margin-top:30px;color:var(--faint);font-size:.78rem;letter-spacing:.04em}
+
+.ds-items{list-style:none;margin-top:28px;display:grid;gap:2px}
+.ds-items li{display:grid;grid-template-columns:auto;gap:3px;padding:16px 0;border-top:1px solid var(--line)}
+.ds-items li:last-child{border-bottom:1px solid var(--line)}
+.ds-items strong{color:var(--ink);font-size:1.06rem;font-weight:600;letter-spacing:-.01em}
+.ds-items span{color:var(--muted);font-size:.97rem;line-height:1.55}
+@media(min-width:640px){ .ds-items li{grid-template-columns:minmax(190px,38%) 1fr;gap:18px;align-items:baseline} }
+
+.ds-honestlist{list-style:none;margin-top:28px;display:grid;gap:16px}
+.ds-honestlist li{display:flex;gap:14px;align-items:flex-start}
+.ds-honestlist span:last-child{color:var(--text);font-size:1.04rem;line-height:1.55;max-width:60ch}
+.ds-chk{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;
+  margin-top:1px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.ds-chk svg{width:15px;height:15px}
+
+.ds-cta{display:flex;flex-direction:column}
+.ds-ctabtns{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.ds-btn{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:.96rem;padding:13px 22px;border-radius:11px;border:1px solid transparent;cursor:pointer;transition:background .16s,border-color .16s,transform .12s}
+.ds-btn svg{width:17px;height:17px}
+.ds-btn:hover{transform:translateY(-2px)}
+.ds-btn.primary{background:var(--brand);color:var(--on-brand)}
+.ds-btn.primary:hover{background:var(--brand-ink)}
+.ds-btn.ghost{background:transparent;color:var(--ink);border-color:var(--line-2)}
+.ds-btn.ghost:hover{border-color:var(--ink);background:var(--bg-2)}
+
+@keyframes dkfade{from{opacity:0}to{opacity:1}}
+@keyframes dkpop{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes dkslide{from{transform:translateY(12px)}to{transform:none}}
+@media(prefers-reduced-motion:reduce){
+  .deck-scrim,.deck-panel,.ds.in{animation:none}
+}
+
 /* ---------- Bloco "Links principais" dedicado ---------- */
 .links-block .primary-links{margin-top:clamp(28px,4vw,40px)}
 
@@ -624,9 +718,9 @@ section{scroll-margin-top:80px}
     {name:'Central de Inteligência Jurídica', slug:'Central_Inteligencia_Juridica', cat:'legal', featured:true, tag:'LegalTech · Multiagente', status:'Beta · demo',
      desc:'Plataforma multiagente para o setor jurídico: agentes por tribunal coordenam decisões de forma autônoma, sob supervisão humana e com auditoria completa.',
      tech:['Python','Multi-Agentes','LLMs'], demo:'https://juridico.buildtovalue.cloud', gh:'https://github.com/danzeroum/Central_Inteligencia_Juridica'},
-    {name:'ConciliaIA', slug:'ConciliaIA', cat:'legal', featured:true, tag:'LegalTech · Conciliação', status:'Demo ao vivo',
-     desc:'Ambiente virtual de conciliação com sugestões inteligentes de acordos, focado em reduzir litígios e otimizar negociações.',
-     tech:['Python','LLM','Web'], demo:'https://conciliaia.buildtovalue.cloud', gh:'https://github.com/danzeroum/ConciliaIA'},
+    {name:'ConciliaIA', slug:'ConciliaIA', cat:'fintech', featured:true, tag:'FinTech · Conciliação', status:'Demo ao vivo',
+     desc:'Reconciliação financeira para e-commerce e varejo: concilia as vendas do lojista com os relatórios das adquirentes (Cielo, Rede, Stone) e detecta divergências — taxa (MDR), registro ausente, chargeback e atraso de liquidação — numa API versionada e num dashboard.',
+     tech:['Python','FastAPI','PostgreSQL','React'], demo:'https://conciliaia.buildtovalue.cloud', gh:'https://github.com/danzeroum/ConciliaIA'},
     {name:'CriptoTrade', slug:'Criptotrade', cat:'fintech', featured:true, tag:'FinTech · Trading', status:'Demo ao vivo',
      desc:'Painel para negociação de criptomoedas com bots automatizados, sinais em tempo real e análise de sentimento de mercado.',
      tech:['Python','Realtime','Trading'], demo:'https://criptotrade.buildtovalue.cloud', gh:'https://github.com/danzeroum/Criptotrade'},
@@ -696,14 +790,18 @@ section{scroll-margin-top:80px}
   function matchCat(p,f){ return f==='all' ? true : (f==='featured' ? !!p.featured : p.cat===f); }
   function projCount(k){ return PROJECTS.filter(function(p){return matchCat(p,k);}).length; }
   function cardHTML(p){
+    var hasDeck = !!(window.DECKS && window.DECKS[p.slug]);
+    var PLAY = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>';
+    var deckAttrs = hasDeck ? ' data-slug="'+p.slug+'" tabindex="0" role="button" aria-label="Abrir apresentação de '+p.name+'"' : '';
+    var cue = hasDeck ? '<span class="clink cue">'+PLAY+'Ver apresentação</span>' : '';
     var demoLink = p.demo ? '<a class="clink demo" href="'+p.demo+'" target="_blank" rel="noopener noreferrer" aria-label="Ver demo de '+p.name+' (abre em nova aba)">Ver demo '+ARR+'</a>' : '';
-    return '<article class="card" data-cat="'+p.cat+'">'
+    return '<article class="card" data-cat="'+p.cat+'"'+deckAttrs+'>'
       + '<div class="ctop"><span class="tag">'+p.tag+'</span><span class="status">'+p.status+'</span></div>'
       + '<h3>'+p.name+'</h3>'
       + '<div class="slug">danzeroum/'+p.slug+'</div>'
       + '<p>'+p.desc+'</p>'
       + '<div class="tech">'+p.tech.map(function(t){return '<span>'+t+'</span>';}).join('')+'</div>'
-      + '<div class="clinks">'+demoLink
+      + '<div class="clinks">'+cue+demoLink
       +   '<a class="clink" href="'+p.gh+'" target="_blank" rel="noopener noreferrer" aria-label="Repositório de '+p.name+' no GitHub (abre em nova aba)">'+GH+' Repositório</a>'
       + '</div></article>';
   }
@@ -742,6 +840,376 @@ section{scroll-margin-top:80px}
   if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
     requestAnimationFrame(function(){ requestAnimationFrame(function(){ root.classList.add('anim-logo'); }); });
   }
+</script>
+
+<!-- Projetor de slides por projeto (abre ao clicar num card) -->
+<script>
+/* ============================================================
+   Projetor de slides por projeto.
+   Abre ao clicar num card de "03 — Projetos"; navega de forma
+   iterativa; troca entre projetos; fecha fácil (X / Esc / fora).
+   ============================================================ */
+(function(){
+  'use strict';
+
+  var META = (window.PROJECTS || []).reduce(function(acc, p){ acc[p.slug] = p; return acc; }, {});
+  var ORDER = (window.PROJECTS || []).map(function(p){ return p.slug; });
+
+  // --- Slides por projeto -------------------------------------------------
+  var DECKS = {
+    'btvChatCorp': [
+      {kind:'cover', line:'A inteligência da sua empresa, sem mandar um dado sequer para fora.'},
+      {kind:'lead', label:'A oportunidade', title:'Toda empresa tem conhecimento preso em documentos.',
+       body:'Contratos, manuais, históricos, planilhas. A resposta já existe lá dentro — só não é fácil de encontrar. Ferramentas de IA na nuvem resolvem isso, mas pedem que você entregue seus dados a terceiros. Para quem lida com informação sensível, isso é um não.'},
+      {kind:'list', label:'O que ele oferece', title:'Um ChatGPT privado, treinado nos seus próprios documentos.',
+       items:[
+         {h:'Responde com base nos seus dados', p:'O assistente lê os documentos da empresa e responde citando a fonte — não "alucina" a partir do nada.'},
+         {h:'Cada cliente isolado', p:'Multi-tenant: várias empresas (ou áreas) no mesmo sistema, sem nunca enxergar os dados umas das outras.'},
+         {h:'Entra com o login que já existe', p:'SSO corporativo — a equipe acessa com a conta da empresa, sem mais uma senha para gerir.'},
+         {h:'Encaixa onde já existe', p:'API no mesmo formato da OpenAI: trocar o endereço, não reescrever o sistema. E pode rodar dentro da sua infraestrutura.'}
+       ]},
+      {kind:'list', label:'Para quem faz sentido', title:'Quem não pode (ou não quer) entregar os dados para fora.',
+       items:[
+         {h:'Jurídico, saúde e financeiro', p:'Setores onde sigilo não é preferência, é obrigação.'},
+         {h:'Quem quer marca própria', p:'White-label por workspace: o assistente veste a identidade do cliente.'},
+         {h:'Quem cansou de mensalidade por usuário', p:'Uma plataforma própria no lugar de licenças que escalam sem parar.'}
+       ]},
+      {kind:'honest', label:'Onde está hoje', title:'Honestamente.',
+       items:[
+         'Código público no GitHub e uma demo rodando — ainda não em uso por clientes reais.',
+         'Construído em Rust (robusto) com interface Angular; busca por significado via banco vetorial.',
+         'É uma base sólida de produto, pronta para o primeiro piloto, não um SaaS com mil clientes.'
+       ]}
+    ],
+    'BuildToValueGovernance': [
+      {kind:'cover', line:'Quando a IA toma uma decisão, alguém vai pedir a prova. Aqui ela já existe.'},
+      {kind:'lead', label:'A oportunidade', title:'"A IA negou o crédito. O regulador pediu a trilha. Os logs estavam incompletos."',
+       body:'Decisões automáticas — crédito, contratação, acesso — já são reguladas por LGPD, GDPR e o EU AI Act. Todas exigem evidência auditável. Logs comuns falham: somem sob carga, são sobrescritos, ficam pela metade. Isso não é problema de logging, é de responsabilidade.'},
+      {kind:'list', label:'O que ele oferece', title:'Uma camada que vigia cada decisão da IA — sem tocar no seu código.',
+       items:[
+         {h:'Instala trocando um endereço', p:'O agente passa a falar com esta camada antes de chamar a IA. Zero alteração no código do agente.'},
+         {h:'Bloqueia o que viola a lei', p:'Decisão em desacordo é barrada na hora, com um recibo criptográfico do porquê.'},
+         {h:'Prova que ninguém apaga', p:'Trilha imutável e assinada — e contestável pelo cidadão em 24h, como a lei exige.'},
+         {h:'Sem travar a operação', p:'A validação acontece em microssegundos; decisões conformes seguem sem atraso perceptível.'}
+       ]},
+      {kind:'list', label:'Para quem faz sentido', title:'Qualquer setor regulado que use IA para decidir.',
+       items:[
+         {h:'Fintech', p:'Crédito e empréstimo com trilha pronta para auditoria.'},
+         {h:'Saúde', p:'Decisões assistidas por IA com proteção de responsabilidade.'},
+         {h:'RH e pipelines de agentes', p:'Triagem automatizada e fluxos LangChain/CrewAI com governança embutida.'}
+       ]},
+      {kind:'honest', label:'Onde está hoje', title:'Honestamente.',
+       items:[
+         'Demo ao vivo e código aberto. A própria documentação lista os limites: ~15% de falso positivo em ataques deliberados, ainda não validado por terceiros.',
+         'O gateway sai sem TLS por padrão — produção exige um proxy na frente.',
+         'A proposta é forte e medível: custo de infraestrutura modesto frente a multas regulatórias milionárias.'
+       ]}
+    ],
+    'Central_Inteligencia_Juridica': [
+      {kind:'cover', line:'Vários especialistas jurídicos trabalhando juntos — sob o seu comando.'},
+      {kind:'lead', label:'A oportunidade', title:'O volume jurídico cresce mais rápido do que qualquer time consegue acompanhar.',
+       body:'Cada tribunal tem suas particularidades. Triar, analisar e cruzar decisões manualmente não escala. Mas IA solta no jurídico, sem supervisão e sem rastro, é risco puro.'},
+      {kind:'list', label:'O que ele oferece', title:'Uma equipe de agentes especializados, coordenada e auditável.',
+       items:[
+         {h:'Um agente por tribunal', p:'Especialistas em TJSP, TJMG, STF e outros, cada um com seu contexto — orquestrados por um supervisor.'},
+         {h:'Decisão por consenso', p:'Os agentes votam com peso conforme a expertise; o sistema combina, não chuta.'},
+         {h:'O humano no comando', p:'Autonomia progressiva com aprovação humana (HITL): a máquina sugere, a pessoa decide o que importa.'},
+         {h:'Tudo registrado', p:'Cada decisão fica num ledger de auditoria — dá para voltar e entender o porquê.'}
+       ]},
+      {kind:'list', label:'Para quem faz sentido', title:'De grandes operações a quem está aprendendo.',
+       items:[
+         {h:'Escritórios e departamentos jurídicos', p:'Triagem e análise em escala, com rastro completo.'},
+         {h:'Estudantes de Direito', p:'Traz até um "Manual do Estudante" com roteiro guiado de 15 minutos.'},
+         {h:'Quem precisa estender', p:'Novos tribunais e domínios entram por configuração, sem reescrever o sistema.'}
+       ]},
+      {kind:'honest', label:'Onde está hoje', title:'Honestamente.',
+       items:[
+         'Em beta, com demo. Interface web completa (área de trabalho + administração).',
+         'Roda com IA local (Ollama) — não depende de mandar processos para uma nuvem externa.',
+         'Cobertura de testes em torno de 30%, com os módulos críticos (consenso, roteamento) bem cobertos.'
+       ]}
+    ],
+    'ConciliaIA': [
+      {kind:'cover', line:'Vendeu pela maquininha. Mas recebeu tudo o que era seu?'},
+      {kind:'lead', label:'A oportunidade', title:'Entre a venda e o dinheiro na conta, some dinheiro — e ninguém percebe.',
+       body:'Cielo, Rede, Stone. Cada adquirente cobra sua taxa, atrasa um repasse, lança um chargeback, esquece um registro. Para um lojista com volume, conferir isso na mão é impossível. O rombo vira "normal".'},
+      {kind:'list', label:'O que ele oferece', title:'Concilia, sozinho, suas vendas com o que as adquirentes dizem que pagaram.',
+       items:[
+         {h:'Cruza venda x repasse', p:'Bate cada venda do lojista contra o relatório da adquirente e aponta o que não fecha.'},
+         {h:'Caça as divergências', p:'Taxa (MDR) errada, registro ausente, chargeback, atraso de liquidação — tudo sinalizado.'},
+         {h:'Importa do jeito que vier', p:'Aceita os arquivos (CSV/EDI) das adquirentes e processa em segundo plano.'},
+         {h:'Regras suas', p:'Auto-aprovação e prazos configuráveis por loja; novas adquirentes entram como "plugue".'}
+       ]},
+      {kind:'list', label:'Para quem faz sentido', title:'Quem vende muito e por vários canais.',
+       items:[
+         {h:'E-commerce e varejo', p:'Volume alto de transações que ninguém consegue conferir manualmente.'},
+         {h:'Operações multi-loja', p:'Cada loja com suas regras e prazos, num painel só.'},
+         {h:'Financeiro e BPO', p:'Trocar conferência em planilha por uma trilha auditável.'}
+       ]},
+      {kind:'honest', label:'Onde está hoje', title:'Honestamente.',
+       items:[
+         'Demo ao vivo já vem com dados de exemplo (vendas e transações) para você ver funcionando.',
+         'Arquitetura enxuta: roda numa imagem Docker com painel + API versionada, escalável por design.',
+         'É reconciliação financeira de verdade — não um sistema de acordos jurídicos.'
+       ]}
+    ],
+    'Criptotrade': [
+      {kind:'cover', line:'Um robô de trading que pede licença antes de arriscar o seu dinheiro.'},
+      {kind:'lead', label:'A oportunidade', title:'Operar cripto com disciplina, 24/7, é humanamente difícil. Bot sem freio é perigoso.',
+       body:'O mercado não dorme; a emoção atrapalha; a disciplina escapa. Automatizar resolve metade — a outra metade é o risco de um robô fazer besteira sozinho, no automático, sem ninguém olhando.'},
+      {kind:'list', label:'O que ele oferece', title:'Agentes que analisam, mas só agem com freios e aprovação.',
+       items:[
+         {h:'Pipeline com trava', p:'Sinal → risco → execução. Cada ordem passa por guardrails: posição ≤ 5%, stop loss obrigatório, risco-retorno mínimo.'},
+         {h:'Você aprova o que importa', p:'Aprovação humana por faixa de valor (níveis 0 a 3): o miúdo passa, o grande espera o seu "ok".'},
+         {h:'Métricas que não mentem', p:'Sharpe, taxa de acerto e drawdown calculados do histórico real de operações.'},
+         {h:'Painel e auditoria', p:'Console operacional para acompanhar tudo, com registro append-only de cada passo.'}
+       ]},
+      {kind:'list', label:'Para quem faz sentido', title:'Automação com adulto na sala.',
+       items:[
+         {h:'Quem quer automatizar com controle', p:'A conveniência do bot, sem entregar o volante por completo.'},
+         {h:'Pesquisa de estratégias', p:'Testar ideias em ambiente seguro antes de qualquer centavo real.'}
+       ]},
+      {kind:'honest', label:'Onde está hoje', title:'Honestamente — e isto importa.',
+       items:[
+         'Roda em paper trading / dry-run por padrão: dados sintéticos, ZERO conexão real com a corretora.',
+         '383 testes automatizados; ir "ao vivo" é uma decisão deliberada, travada por configuração.',
+         'Não é aconselhamento financeiro. Trading de cripto tem risco real de perda. Fase de pesquisa.'
+       ]}
+    ],
+    'executagent': [
+      {kind:'cover', line:'Descreva a tarefa. Receba o entregável. Com números que você pode confiar.'},
+      {kind:'lead', label:'A oportunidade', title:'Plataformas de agente prometem o mundo — e inventam métricas pelo caminho.',
+       body:'Muito trabalho corporativo é só isto: descrever o que precisa e esperar um resultado pronto. As ferramentas que automatizam isso costumam falhar feio — sem testes, monolíticas e, pior, apresentando dados fabricados como se fossem medidos.'},
+      {kind:'list', label:'O que ele oferece', title:'Automação fina, real e honesta — por princípio de construção.',
+       items:[
+         {h:'Tarefa em linguagem natural', p:'Você descreve; um roteador escolhe a habilidade certa e o tamanho de modelo (S/M/L) adequado.'},
+         {h:'Entregável validado', p:'A habilidade produz o resultado e um pipeline confere antes de te entregar.'},
+         {h:'Nenhum número inventado', p:'Regra de ouro: toda métrica é medida ou rotulada como estimativa, com o método. Inclui até o custo ambiental.'},
+         {h:'Habilidades componíveis', p:'Cada capacidade é pequena e independente (padrão aberto SKILL.md), não um monólito impossível de manter.'}
+       ]},
+      {kind:'list', label:'Para quem faz sentido', title:'Quem foi queimado por "mágica" de agente.',
+       items:[
+         {h:'Equipes que querem confiança', p:'Resultado com rastro e métricas honestas, não promessa.'},
+         {h:'Quem valoriza engenharia séria', p:'Testes desde o dia um, logs estruturados, observabilidade embutida.'}
+       ]},
+      {kind:'honest', label:'Onde está hoje', title:'Honestamente.',
+       items:[
+         'É um MVP deliberadamente enxuto — construído a partir das lições de uma plataforma anterior que falhou.',
+         'Base moderna (Supabase, TypeScript) com caminho de evolução já documentado.',
+         'O diferencial não é tamanho: é a disciplina de nunca apresentar dado fabricado.'
+       ]}
+    ]
+  };
+
+  // --- Ícones -------------------------------------------------------------
+  var IC = {
+    close:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    prev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+    next:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+    ext:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>',
+    gh:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.92 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>',
+    check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17 19 7"/></svg>'
+  };
+
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // --- Render de cada tipo de slide --------------------------------------
+  function renderSlide(slug, slide, i, total){
+    var p = META[slug] || {};
+    var idx = '<span class="ds-idx mono">'+String(i+1).padStart(2,'0')+' / '+String(total).padStart(2,'0')+'</span>';
+    if(slide.kind === 'cover'){
+      return '<div class="ds ds-cover">'
+        + '<div class="ds-coverhead"><span class="ds-tag mono">'+esc(p.tag||'')+'</span><span class="ds-status mono">'+esc(p.status||'')+'</span></div>'
+        + '<h2 class="ds-name">'+esc(p.name||slug)+'</h2>'
+        + '<p class="ds-line">'+esc(slide.line)+'</p>'
+        + '<div class="ds-coverfoot mono">danzeroum/'+esc(slug)+'</div>'
+        + '</div>';
+    }
+    if(slide.kind === 'lead'){
+      return '<div class="ds ds-lead">'
+        + '<p class="ds-label mono">'+esc(slide.label)+'</p>'
+        + '<h3 class="ds-title">'+esc(slide.title)+'</h3>'
+        + '<p class="ds-body">'+esc(slide.body)+'</p>'
+        + idx + '</div>';
+    }
+    if(slide.kind === 'list'){
+      var items = slide.items.map(function(it){
+        return '<li><strong>'+esc(it.h)+'</strong><span>'+esc(it.p)+'</span></li>';
+      }).join('');
+      return '<div class="ds ds-list">'
+        + '<p class="ds-label mono">'+esc(slide.label)+'</p>'
+        + '<h3 class="ds-title sm">'+esc(slide.title)+'</h3>'
+        + '<ul class="ds-items">'+items+'</ul>'
+        + idx + '</div>';
+    }
+    if(slide.kind === 'honest'){
+      var pts = slide.items.map(function(t){
+        return '<li><span class="ds-chk">'+IC.check+'</span><span>'+esc(t)+'</span></li>';
+      }).join('');
+      return '<div class="ds ds-honest">'
+        + '<p class="ds-label mono">'+esc(slide.label)+'</p>'
+        + '<h3 class="ds-title sm">'+esc(slide.title)+'</h3>'
+        + '<ul class="ds-honestlist">'+pts+'</ul>'
+        + idx + '</div>';
+    }
+    return '';
+  }
+
+  function renderCta(slug, i, total){
+    var p = META[slug] || {};
+    var demo = p.demo ? '<a class="ds-btn primary" href="'+p.demo+'" target="_blank" rel="noopener noreferrer">Ver demo ao vivo '+IC.ext+'</a>' : '';
+    return '<div class="ds ds-cta">'
+      + '<p class="ds-label mono">Veja por conta própria</p>'
+      + '<h3 class="ds-title">Código aberto. Demo no ar. Sem caixa-preta.</h3>'
+      + '<p class="ds-body">Tudo o que você viu está público no GitHub' + (p.demo ? ' — e rodando numa demo que você pode abrir agora.' : '.') + '</p>'
+      + '<div class="ds-ctabtns">' + demo
+      + '<a class="ds-btn ghost" href="'+(p.gh||'#')+'" target="_blank" rel="noopener noreferrer">'+IC.gh+' Ver o código</a>'
+      + '</div>'
+      + '<span class="ds-idx mono">'+String(i+1).padStart(2,'0')+' / '+String(total).padStart(2,'0')+'</span>'
+      + '</div>';
+  }
+
+  // --- Estado + controlador ----------------------------------------------
+  var state = { slug:null, i:0, slides:[], lastFocus:null };
+  var els = {};
+
+  function buildOverlay(){
+    var wrap = document.createElement('div');
+    wrap.className = 'deckwrap';
+    wrap.id = 'deckwrap';
+    wrap.setAttribute('aria-hidden','true');
+    wrap.innerHTML =
+      '<div class="deck-scrim" data-close="1"></div>'
+      + '<div class="deck-panel" role="dialog" aria-modal="true" aria-label="Apresentação do projeto">'
+      +   '<div class="deck-top">'
+      +     '<div class="deck-switch" id="deckSwitch" role="tablist" aria-label="Trocar de projeto"></div>'
+      +     '<button class="deck-x" id="deckX" type="button" aria-label="Fechar apresentação (Esc)">'+IC.close+'</button>'
+      +   '</div>'
+      +   '<div class="deck-stagearea" id="deckStage"></div>'
+      +   '<div class="deck-nav">'
+      +     '<button class="deck-arrow" id="deckPrev" type="button" aria-label="Slide anterior">'+IC.prev+'</button>'
+      +     '<div class="deck-dots" id="deckDots"></div>'
+      +     '<button class="deck-arrow" id="deckNext" type="button" aria-label="Próximo slide">'+IC.next+'</button>'
+      +   '</div>'
+      + '</div>';
+    document.body.appendChild(wrap);
+    els.wrap = wrap;
+    els.panel = wrap.querySelector('.deck-panel');
+    els.stage = wrap.querySelector('#deckStage');
+    els.dots = wrap.querySelector('#deckDots');
+    els.switch = wrap.querySelector('#deckSwitch');
+    els.prev = wrap.querySelector('#deckPrev');
+    els.next = wrap.querySelector('#deckNext');
+
+    els.switch.innerHTML = ORDER.filter(function(s){ return !!DECKS[s]; }).map(function(s){
+      var m = META[s] || {};
+      return '<button class="deck-pill" type="button" role="tab" data-slug="'+s+'">'+esc(m.name||s)+'</button>';
+    }).join('');
+
+    wrap.addEventListener('click', function(e){
+      if(e.target.closest('[data-close]')) close();
+    });
+    els.wrap.querySelector('#deckX').addEventListener('click', close);
+    els.prev.addEventListener('click', function(){ go(state.i-1); });
+    els.next.addEventListener('click', function(){ go(state.i+1); });
+    els.switch.addEventListener('click', function(e){
+      var b = e.target.closest('.deck-pill');
+      if(b) open(b.getAttribute('data-slug'));
+    });
+    document.addEventListener('keydown', function(e){
+      if(!isOpen()) return;
+      if(e.key === 'Escape') close();
+      else if(e.key === 'ArrowRight') go(state.i+1);
+      else if(e.key === 'ArrowLeft') go(state.i-1);
+      else if(e.key === 'Home') go(0);
+      else if(e.key === 'End') go(state.slides.length);
+    });
+  }
+
+  function isOpen(){ return els.wrap && els.wrap.classList.contains('show'); }
+
+  function open(slug){
+    if(!DECKS[slug]) return;
+    if(!isOpen()) state.lastFocus = document.activeElement;
+    state.slug = slug;
+    state.slides = DECKS[slug].slice();
+    state.i = 0;
+    Array.prototype.forEach.call(els.switch.children, function(b){
+      b.classList.toggle('on', b.getAttribute('data-slug') === slug);
+    });
+    var total = state.slides.length + 1;
+    els.dots.innerHTML = '';
+    for(var d=0; d<total; d++){
+      var dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'deck-dot';
+      dot.setAttribute('aria-label','Ir para o slide '+(d+1));
+      (function(n){ dot.addEventListener('click', function(){ go(n); }); })(d);
+      els.dots.appendChild(dot);
+    }
+    els.wrap.classList.add('show');
+    els.wrap.setAttribute('aria-hidden','false');
+    document.documentElement.classList.add('deck-lock');
+    render();
+    els.panel.focus({preventScroll:true});
+  }
+
+  function go(n){
+    var total = state.slides.length + 1;
+    state.i = Math.max(0, Math.min(total-1, n));
+    render();
+  }
+
+  function render(){
+    var total = state.slides.length + 1;
+    var html;
+    if(state.i < state.slides.length){
+      html = renderSlide(state.slug, state.slides[state.i], state.i, total);
+    } else {
+      html = renderCta(state.slug, state.i, total);
+    }
+    els.stage.innerHTML = html;
+    var ds = els.stage.firstElementChild;
+    if(ds){ ds.classList.remove('in'); void ds.offsetWidth; ds.classList.add('in'); }
+    Array.prototype.forEach.call(els.dots.children, function(d, k){
+      d.classList.toggle('on', k === state.i);
+    });
+    els.prev.disabled = state.i === 0;
+    els.next.disabled = state.i === total-1;
+  }
+
+  function close(){
+    if(!isOpen()) return;
+    els.wrap.classList.remove('show');
+    els.wrap.setAttribute('aria-hidden','true');
+    document.documentElement.classList.remove('deck-lock');
+    if(state.lastFocus && state.lastFocus.focus){ try{ state.lastFocus.focus(); }catch(e){} }
+  }
+
+  function wireCards(){
+    var grid = document.getElementById('grid');
+    if(!grid) return;
+    grid.addEventListener('click', function(e){
+      if(e.target.closest('a')) return;
+      var card = e.target.closest('.card');
+      if(card && card.getAttribute('data-slug')) open(card.getAttribute('data-slug'));
+    });
+    grid.addEventListener('keydown', function(e){
+      if(e.key !== 'Enter' && e.key !== ' ') return;
+      if(e.target.closest('a')) return;
+      var card = e.target.closest('.card');
+      if(card && card.getAttribute('data-slug')){ e.preventDefault(); open(card.getAttribute('data-slug')); }
+    });
+  }
+
+  function init(){ buildOverlay(); wireCards(); }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+
+  window.DECKS = DECKS;
+  window.openProjectDeck = open;
+})();
+if(typeof renderGrid==='function'){ try{ renderGrid(typeof projFilter!=='undefined'?projFilter:'featured'); }catch(e){} }
 </script>
 </body>
 </html>
