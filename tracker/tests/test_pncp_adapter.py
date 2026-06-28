@@ -115,20 +115,38 @@ def test_extract_records_list_and_envelope():
     assert PNCPAdapter._extract_records("oops") == []
 
 
-def test_fetch_raw_paginates(pncp_records):
-    # página 1 cheia (== page_size), página 2 vazia → para.
+def test_fetch_raw_single_modalidade(pncp_records):
     session = FakeSession(pages=[pncp_records, []])
-    adapter = PNCPAdapter(page_size=3, max_pages=5, session=session)
+    adapter = PNCPAdapter(max_pages=5, session=session, modalidades=(6,))
     got = list(adapter.fetch_raw())
     assert len(got) == 3
+
+
+def test_fetch_raw_iterates_modalidades_and_sends_required_params(pncp_records):
+    session = FakeSession(pages=[pncp_records])
+    adapter = PNCPAdapter(session=session, modalidades=(6, 8), data_final="20271231")
+    got = list(adapter.fetch_raw())
+    assert len(got) == 6  # 3 por modalidade × 2 modalidades
+    mods = {c["params"]["codigoModalidadeContratacao"] for c in session.calls}
+    assert mods == {6, 8}
+    for c in session.calls:
+        assert c["params"]["tamanhoPagina"] >= 10          # exigência da API
+        assert c["params"]["dataFinal"] == "20271231"
+        assert c["params"]["pagina"] >= 1
+
+
+def test_default_data_final_is_yyyymmdd():
+    adapter = PNCPAdapter(horizon_days=365)
+    df = adapter._default_data_final()
+    assert len(df) == 8 and df.isdigit()
 
 
 def test_collect_filters_by_keyword(pncp_records):
     session = FakeSession(pages=[pncp_records])
     adapter = PNCPAdapter(
         keywords=["tecnologia", "software", "hospedagem"],
-        page_size=50,
         session=session,
+        modalidades=(6,),
     )
     tenders = list(adapter.collect())
     # o item de "material de limpeza/alimentícios" é filtrado fora.
@@ -137,11 +155,24 @@ def test_collect_filters_by_keyword(pncp_records):
     assert all("aliment" not in t.lower() for t in titles)
 
 
+def test_build_canonical_url_from_cnpj_ano_seq():
+    adapter = PNCPAdapter()
+    raw = {
+        "numeroControlePNCP": "X",
+        "objetoCompra": "obj",
+        "orgaoEntidade": {"cnpj": "50853555000154"},
+        "anoCompra": 2024,
+        "sequencialCompra": 169,
+    }
+    t = adapter.parse_tender(raw)
+    assert t.url == "https://pncp.gov.br/app/editais/50853555000154/2024/169"
+
+
 def test_fetch_page_http_error_raises():
     class BadSession:
         def get(self, *a, **k):
             return FakeResponse({}, status_code=500)
 
-    adapter = PNCPAdapter(session=BadSession())
+    adapter = PNCPAdapter(session=BadSession(), modalidades=(6,))
     with pytest.raises(PNCPError):
         list(adapter.fetch_raw())

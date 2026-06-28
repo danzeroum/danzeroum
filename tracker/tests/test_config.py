@@ -39,6 +39,12 @@ def test_base_url_override_when_set():
     assert s.pncp_base_url == "https://example.test/api"
 
 
+def test_modalidades_default_and_override():
+    assert Settings.from_env({}).modalidades == [6, 8]
+    assert Settings.from_env({"TRACKER_MODALIDADES": "6"}).modalidades == [6]
+    assert Settings.from_env({"TRACKER_MODALIDADES": "6, 8, 9"}).modalidades == [6, 8, 9]
+
+
 def test_env_overrides():
     s = Settings.from_env(
         {

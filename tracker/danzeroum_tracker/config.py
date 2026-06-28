@@ -51,6 +51,10 @@ class Settings:
     comprassp_base_url: str = "https://www.bec.sp.gov.br"
     prefsp_base_url: str = "https://e-negocioscidadesp.prefeitura.sp.gov.br"
     sources: list[str] = field(default_factory=lambda: ["pncp"])
+    # Modalidades do PNCP a consultar (6 = Pregão Eletrônico, 8 = Dispensa).
+    modalidades: list[int] = field(default_factory=lambda: [6, 8])
+    # Horizonte (dias) para o dataFinal das propostas em aberto.
+    proposal_horizon_days: int = 365
     uf: str = "SP"
     keywords: list[str] = field(default_factory=lambda: list(DEFAULT_KEYWORDS))
     scorer: str = "heuristic"
@@ -79,6 +83,8 @@ class Settings:
             comprassp_base_url=_env(e, "COMPRAS_SP_BASE_URL", cls.comprassp_base_url),
             prefsp_base_url=_env(e, "PREF_SP_BASE_URL", cls.prefsp_base_url),
             sources=[s.lower() for s in _split_csv(e.get("TRACKER_SOURCES"), ["pncp"])],
+            modalidades=[int(m) for m in _split_csv(e.get("TRACKER_MODALIDADES"), ["6", "8"])],
+            proposal_horizon_days=int(_env(e, "TRACKER_PROPOSAL_HORIZON_DAYS", "365")),
             uf=_env(e, "TRACKER_UF", "SP").upper(),
             keywords=_split_csv(e.get("TRACKER_KEYWORDS"), DEFAULT_KEYWORDS),
             scorer=_env(e, "TRACKER_SCORER", "heuristic"),

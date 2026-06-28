@@ -24,6 +24,7 @@ STATUS_TERMS: dict[str, str] = {
     "aberta": "OPEN",
     "aberto": "OPEN",
     "divulgada": "OPEN",
+    "divulgada no pncp": "OPEN",
     "publicado": "OPEN",
     "publicada": "OPEN",
     "adjudicado": "AWARDED",
