@@ -35,6 +35,15 @@ services:
       TRACKER_SOURCES: ${TRACKER_SOURCES:-pncp}
       COLLECT_INTERVAL_HOURS: ${COLLECT_INTERVAL_HOURS:-24}
       TRACKER_MIN_FIT: ${TRACKER_MIN_FIT:-0.4}
+      # Calibração de endpoint/paginação (vazio = default do app). Ajuste no .env
+      # se a API mudar de caminho/host na primeira execução real.
+      PNCP_BASE_URL: ${PNCP_BASE_URL:-}
+      COMPRAS_GOV_BASE_URL: ${COMPRAS_GOV_BASE_URL:-}
+      COMPRAS_SP_BASE_URL: ${COMPRAS_SP_BASE_URL:-}
+      PREF_SP_BASE_URL: ${PREF_SP_BASE_URL:-}
+      TRACKER_PAGE_SIZE: ${TRACKER_PAGE_SIZE:-}
+      TRACKER_MAX_PAGES: ${TRACKER_MAX_PAGES:-}
+      TRACKER_REQUEST_TIMEOUT: ${TRACKER_REQUEST_TIMEOUT:-}
       # Alertas por e-mail (opt-in). Vazio = no-op. SMTP_PORT tem default p/ não quebrar.
       SMTP_HOST: ${SMTP_HOST:-}
       SMTP_PORT: ${SMTP_PORT:-465}
