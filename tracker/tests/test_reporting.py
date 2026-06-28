@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from danzeroum_tracker.reporting import build_report, render_markdown, render_text
 
 ROWS = [
@@ -70,3 +72,28 @@ def test_empty_report():
     assert r["total"] == 0
     assert "nenhuma oportunidade" in render_text(r).lower()
     assert "Nenhuma oportunidade" in render_markdown(r)
+
+
+def test_render_handles_decimal_fit_from_postgres():
+    # Postgres devolve NUMERIC como Decimal — o Fit não pode virar "—".
+    rows = [
+        {
+            "source": "PNCP",
+            "external_id": "D1",
+            "title": "Outsourcing de impressão",
+            "url": "http://x/d1",
+            "budget_estimate": Decimal("120000.00"),
+            "deadline": "2026-07-15T18:00:00",
+            "fit_score": Decimal("0.72"),
+            "risk_score": Decimal("0.30"),
+            "recommendation": "GO",
+        }
+    ]
+    report = build_report(rows, top_n=10)
+    txt = render_text(report)
+    md = render_markdown(report)
+    assert "fit=0.72" in txt
+    assert "| 0.72 |" in md
+    assert "R$ 120,000.00" in md
+    # ordenação por fit também precisa lidar com Decimal sem explodir
+    assert report["top"][0]["external_id"] == "D1"
