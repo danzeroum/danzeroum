@@ -114,7 +114,13 @@ def cmd_collect(
     notifier = notifier if notifier is not None else build_notifier(settings)
     result = run_collection(adapters, repo, scorer, min_fit_alert=settings.min_fit_alert)
     payload = result.to_dict()
-    payload["notified"] = notifier.notify(payload)
+    # A coleta já está persistida; uma falha no envio de e-mail NÃO pode derrubar
+    # o comando nem esconder o resultado. Captura e segue.
+    try:
+        payload["notified"] = notifier.notify(payload)
+    except Exception as exc:  # noqa: BLE001 - notificação é best-effort
+        payload["notified"] = 0
+        payload["notify_error"] = str(exc)
     _emit(payload, out)
     return 0
 
