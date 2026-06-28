@@ -21,6 +21,7 @@ from typing import TextIO
 
 from danzeroum_tracker import __version__
 from danzeroum_tracker.adapters.base import OrgaoAdapter
+from danzeroum_tracker.adapters.comprasgov import ComprasGovAdapter
 from danzeroum_tracker.adapters.pncp import PNCPAdapter
 from danzeroum_tracker.config import Settings
 from danzeroum_tracker.pipeline import run_collection
@@ -30,18 +31,28 @@ from danzeroum_tracker.storage.base import TenderRepository
 
 
 def build_adapters(settings: Settings, session=None) -> list[OrgaoAdapter]:
-    """V1: apenas PNCP. Novos órgãos entram aqui sem mexer no core."""
-    return [
-        PNCPAdapter(
-            base_url=settings.pncp_base_url,
-            uf=settings.uf,
-            keywords=settings.keywords,
-            page_size=settings.page_size,
-            max_pages=settings.max_pages,
-            timeout=settings.request_timeout,
-            session=session,
-        )
-    ]
+    """Constrói os adaptadores ativos (settings.sources). Novos órgãos entram aqui."""
+    common = dict(
+        uf=settings.uf,
+        keywords=settings.keywords,
+        page_size=settings.page_size,
+        max_pages=settings.max_pages,
+        timeout=settings.request_timeout,
+        session=session,
+    )
+    factories = {
+        "pncp": lambda: PNCPAdapter(base_url=settings.pncp_base_url, **common),
+        "comprasgov": lambda: ComprasGovAdapter(base_url=settings.comprasgov_base_url, **common),
+    }
+    adapters: list[OrgaoAdapter] = []
+    for name in settings.sources:
+        factory = factories.get(name)
+        if factory is None:
+            raise ValueError(
+                f"fonte desconhecida: {name!r} (disponíveis: {', '.join(factories)})"
+            )
+        adapters.append(factory())
+    return adapters
 
 
 def _emit(data, out: TextIO) -> None:

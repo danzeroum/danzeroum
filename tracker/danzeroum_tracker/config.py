@@ -37,6 +37,8 @@ class Settings:
 
     database_url: str = ""
     pncp_base_url: str = "https://pncp.gov.br/api/consulta/v1"
+    comprasgov_base_url: str = "https://dadosabertos.compras.gov.br"
+    sources: list[str] = field(default_factory=lambda: ["pncp"])
     uf: str = "SP"
     keywords: list[str] = field(default_factory=lambda: list(DEFAULT_KEYWORDS))
     scorer: str = "heuristic"
@@ -52,6 +54,8 @@ class Settings:
         return cls(
             database_url=e.get("DATABASE_URL", ""),
             pncp_base_url=e.get("PNCP_BASE_URL", cls.pncp_base_url),
+            comprasgov_base_url=e.get("COMPRAS_GOV_BASE_URL", cls.comprasgov_base_url),
+            sources=[s.lower() for s in _split_csv(e.get("TRACKER_SOURCES"), ["pncp"])],
             uf=e.get("TRACKER_UF", "SP").upper(),
             keywords=_split_csv(e.get("TRACKER_KEYWORDS"), DEFAULT_KEYWORDS),
             scorer=e.get("TRACKER_SCORER", "heuristic"),
