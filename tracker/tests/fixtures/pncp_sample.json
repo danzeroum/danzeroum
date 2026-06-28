@@ -1,0 +1,31 @@
+[
+  {
+    "numeroControlePNCP": "00000000000191-1-000001/2026",
+    "objetoCompra": "Contratação de empresa especializada em suporte técnico e manutenção de equipamentos de tecnologia da informação",
+    "descricaoCompleta": "Suporte técnico remoto e presencial, manutenção preventiva e corretiva. Exige atestado de capacidade técnica e certidão negativa de débitos.",
+    "situacaoCompraNome": "Divulgada",
+    "valorTotalEstimado": 120000.00,
+    "dataPublicacaoPncp": "2026-06-01T09:00:00",
+    "dataEncerramentoProposta": "2026-12-30T18:00:00",
+    "unidadeOrgao": { "ufSigla": "SP" },
+    "linkSistemaOrigem": "https://pncp.gov.br/app/editais/00000000000191/2026/1"
+  },
+  {
+    "numeroControlePNCP": "00000000000272-1-000002/2026",
+    "objetoCompra": "Aquisição de licenças de software e serviço de hospedagem em nuvem (data center)",
+    "situacaoCompraNome": "Recebendo Propostas",
+    "valorTotalEstimado": 480000.00,
+    "dataPublicacaoPncp": "2026-06-10T10:00:00",
+    "dataEncerramentoProposta": "2026-12-31T17:00:00",
+    "unidadeOrgao": { "ufSigla": "SP" }
+  },
+  {
+    "numeroControlePNCP": "00000000000353-1-000003/2026",
+    "objetoCompra": "Aquisição de material de limpeza e gêneros alimentícios",
+    "situacaoCompraNome": "Divulgada",
+    "valorTotalEstimado": 30000.00,
+    "dataPublicacaoPncp": "2026-06-12T08:00:00",
+    "dataEncerramentoProposta": "2026-12-20T17:00:00",
+    "unidadeOrgao": { "ufSigla": "SP" }
+  }
+]

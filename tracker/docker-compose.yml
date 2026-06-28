@@ -1,0 +1,39 @@
+# Stack ISOLADO do rastreador — separado do docker-compose.yml do site (raiz).
+# Sobe um PostgreSQL e o coletor em loop de baixa frequência (poucos acessos/dia).
+#
+#   cd tracker && cp .env.example .env && docker compose up -d --build
+#
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-danzeroum}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-danzeroum}
+      POSTGRES_DB: ${POSTGRES_DB:-oportunidades}
+    volumes:
+      - tracker_pgdata:/var/lib/postgresql/data
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-danzeroum} -d ${POSTGRES_DB:-oportunidades}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  tracker:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-danzeroum}:${POSTGRES_PASSWORD:-danzeroum}@db:5432/${POSTGRES_DB:-oportunidades}
+      TRACKER_UF: ${TRACKER_UF:-SP}
+      TRACKER_KEYWORDS: ${TRACKER_KEYWORDS:-}
+      TRACKER_SCORER: ${TRACKER_SCORER:-heuristic}
+      COLLECT_INTERVAL_HOURS: ${COLLECT_INTERVAL_HOURS:-24}
+      TRACKER_MIN_FIT: ${TRACKER_MIN_FIT:-0.4}
+    command: ["schedule"]
+
+volumes:
+  tracker_pgdata:
