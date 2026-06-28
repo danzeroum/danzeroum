@@ -50,6 +50,22 @@ ORDER BY created_at DESC
 LIMIT %(limit)s;
 """
 
+_LIST_SCORED = """
+SELECT t.id, t.source, t.external_id, t.title, t.status, t.category,
+       t.budget_estimate, t.deadline, t.url, t.uf,
+       s.fit_score, s.risk_score, s.recommendation
+FROM tenders t
+LEFT JOIN LATERAL (
+    SELECT fit_score, risk_score, recommendation
+    FROM tender_scores ts
+    WHERE ts.tender_id = t.id
+    ORDER BY ts.analyzed_at DESC
+    LIMIT 1
+) s ON TRUE
+ORDER BY s.fit_score DESC NULLS LAST, t.created_at DESC
+LIMIT %(limit)s;
+"""
+
 
 class PostgresRepository(TenderRepository):
     def __init__(self, database_url: str) -> None:
@@ -91,6 +107,13 @@ class PostgresRepository(TenderRepository):
     def list_tenders(self, limit: int = 50) -> list[dict]:
         with self._connect() as conn, conn.cursor() as cur:
             cur.execute(_LIST, {"limit": limit})
+            cols = [d.name for d in cur.description]
+            rows = cur.fetchall()
+        return [dict(zip(cols, row, strict=True)) for row in rows]
+
+    def list_scored(self, limit: int = 50) -> list[dict]:
+        with self._connect() as conn, conn.cursor() as cur:
+            cur.execute(_LIST_SCORED, {"limit": limit})
             cols = [d.name for d in cur.description]
             rows = cur.fetchall()
         return [dict(zip(cols, row, strict=True)) for row in rows]

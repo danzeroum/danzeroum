@@ -14,7 +14,8 @@ single-tenant (só Danzeroum). Desenho para crescer — ver `../docs/buscador-op
 - **Scorer heurístico** (sem LLM, sem custo, sem chave de API) — interface agnóstica,
   pronta para plugar OpenAI/Gemini/Claude/Ollama numa rodada futura.
 - **PostgreSQL** com dedupe por `(source, external_id)` e schema versionado (`sql/schema.sql`).
-- **CLI** (`schema`, `search`, `collect`, `list`, `schedule`) e loop de agendamento para Docker.
+- **CLI** (`schema`, `search`, `collect`, `list`, `report`, `schedule`) e loop de agendamento.
+- **Relatório** (`report`) e **alertas por e-mail** (opt-in via SMTP; no-op se não configurado).
 
 > Arquitetura hexagonal: o core só conhece as interfaces (`OrgaoAdapter`, `Scorer`,
 > `TenderRepository`). Novos órgãos ou um provedor de LLM entram sem mexer no núcleo.
@@ -40,7 +41,15 @@ python -m danzeroum_tracker schema            # imprime o JSON Schema do scorer
 python -m danzeroum_tracker search --limit 10 # busca + pontua (não persiste)
 DATABASE_URL=postgresql://danzeroum:danzeroum@localhost:5432/oportunidades \
   python -m danzeroum_tracker collect         # coleta + dedupe + score + persiste
+
+python -m danzeroum_tracker report --format md   # relatório (text|md|json)
 ```
+
+## Alertas por e-mail (opcional)
+
+Se `SMTP_HOST` e `MAIL_TO` estiverem definidos (mesmas variáveis do site), o `collect`/
+`schedule` envia um e-mail com as oportunidades de alta aderência (`fit ≥ TRACKER_MIN_FIT`
+e recomendação ≠ `SKIP`). **Sem SMTP configurado, é no-op** — nada é enviado.
 
 ## Configuração (variáveis de ambiente)
 
@@ -57,6 +66,9 @@ DATABASE_URL=postgresql://danzeroum:danzeroum@localhost:5432/oportunidades \
 | `TRACKER_SCORER` | `heuristic` | Scorer ativo. |
 | `COLLECT_INTERVAL_HOURS` | `24` | Frequência do loop `schedule`. |
 | `TRACKER_MIN_FIT` | `0.4` | Aderência mínima para gerar alerta. |
+| `SMTP_HOST` / `MAIL_TO` | *(vazio)* | Defina ambos para ativar alertas por e-mail (senão no-op). |
+| `SMTP_PORT` / `SMTP_ENCRYPTION` | `465` / `ssl` | Porta e criptografia (`ssl`/`tls`). |
+| `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM` | *(vazio)* | Credenciais e remetente. |
 
 ## Testes
 

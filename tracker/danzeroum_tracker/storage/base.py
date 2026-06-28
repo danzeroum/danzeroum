@@ -26,5 +26,9 @@ class TenderRepository(ABC):
         """Lista editais (mais recentes primeiro)."""
 
     @abstractmethod
+    def list_scored(self, limit: int = 50) -> list[dict]:
+        """Lista editais com o score mais recente (fit/risk/recommendation), por fit desc."""
+
+    @abstractmethod
     def count(self) -> int:
         """Total de editais armazenados."""

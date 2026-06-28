@@ -49,6 +49,15 @@ class Settings:
     page_size: int = 50
     max_pages: int = 5
     request_timeout: int = 30
+    # SMTP (alertas por e-mail) — mesmas variáveis do site. Vazio = no-op.
+    smtp_host: str = ""
+    smtp_port: int = 465
+    smtp_user: str = ""
+    smtp_pass: str = ""
+    smtp_from: str = ""
+    smtp_from_name: str = "Rastreador Danzeroum"
+    smtp_encryption: str = "ssl"
+    mail_to: str = ""
 
     @classmethod
     def from_env(cls, env: dict[str, str] | None = None) -> Settings:
@@ -68,4 +77,12 @@ class Settings:
             page_size=int(e.get("TRACKER_PAGE_SIZE", "50")),
             max_pages=int(e.get("TRACKER_MAX_PAGES", "5")),
             request_timeout=int(e.get("TRACKER_REQUEST_TIMEOUT", "30")),
+            smtp_host=e.get("SMTP_HOST", ""),
+            smtp_port=int(e.get("SMTP_PORT", "465")),
+            smtp_user=e.get("SMTP_USER", ""),
+            smtp_pass=e.get("SMTP_PASS", ""),
+            smtp_from=e.get("SMTP_FROM", ""),
+            smtp_from_name=e.get("SMTP_FROM_NAME", "Rastreador Danzeroum"),
+            smtp_encryption=e.get("SMTP_ENCRYPTION", "ssl"),
+            mail_to=e.get("MAIL_TO", ""),
         )

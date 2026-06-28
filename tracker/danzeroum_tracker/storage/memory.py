@@ -33,6 +33,22 @@ class InMemoryRepository(TenderRepository):
     def list_tenders(self, limit: int = 50) -> list[dict]:
         return list(self._tenders.values())[:limit]
 
+    def list_scored(self, limit: int = 50) -> list[dict]:
+        out = []
+        for rec in self._tenders.values():
+            scores = self._scores.get(rec["id"], [])
+            latest = scores[-1] if scores else {}
+            out.append(
+                {
+                    **rec,
+                    "fit_score": latest.get("fit_score"),
+                    "risk_score": latest.get("risk_score"),
+                    "recommendation": latest.get("recommendation"),
+                }
+            )
+        out.sort(key=lambda r: (r.get("fit_score") or 0.0), reverse=True)
+        return out[:limit]
+
     def count(self) -> int:
         return len(self._tenders)
 
