@@ -1,16 +1,19 @@
 """Adaptador PNCP (Portal Nacional de Contratações Públicas).
 
-A API de consulta do PNCP filtra por modalidade/data/UF, não por palavra-chave,
-então a filtragem por palavra-chave é feita no cliente, sobre o objeto do edital.
+Usa o endpoint ``/contratacoes/proposta`` (contratações com **recebimento de
+propostas em aberto** — o que interessa para concorrer). A API exige:
+``dataFinal`` (AAAAMMDD), ``codigoModalidadeContratacao``, ``uf``, ``pagina`` e
+``tamanhoPagina`` (≥ 10). Como a API aceita só uma modalidade por requisição,
+o adaptador itera pelas modalidades configuradas (6 = Pregão Eletrônico, 8 =
+Dispensa). A filtragem por palavra-chave é feita no cliente, sobre o objeto.
 
-O ``parse_tender`` é resiliente: aceita variações de nomes de campo (camelCase da
-API real e snake_case) porque o contrato exato pode mudar entre versões da API.
 A coleta de rede fica isolada em ``fetch_raw``; o parsing é puro (testável offline).
 """
 
 from __future__ import annotations
 
 from collections.abc import Iterable, Iterator
+from datetime import date, timedelta
 from typing import Any
 
 import requests
@@ -57,30 +60,44 @@ class PNCPAdapter(OrgaoAdapter):
         max_pages: int = 5,
         timeout: int = 30,
         session: requests.Session | None = None,
-        endpoint: str = "/contratacoes/publicacao",
+        endpoint: str = "/contratacoes/proposta",
+        modalidades: Iterable[int] | None = None,
+        horizon_days: int = 365,
+        data_final: str | None = None,
     ) -> None:
         self.base_url = base_url.rstrip("/")
         self.uf = uf.upper()
         self.keywords = list(keywords) if keywords is not None else []
-        self.page_size = page_size
+        # A API exige tamanhoPagina >= 10.
+        self.page_size = max(int(page_size), 10)
         self.max_pages = max_pages
         self.timeout = timeout
         self.endpoint = endpoint
+        self.modalidades = list(modalidades) if modalidades is not None else [6, 8]
+        self.horizon_days = horizon_days
+        self._data_final = data_final
         self._session = session or requests.Session()
 
     # ── rede (isolada) ──────────────────────────────────────────────────────
-    def fetch_raw(self) -> Iterable[dict[str, Any]]:
-        for page in range(1, self.max_pages + 1):
-            payload = self._fetch_page(page)
-            records = self._extract_records(payload)
-            if not records:
-                break
-            yield from records
-            if len(records) < self.page_size:
-                break
+    def _default_data_final(self) -> str:
+        return (date.today() + timedelta(days=self.horizon_days)).strftime("%Y%m%d")
 
-    def _fetch_page(self, page: int) -> dict[str, Any]:
+    def fetch_raw(self) -> Iterable[dict[str, Any]]:
+        data_final = self._data_final or self._default_data_final()
+        for modalidade in self.modalidades:
+            for page in range(1, self.max_pages + 1):
+                payload = self._fetch_page(modalidade, page, data_final)
+                records = self._extract_records(payload)
+                if not records:
+                    break
+                yield from records
+                if len(records) < self.page_size:
+                    break
+
+    def _fetch_page(self, modalidade: int, page: int, data_final: str) -> dict[str, Any]:
         params = {
+            "dataFinal": data_final,
+            "codigoModalidadeContratacao": modalidade,
             "uf": self.uf,
             "pagina": page,
             "tamanhoPagina": self.page_size,
@@ -95,9 +112,11 @@ class PNCPAdapter(OrgaoAdapter):
             resp.raise_for_status()
             return resp.json()
         except requests.RequestException as exc:
-            raise PNCPError(f"falha ao consultar PNCP (página {page}): {exc}") from exc
+            raise PNCPError(
+                f"falha ao consultar PNCP (modalidade {modalidade}, página {page}): {exc}"
+            ) from exc
         except ValueError as exc:
-            raise PNCPError(f"resposta inválida do PNCP (página {page}): {exc}") from exc
+            raise PNCPError(f"resposta inválida do PNCP (modalidade {modalidade}): {exc}") from exc
 
     @staticmethod
     def _extract_records(payload: Any) -> list[dict[str, Any]]:
@@ -136,11 +155,23 @@ class PNCPAdapter(OrgaoAdapter):
                     "dataAberturaProposta",
                 )
             ),
-            url=first(raw, "linkSistemaOrigem", "url_edital", "url")
-            or f"https://pncp.gov.br/app/editais?q={external_id}",
+            url=self._build_url(raw, str(external_id)),
             uf=str(uf).upper() if uf else None,
             raw_json=raw,
         )
+
+    @staticmethod
+    def _build_url(raw: dict[str, Any], external_id: str) -> str:
+        link = first(raw, "linkSistemaOrigem", "url_edital", "url")
+        if link:
+            return str(link)
+        orgao = raw.get("orgaoEntidade") if isinstance(raw.get("orgaoEntidade"), dict) else {}
+        cnpj = orgao.get("cnpj")
+        ano = raw.get("anoCompra")
+        seq = raw.get("sequencialCompra")
+        if cnpj and ano and seq:
+            return f"https://pncp.gov.br/app/editais/{cnpj}/{ano}/{seq}"
+        return f"https://pncp.gov.br/app/editais?q={external_id}"
 
     def collect(self) -> Iterator[Tender]:
         """Coleta + filtro por palavra-chave (a API não filtra por palavra)."""

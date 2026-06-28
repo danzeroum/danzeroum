@@ -44,7 +44,12 @@ def build_adapters(settings: Settings, session=None) -> list[OrgaoAdapter]:
         session=session,
     )
     factories = {
-        "pncp": lambda: PNCPAdapter(base_url=settings.pncp_base_url, **common),
+        "pncp": lambda: PNCPAdapter(
+            base_url=settings.pncp_base_url,
+            modalidades=settings.modalidades,
+            horizon_days=settings.proposal_horizon_days,
+            **common,
+        ),
         "comprasgov": lambda: ComprasGovAdapter(base_url=settings.comprasgov_base_url, **common),
         "comprassp": lambda: ComprasSPAdapter(base_url=settings.comprassp_base_url, **common),
         "prefsp": lambda: PrefeituraSPAdapter(base_url=settings.prefsp_base_url, **common),
