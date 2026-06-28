@@ -12,6 +12,27 @@
 <meta property="og:title" content="Daniel Lau — Engenheiro de Produto &amp; Desenvolvedor">
 <meta property="og:description" content="Construo projetos próprios de IA e produto — da ideia ao deploy. Código público no GitHub e demo ao vivo.">
 <meta property="og:type" content="website">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Danzeroum Tecnologia da Informação",
+  "legalName": "Danzeroum Tecnologia da Informação LTDA",
+  "taxID": "35.674.569/0001-17",
+  "foundingDate": "2019-12-02",
+  "url": "https://danzeroum.com",
+  "email": "contato@danzeroum.com",
+  "sameAs": ["https://github.com/danzeroum", "https://www.linkedin.com/in/daniel-lau-pereira-soares"],
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Rua São Fidélis, 142",
+    "addressLocality": "São Paulo",
+    "addressRegion": "SP",
+    "postalCode": "05335-100",
+    "addressCountry": "BR"
+  }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -377,6 +398,11 @@ html.dark .deck-scrim{background:color-mix(in srgb,#000 80%,transparent)}
 .footer-bottom{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-top:clamp(32px,4vw,44px);padding-top:22px;border-top:1px solid var(--line)}
 .footer-bottom p{font-family:'IBM Plex Mono',monospace;font-size:.74rem;color:var(--faint)}
 @media(min-width:760px){ .footer-grid{grid-template-columns:2fr 1fr 1fr} }
+.footer-legal{margin-top:18px;padding-top:18px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:space-between;align-items:baseline}
+.footer-legal p{font-family:'IBM Plex Mono',monospace;font-size:.72rem;line-height:1.5;color:var(--faint)}
+.footer-legal strong{color:var(--muted);font-weight:500}
+@media(max-width:600px){.footer-legal{flex-direction:column;gap:4px}}
+.about .legal-note{font-size:.86rem;color:var(--faint);margin-top:10px}
 
 /* ---------- WhatsApp + formulário de contato ---------- */
 .btn-wa{background:#25d366;color:#0a2e14}
@@ -682,6 +708,7 @@ html.dark .deck-scrim{background:color-mix(in srgb,#000 80%,transparent)}
           <b>Daniel Lau</b>
         </a>
         <p>Engenheiro de produto e desenvolvedor. Construo meus próprios projetos de IA e produto — todos com código público no GitHub.</p>
+        <p class="legal-note">Projetos desenvolvidos sob a Danzeroum Tecnologia da Informação, empresa ativa desde 2019, com sede em São Paulo.</p>
       </div>
       <div>
         <h4>Navegação</h4>
@@ -701,6 +728,10 @@ html.dark .deck-scrim{background:color-mix(in srgb,#000 80%,transparent)}
     <div class="footer-bottom">
       <p>© 2026 Daniel Lau Pereira Soares</p>
       <p>Feito com código · SP, Brasil</p>
+    </div>
+    <div class="footer-legal">
+      <p><strong>Danzeroum Tecnologia da Informação LTDA</strong> · CNPJ 35.674.569/0001-17 · CNPJ ativo desde 2019</p>
+      <p>São Paulo/SP, Brasil</p>
     </div>
   </div>
 </footer>
