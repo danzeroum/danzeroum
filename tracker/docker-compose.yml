@@ -3,6 +3,7 @@
 #
 #   cd tracker && cp .env.example .env && docker compose up -d --build
 #
+name: danzeroum-tracker
 services:
   db:
     image: postgres:16-alpine

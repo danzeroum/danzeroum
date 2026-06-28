@@ -1,0 +1,42 @@
+name: Serviços — validação
+
+# Valida a definição de TODOS os serviços Docker (site + tracker) de forma uniforme.
+# Roda 'docker compose config' (parse + checagem de referências). Não faz deploy.
+on:
+  push:
+    branches:
+      - main
+      - 'claude/**'
+    paths:
+      - 'docker-compose.yml'
+      - 'docker/**'
+      - 'tracker/docker-compose.yml'
+      - '.github/workflows/services_ci.yml'
+  pull_request:
+    paths:
+      - 'docker-compose.yml'
+      - 'docker/**'
+      - 'tracker/docker-compose.yml'
+      - '.github/workflows/services_ci.yml'
+
+concurrency:
+  group: services-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Valida o compose do site
+        run: |
+          # o compose do site usa env_file: .env — cria um a partir do exemplo.
+          cp .env.example .env
+          docker compose -f docker-compose.yml config -q
+          echo "✓ site OK"
+
+      - name: Valida o compose do tracker
+        run: |
+          docker compose -f tracker/docker-compose.yml config -q
+          echo "✓ tracker OK"

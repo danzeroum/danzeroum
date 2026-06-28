@@ -3,6 +3,7 @@
 # Clonar em /opt/btv/danzeroum e subir com: docker compose up -d
 # O ingress (/opt/btv/ingress) faz proxy para o serviço danzeroum-frontend:80.
 # ============================================================
+name: danzeroum-site
 services:
   danzeroum-frontend:
     image: nginx:1.27-alpine
@@ -11,6 +12,11 @@ services:
     volumes:
       - ./public:/var/www/html:ro
       - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     depends_on:
       - danzeroum-php
     networks:
