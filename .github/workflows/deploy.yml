@@ -1,17 +1,19 @@
 name: Deploy para o VPS (Docker)
 
-# A cada push no main, atualiza o projeto no VPS e sobe os containers.
-# O site roda como serviço Docker em /opt/btv/danzeroum, atrás do ingress.
+# A cada push no main, atualiza o projeto no VPS e sobe TODOS os serviços:
+#   - site comercial      → docker-compose.yml (raiz)
+#   - rastreador/licitações → tracker/docker-compose.yml
+# Pula com aviso (sem falhar) se os secrets SSH ainda não estiverem configurados.
 on:
   push:
     branches: [main]
     paths-ignore:
       - 'crm/**'
       - 'scripts/**'
-      - 'tracker/**'
       - 'docs/**'
       - '.github/workflows/crm_collect.yml'
       - '.github/workflows/tracker_ci.yml'
+      - '.github/workflows/services_ci.yml'
       - 'README.md'
   workflow_dispatch:
 
@@ -23,24 +25,49 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Verifica secrets de deploy
+        id: gate
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          if [ -z "$SSH_KEY" ] || [ -z "$SSH_HOST" ]; then
+            echo "::warning::Secrets SSH_PRIVATE_KEY/SSH_HOST ausentes — deploy pulado. \
+Configure os secrets (SSH_PRIVATE_KEY, SSH_HOST, SSH_USER, SSH_PORT, APP_DIR) para habilitar."
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Carrega a chave SSH
+        if: steps.gate.outputs.deploy == 'true'
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Confia no host (known_hosts)
-        run: |
-          mkdir -p ~/.ssh
-          PORT="${{ secrets.SSH_PORT }}"
-          ssh-keyscan -p "${PORT:-22}" -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
-
-      - name: git pull + docker compose up no VPS
+        if: steps.gate.outputs.deploy == 'true'
         env:
           SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p "${SSH_PORT:-22}" -H "$SSH_HOST" >> ~/.ssh/known_hosts
+
+      - name: git pull + sobe todos os serviços no VPS
+        if: steps.gate.outputs.deploy == 'true'
+        env:
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
           APP_DIR: ${{ secrets.APP_DIR }}
         run: |
-          ssh -p "${SSH_PORT:-22}" "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+          ssh -p "${SSH_PORT:-22}" "${SSH_USER}@${SSH_HOST}" \
             "set -e; cd \"${APP_DIR:-/opt/btv/danzeroum}\" && \
              git pull --ff-only && \
+             echo '── site ──' && \
              docker compose up -d --remove-orphans && \
-             docker compose ps"
+             docker compose ps && \
+             echo '── tracker ──' && \
+             docker compose -f tracker/docker-compose.yml up -d --build --remove-orphans && \
+             docker compose -f tracker/docker-compose.yml ps"
