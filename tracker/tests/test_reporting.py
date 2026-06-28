@@ -97,3 +97,26 @@ def test_render_handles_decimal_fit_from_postgres():
     assert "R$ 120,000.00" in md
     # ordenação por fit também precisa lidar com Decimal sem explodir
     assert report["top"][0]["external_id"] == "D1"
+
+
+def test_money_undisclosed_value_renders_dash():
+    # Valor 0 ou ausente = sigiloso/não informado no PNCP → "—", não "R$ 0,00".
+    rows = [
+        {
+            "source": "COMPRAS_GOV",
+            "external_id": "Z1",
+            "title": "Sistema de segurança Next-Generation",
+            "url": "http://x/z1",
+            "budget_estimate": 0.0,
+            "deadline": "2026-07-14T10:00:00",
+            "fit_score": 1.0,
+            "risk_score": 0.4,
+            "recommendation": "GO",
+        }
+    ]
+    md = render_markdown(build_report(rows, top_n=10))
+    txt = render_text(build_report(rows, top_n=10))
+    assert "R$ 0.00" not in md
+    assert "R$ 0.00" not in txt
+    # célula de valor vira travessão
+    assert "| — |" in md

@@ -41,9 +41,14 @@ def _iso(value: Any) -> str | None:
 
 def _money(value: Any) -> str:
     try:
-        return f"R$ {float(value):,.2f}"
+        v = float(value)
     except (TypeError, ValueError):
         return "—"
+    # PNCP/Comprasnet devolve 0 quando o valor estimado é sigiloso/não divulgado.
+    # Exibir "R$ 0,00" enganaria; mostramos "—" (não informado).
+    if v <= 0:
+        return "—"
+    return f"R$ {v:,.2f}"
 
 
 def _fit(value: Any) -> str:
