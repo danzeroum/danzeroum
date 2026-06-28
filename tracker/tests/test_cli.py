@@ -100,6 +100,30 @@ def test_cmd_collect_invokes_notifier(sample_tenders):
     assert len(notifier.calls) == 1
 
 
+class _ExplodingNotifier:
+    def notify(self, result):
+        raise RuntimeError("SMTP auth failed")
+
+
+def test_cmd_collect_survives_notifier_failure(sample_tenders):
+    repo = InMemoryRepository()
+    buf = io.StringIO()
+    rc = cli.cmd_collect(
+        _settings(),
+        repo=repo,
+        adapters=[StubAdapter(sample_tenders)],
+        scorer=HeuristicScorer(),
+        notifier=_ExplodingNotifier(),
+        out=buf,
+    )
+    assert rc == 0                       # não derruba o comando
+    out = json.loads(buf.getvalue())     # resultado ainda é emitido
+    assert out["new"] == 2
+    assert out["notified"] == 0
+    assert "SMTP auth failed" in out["notify_error"]
+    assert repo.count() == 2             # dados persistidos apesar do erro de e-mail
+
+
 def test_cmd_report_text_and_json(sample_tenders):
     repo = InMemoryRepository()
     cli.cmd_collect(
