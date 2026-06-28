@@ -32,8 +32,7 @@ jobs:
           SSH_HOST: ${{ secrets.SSH_HOST }}
         run: |
           if [ -z "$SSH_KEY" ] || [ -z "$SSH_HOST" ]; then
-            echo "::warning::Secrets SSH_PRIVATE_KEY/SSH_HOST ausentes — deploy pulado. \
-Configure os secrets (SSH_PRIVATE_KEY, SSH_HOST, SSH_USER, SSH_PORT, APP_DIR) para habilitar."
+            echo "::warning::Secrets SSH ausentes (SSH_PRIVATE_KEY/SSH_HOST) - deploy pulado. Configure SSH_PRIVATE_KEY, SSH_HOST, SSH_USER, SSH_PORT, APP_DIR para habilitar."
             echo "deploy=false" >> "$GITHUB_OUTPUT"
           else
             echo "deploy=true" >> "$GITHUB_OUTPUT"
