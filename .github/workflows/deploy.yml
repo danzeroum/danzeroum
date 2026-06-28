@@ -8,7 +8,10 @@ on:
     paths-ignore:
       - 'crm/**'
       - 'scripts/**'
+      - 'tracker/**'
+      - 'docs/**'
       - '.github/workflows/crm_collect.yml'
+      - '.github/workflows/tracker_ci.yml'
       - 'README.md'
   workflow_dispatch:
 
