@@ -26,6 +26,8 @@ class FakeResponse:
         self._payload = payload
         self.status_code = status_code
         self.headers: dict[str, str] = {}
+        # Suporta tanto JSON (.json()) quanto HTML (.text).
+        self.text = payload if isinstance(payload, str) else ""
 
     def json(self) -> Any:
         return self._payload

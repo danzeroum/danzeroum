@@ -23,6 +23,7 @@ from danzeroum_tracker import __version__
 from danzeroum_tracker.adapters.base import OrgaoAdapter
 from danzeroum_tracker.adapters.comprasgov import ComprasGovAdapter
 from danzeroum_tracker.adapters.pncp import PNCPAdapter
+from danzeroum_tracker.adapters.scraper import ComprasSPAdapter, PrefeituraSPAdapter
 from danzeroum_tracker.config import Settings
 from danzeroum_tracker.pipeline import run_collection
 from danzeroum_tracker.scoring import SCORE_SCHEMA, Scorer, get_scorer
@@ -43,6 +44,8 @@ def build_adapters(settings: Settings, session=None) -> list[OrgaoAdapter]:
     factories = {
         "pncp": lambda: PNCPAdapter(base_url=settings.pncp_base_url, **common),
         "comprasgov": lambda: ComprasGovAdapter(base_url=settings.comprasgov_base_url, **common),
+        "comprassp": lambda: ComprasSPAdapter(base_url=settings.comprassp_base_url, **common),
+        "prefsp": lambda: PrefeituraSPAdapter(base_url=settings.prefsp_base_url, **common),
     }
     adapters: list[OrgaoAdapter] = []
     for name in settings.sources:

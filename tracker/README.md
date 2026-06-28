@@ -7,8 +7,9 @@ single-tenant (só Danzeroum). Desenho para crescer — ver `../docs/buscador-op
 
 ## O que a V1 entrega
 
-- **Adaptadores PNCP e Compras.gov.br** (ambos via API, parsing resiliente e filtro
-  por palavra-chave). Helpers de parsing compartilhados em `adapters/common.py`.
+- **Adaptadores**: PNCP e Compras.gov.br (via API) + Compras SP e Prefeitura SP
+  (via **scraping** HTML, com seletores CSS marcados como "a confirmar"). Helpers de
+  parsing compartilhados em `adapters/common.py`; scraping genérico em `adapters/scraper.py`.
   Fontes ativas controladas por `TRACKER_SOURCES` (default `pncp`).
 - **Scorer heurístico** (sem LLM, sem custo, sem chave de API) — interface agnóstica,
   pronta para plugar OpenAI/Gemini/Claude/Ollama numa rodada futura.
@@ -48,7 +49,9 @@ DATABASE_URL=postgresql://danzeroum:danzeroum@localhost:5432/oportunidades \
 | `DATABASE_URL` | *(vazio → memória)* | Conexão PostgreSQL. Vazio usa repositório em memória. |
 | `PNCP_BASE_URL` | `https://pncp.gov.br/api/consulta/v1` | Base da API do PNCP. |
 | `COMPRAS_GOV_BASE_URL` | `https://dadosabertos.compras.gov.br` | Base da API do Compras.gov.br. |
-| `TRACKER_SOURCES` | `pncp` | Fontes ativas (CSV): `pncp`, `comprasgov`. |
+| `COMPRAS_SP_BASE_URL` | `https://www.bec.sp.gov.br` | Base do portal Compras SP (scraping). |
+| `PREF_SP_BASE_URL` | `https://e-negocioscidadesp.prefeitura.sp.gov.br` | Base do portal Prefeitura SP (scraping). |
+| `TRACKER_SOURCES` | `pncp` | Fontes (CSV): `pncp`, `comprasgov`, `comprassp`, `prefsp`. |
 | `TRACKER_UF` | `SP` | UF de busca. |
 | `TRACKER_KEYWORDS` | *(perfil de TI)* | CSV de palavras-chave; vazio usa o default embutido. |
 | `TRACKER_SCORER` | `heuristic` | Scorer ativo. |
