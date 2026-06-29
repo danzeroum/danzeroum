@@ -22,7 +22,7 @@ def list_proposals(conn: Conn, status: str | None = None):
     q += " ORDER BY p.submitted_at DESC NULLS LAST"
     rows = conn.execute(q, params).fetchall()
     cols = ["id","tender_id","tender_title","status","price_offered","validity_days","version","notes","submitted_at"]
-    return [ProposalOut(**{k: float(v) if k=="price_offered" and v is not None else v for k,v in zip(cols,r)}) for r in rows]
+    return [ProposalOut(**{k: float(v) if k=="price_offered" and v is not None else v for k,v in r.items()}) for r in rows]
 
 @router.post("", response_model=ProposalOut, status_code=201)
 def create_proposal(body: ProposalCreate, conn: Conn):
@@ -34,7 +34,7 @@ def create_proposal(body: ProposalCreate, conn: Conn):
     conn.commit()
     row = conn.execute(f"SELECT {_COLS} FROM proposals p LEFT JOIN tenders t ON t.id=p.tender_id WHERE p.id=%s", [prop_id]).fetchone()
     cols = ["id","tender_id","tender_title","status","price_offered","validity_days","version","notes","submitted_at"]
-    return ProposalOut(**{k: float(v) if k=="price_offered" and v is not None else v for k,v in zip(cols,row)})
+    return ProposalOut(**{k: float(v) if k=="price_offered" and v is not None else v for k,v in row.items()})
 
 @router.patch("/{prop_id}/status", response_model=ProposalOut)
 def patch_proposal_status(prop_id: str, body: ProposalStatusPatch, conn: Conn):
@@ -44,7 +44,7 @@ def patch_proposal_status(prop_id: str, body: ProposalStatusPatch, conn: Conn):
     conn.commit()
     row = conn.execute(f"SELECT {_COLS} FROM proposals p LEFT JOIN tenders t ON t.id=p.tender_id WHERE p.id=%s", [prop_id]).fetchone()
     cols = ["id","tender_id","tender_title","status","price_offered","validity_days","version","notes","submitted_at"]
-    return ProposalOut(**{k: float(v) if k=="price_offered" and v is not None else v for k,v in zip(cols,row)})
+    return ProposalOut(**{k: float(v) if k=="price_offered" and v is not None else v for k,v in row.items()})
 
 @router.delete("/{prop_id}", status_code=204)
 def delete_proposal(prop_id: str, conn: Conn):

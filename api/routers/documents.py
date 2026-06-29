@@ -26,7 +26,7 @@ def list_documents(conn: Conn, type: str | None = None, valid: bool | None = Non
     q += " ORDER BY created_at DESC"
     rows = conn.execute(q, params).fetchall()
     cols = ["id","type","subtype","name","file_name","mime_type","issue_date","expiry_date","is_valid","notes","created_at"]
-    return [DocumentOut(**dict(zip(cols, r))) for r in rows]
+    return [DocumentOut(**r) for r in rows]
 
 @router.post("", response_model=DocumentOut, status_code=201)
 async def create_document(
@@ -59,7 +59,7 @@ async def create_document(
         [doc_id]
     ).fetchone()
     cols = ["id","type","subtype","name","file_name","mime_type","issue_date","expiry_date","is_valid","notes","created_at"]
-    return DocumentOut(**dict(zip(cols, row)))
+    return DocumentOut(**row)
 
 @router.get("/{doc_id}/file")
 def get_document_file(doc_id: str, conn: Conn):

@@ -19,7 +19,7 @@ def list_certificates(conn: Conn):
            FROM technical_certificates ORDER BY created_at DESC"""
     ).fetchall()
     cols = ["id","client_name","project_description","start_date","end_date","project_value","scope","file_name","mime_type","created_at"]
-    return [CertificateOut(**dict(zip(cols, r))) for r in rows]
+    return [CertificateOut(**r) for r in rows]
 
 @router.post("", response_model=CertificateOut, status_code=201)
 async def create_certificate(
@@ -51,7 +51,7 @@ async def create_certificate(
         [cert_id]
     ).fetchone()
     cols = ["id","client_name","project_description","start_date","end_date","project_value","scope","file_name","mime_type","created_at"]
-    return CertificateOut(**dict(zip(cols, row)))
+    return CertificateOut(**row)
 
 @router.get("/{cert_id}/file")
 def get_certificate_file(cert_id: str, conn: Conn):
