@@ -7,6 +7,17 @@ import { API } from './helpers'
 
 test.describe('API health & contracts', () => {
 
+  test.beforeAll(async ({ request }) => {
+    const health = await request.get(`${API}/health`).catch(() => null)
+    if (!health?.ok()) { test.skip(); return }
+    await request.post(`${API}/auth/login`, {
+      data: {
+        username: process.env.AUTH_USERNAME ?? 'admin',
+        password: process.env.AUTH_PASSWORD ?? 'test',
+      },
+    })
+  })
+
   test('GET /health → 200 ok', async ({ request }) => {
     const r = await request.get(`${API}/health`)
     expect(r.ok()).toBeTruthy()

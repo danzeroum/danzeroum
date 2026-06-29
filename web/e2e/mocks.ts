@@ -127,12 +127,111 @@ const ALERTS = [
   { id: TENDERS[2].id, title: TENDERS[2].title, recommendation: 'GO', fit_score: 0.88, deadline: TENDERS[2].deadline },
 ]
 
+// ── V2 Mock data ──────────────────────────────────────────────────────────────
+
+export const DOCUMENTS = [
+  { id: 'doc-1', type: 'CND', subtype: 'Federal', name: 'CND Federal',
+    file_name: 'cnd.pdf', mime_type: 'application/pdf',
+    issue_date: '2026-01-01', expiry_date: '2026-12-31',
+    is_valid: true, notes: null, created_at: '2026-01-01T00:00:00Z' },
+  { id: 'doc-2', type: 'CRF', subtype: null, name: 'CRF FGTS',
+    file_name: 'crf.pdf', mime_type: 'application/pdf',
+    issue_date: '2026-01-01', expiry_date: '2026-06-01',
+    is_valid: false, notes: null, created_at: '2026-01-01T00:00:00Z' },
+]
+
+export const CERTIFICATES = [
+  { id: 'cert-1', client_name: 'Prefeitura SP',
+    project_description: 'Gestão documental', start_date: '2024-01-01',
+    end_date: '2024-12-31', project_value: 350000, scope: 'Software',
+    file_name: 'atestado.pdf', mime_type: 'application/pdf',
+    created_at: '2024-12-31T00:00:00Z' },
+]
+
+export const PROPOSALS = [
+  { id: 'prop-1', tender_id: 'pncp-2026-000412',
+    tender_title: 'Gestão documental', status: 'DRAFT',
+    price_offered: 1980000, validity_days: 60, version: 1,
+    notes: null, submitted_at: null },
+  { id: 'prop-2', tender_id: 'cn-2026-90218',
+    tender_title: 'IA generativa', status: 'SENT',
+    price_offered: 4700000, validity_days: 30, version: 2,
+    notes: null, submitted_at: '2026-06-01T00:00:00Z' },
+]
+
+export const CLIENTS = [
+  { id: 'cli-1', name: 'TJ-PR', type: 'CLIENT', cnpj: '00.000.000/0001-91',
+    contact_name: 'Ana Silva', email: 'ana@tjpr.gov.br', phone: '(41) 3200-0000',
+    status: 'CLIENT', notes: null, created_at: '2026-01-01T00:00:00Z' },
+  { id: 'cli-2', name: 'MGI', type: 'LEAD', cnpj: null,
+    contact_name: null, email: null, phone: null,
+    status: 'LEAD', notes: null, created_at: '2026-02-01T00:00:00Z' },
+]
+
 // ── Setup function ─────────────────────────────────────────────────────────────
 
 export async function setupMocks(page: Page) {
   let currentConfig = { ...CONFIG }
   let collectRunStatus = 'done'
   const runs = [...COLLECT_RUNS]
+
+  // ── Auth — RequireAuth requires /auth/me → 200 to not redirect ──
+  await page.route('**/api/auth/me', route =>
+    route.fulfill({ json: { username: 'admin' } })
+  )
+  await page.route('**/api/auth/login', route =>
+    route.fulfill({ json: { user: { username: 'admin' } } })
+  )
+  await page.route('**/api/auth/logout', route =>
+    route.fulfill({ json: { ok: true } })
+  )
+
+  // ── Documents ──
+  await page.route('**/api/documents/**', route =>
+    route.fulfill({ status: 204, body: '' })
+  )
+  await page.route('**/api/documents', async route => {
+    if (route.request().method() === 'GET') route.fulfill({ json: DOCUMENTS })
+    else route.fulfill({ json: DOCUMENTS[0] })
+  })
+
+  // ── Certificates ──
+  await page.route('**/api/certificates/**', route =>
+    route.fulfill({ status: 204, body: '' })
+  )
+  await page.route('**/api/certificates', async route => {
+    if (route.request().method() === 'GET') route.fulfill({ json: CERTIFICATES })
+    else route.fulfill({ json: CERTIFICATES[0] })
+  })
+
+  // ── Proposals ──
+  await page.route('**/api/proposals/**', async route => {
+    if (route.request().method() === 'PATCH')
+      route.fulfill({ json: { ...PROPOSALS[0], status: 'SENT' } })
+    else route.fulfill({ status: 204, body: '' })
+  })
+  await page.route('**/api/proposals', async route => {
+    if (route.request().method() === 'GET') route.fulfill({ json: PROPOSALS })
+    else route.fulfill({ status: 201, json: PROPOSALS[0] })
+  })
+
+  // ── Clients ──
+  await page.route('**/api/clients/**', async route => {
+    if (route.request().method() === 'PATCH') route.fulfill({ json: CLIENTS[0] })
+    else route.fulfill({ status: 204, body: '' })
+  })
+  await page.route('**/api/clients', async route => {
+    if (route.request().method() === 'GET') route.fulfill({ json: CLIENTS })
+    else route.fulfill({ status: 201, json: CLIENTS[0] })
+  })
+
+  // ── Calc ──
+  await page.route('**/api/calc', route =>
+    route.fulfill({ json: {
+      min_price: 714285.71, direct_cost: 250000, tax_burden: 30000,
+      effective_margin: 0.15, anexo: 'III', fator_r: 0.35,
+    } })
+  )
 
   await page.route('**/api/health', route =>
     route.fulfill({ json: { status: 'ok' } })

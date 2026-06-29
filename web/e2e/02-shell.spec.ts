@@ -87,4 +87,20 @@ test.describe('Shell — Sidebar e Topbar', () => {
     await expect(page).toHaveURL(/\/coleta/)
   })
 
+  test('Sidebar grupo Empresa: Documentos, Atestados, CRM visíveis', async ({ page }) => {
+    await expect(page.locator('text=Empresa')).toBeVisible()
+    await expect(page.locator('.nav-item', { hasText: 'Documentos' })).toBeVisible()
+    await expect(page.locator('.nav-item', { hasText: 'Atestados' })).toBeVisible()
+    await expect(page.locator('.nav-item', { hasText: 'CRM' })).toBeVisible()
+  })
+
+  test('Sidebar grupo Operação: Propostas e Calculadora visíveis', async ({ page }) => {
+    await expect(page.locator('.nav-item', { hasText: 'Propostas' })).toBeVisible()
+    await expect(page.locator('.nav-item', { hasText: 'Calculadora' })).toBeVisible()
+  })
+
+  test('Topbar: botão de logout (ícone sair) visível', async ({ page }) => {
+    await expect(page.locator('.topbar .icon-btn').last()).toBeVisible()
+  })
+
 })
