@@ -93,11 +93,12 @@ export function RecoTag({ rec, sm }: { rec: string; sm?: boolean }) {
 }
 
 export function Gauge({ value, label, tone = 'accent', size = 64 }: {
-  value: number; label: string; tone?: string; size?: number
+  value: number | null; label: string; tone?: string; size?: number
 }) {
+  const v = value != null ? Number(value) : 0
   const r = 26
   const c = 2 * Math.PI * r
-  const off = c * (1 - Math.max(0, Math.min(1, value)))
+  const off = c * (1 - Math.max(0, Math.min(1, v)))
   const colorMap: Record<string, string> = {
     go: 'var(--go)', risk: 'var(--danger)', review: 'var(--review)', accent: 'var(--accent)',
   }
@@ -115,7 +116,7 @@ export function Gauge({ value, label, tone = 'accent', size = 64 }: {
           position: 'absolute', inset: 0, display: 'grid', placeItems: 'center',
           fontFamily: 'var(--font-mono)', fontWeight: 600, fontSize: '.92rem', color: 'var(--ink)',
         }}>
-          {value.toFixed(2)}
+          {v.toFixed(2)}
         </div>
       </div>
       <span className="field-label">{label}</span>
@@ -123,14 +124,15 @@ export function Gauge({ value, label, tone = 'accent', size = 64 }: {
   )
 }
 
-export function FitBar({ value }: { value: number }) {
-  const color = value >= 0.8 ? 'var(--go)' : value >= 0.65 ? 'var(--review)' : 'var(--skip)'
+export function FitBar({ value }: { value: number | null }) {
+  const v = value != null ? Number(value) : 0
+  const color = v >= 0.8 ? 'var(--go)' : v >= 0.65 ? 'var(--review)' : 'var(--skip)'
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
       <div className="bar" style={{ width: 56, flexShrink: 0 }}>
-        <span style={{ width: `${value * 100}%`, background: color }} />
+        <span style={{ width: `${v * 100}%`, background: color }} />
       </div>
-      <span className="tnum" style={{ fontSize: '.8rem', color }}>{value.toFixed(2)}</span>
+      <span className="tnum" style={{ fontSize: '.8rem', color }}>{v.toFixed(2)}</span>
     </div>
   )
 }
