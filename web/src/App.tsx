@@ -24,7 +24,7 @@ function getInitialTheme(): boolean {
 
 function Shell({ children }: { children: React.ReactNode }) {
   const [dark, setDark] = useState(getInitialTheme)
-  const [globalSearch, setGlobalSearch] = useState('')
+  const [, setGlobalSearch] = useState('')
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark)
