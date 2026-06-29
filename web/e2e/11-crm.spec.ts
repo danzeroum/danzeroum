@@ -31,7 +31,7 @@ test.describe('CRM — Clientes', () => {
   })
 
   test('Coluna "Arquivado" visível', async ({ page }) => {
-    await expect(page.locator('text=Arquivado')).toBeVisible()
+    await expect(page.locator('text=Arquivado').first()).toBeVisible()
   })
 
   test('Card "TJ-PR" (status CLIENT) renderizado', async ({ page }) => {

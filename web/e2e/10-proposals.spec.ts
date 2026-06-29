@@ -11,7 +11,7 @@ test.describe('Propostas', () => {
     await page.goto('/propostas')
     // Wait past React Query loading state (isLoading replaces kanban with skeleton)
     await expect(page.locator('h1', { hasText: 'Propostas' })).toBeVisible()
-    await expect(page.locator('text=Rascunho')).toBeVisible({ timeout: 10_000 })
+    await expect(page.locator('text=Rascunho').first()).toBeVisible({ timeout: 10_000 })
   })
 
   test('Título "Propostas" visível', async ({ page }) => {
@@ -19,7 +19,7 @@ test.describe('Propostas', () => {
   })
 
   test('Coluna "Rascunho" (DRAFT) visível', async ({ page }) => {
-    await expect(page.locator('text=Rascunho')).toBeVisible()
+    await expect(page.locator('text=Rascunho').first()).toBeVisible()
   })
 
   test('Coluna "Enviada" (SENT) visível', async ({ page }) => {
