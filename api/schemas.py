@@ -5,7 +5,18 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import Any
 
-from pydantic import BaseModel
+import uuid as _uuid
+from pydantic import BaseModel, field_validator, model_validator
+
+
+class _UUIDStr(BaseModel):
+    """Mixin: coerce UUID objects to str before Pydantic validation."""
+    @model_validator(mode='before')
+    @classmethod
+    def _coerce_uuids(cls, data):
+        if isinstance(data, dict):
+            return {k: str(v) if isinstance(v, _uuid.UUID) else v for k, v in data.items()}
+        return data
 
 
 class ScoreOut(BaseModel):
@@ -84,7 +95,7 @@ class ConfigPatch(BaseModel):
     max_pages: int | None = None
 
 
-class AlertOut(BaseModel):
+class AlertOut(_UUIDStr):
     id: str
     kind: str   # oportunidade | prazo | documento
     level: str  # go | review | danger
@@ -94,7 +105,7 @@ class AlertOut(BaseModel):
 
 
 # Documents
-class DocumentOut(BaseModel):
+class DocumentOut(_UUIDStr):
     id: str
     type: str
     subtype: str | None = None
@@ -116,7 +127,7 @@ class DocumentCreate(BaseModel):
     notes: str | None = None
 
 # Proposals
-class ProposalOut(BaseModel):
+class ProposalOut(_UUIDStr):
     id: str
     tender_id: str
     tender_title: str | None = None
@@ -138,7 +149,7 @@ class ProposalStatusPatch(BaseModel):
     status: str  # DRAFT|SENT|UNDER_REVIEW|WIN|LOST|DISQUALIFIED
 
 # Clients
-class ClientOut(BaseModel):
+class ClientOut(_UUIDStr):
     id: str
     name: str | None = None
     type: str | None = None
@@ -169,7 +180,7 @@ class ClientPatch(BaseModel):
     notes: str | None = None
 
 # Technical Certificates
-class CertificateOut(BaseModel):
+class CertificateOut(_UUIDStr):
     id: str
     client_name: str | None = None
     project_description: str | None = None
