@@ -49,8 +49,7 @@ services:
       AUTH_USERNAME:     ${AUTH_USERNAME:-admin}
       SESSION_TTL_HOURS: ${SESSION_TTL_HOURS:-8}
     env_file:
-      - path: .env
-        required: false
+      - .env
     ports:
       - "8000:8000"
     healthcheck:
