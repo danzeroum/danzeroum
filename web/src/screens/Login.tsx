@@ -1,12 +1,8 @@
-import { useState, FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, type FormEvent } from 'react'
 import { apiLogin } from '../api/auth'
-import { useAuth } from '../context/AuthContext'
 import { Logo } from '../components/icons'
 
 export default function Login() {
-  const navigate = useNavigate()
-  const { logout } = useAuth()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
