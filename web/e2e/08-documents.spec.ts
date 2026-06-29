@@ -10,7 +10,9 @@ test.describe('Documentos', () => {
   test.beforeEach(async ({ page }) => {
     await setupMocks(page)
     await page.goto('/documentos')
-    await page.waitForLoadState('networkidle')
+    // Wait past React Query loading state — data must render before assertions
+    await expect(page.locator('h1', { hasText: 'Documentos' })).toBeVisible()
+    await expect(page.locator('table, text=Nenhum documento')).toBeVisible({ timeout: 10_000 })
   })
 
   test('Título "Documentos" visível', async ({ page }) => {

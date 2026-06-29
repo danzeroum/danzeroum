@@ -9,7 +9,9 @@ test.describe('CRM — Clientes', () => {
   test.beforeEach(async ({ page }) => {
     await setupMocks(page)
     await page.goto('/crm')
-    await page.waitForLoadState('networkidle')
+    // Wait past React Query loading state (isLoading replaces kanban with skeleton)
+    await expect(page.locator('h1', { hasText: 'CRM' })).toBeVisible()
+    await expect(page.locator('text=Lead').first()).toBeVisible({ timeout: 10_000 })
   })
 
   test('Título "CRM — Clientes" visível', async ({ page }) => {

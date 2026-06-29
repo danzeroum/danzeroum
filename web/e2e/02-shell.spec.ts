@@ -54,8 +54,9 @@ test.describe('Shell — Sidebar e Topbar', () => {
     const html = page.locator('html')
     await expect(html).not.toHaveClass(/dark/)
 
-    // Toggle to dark
-    await page.locator('.topbar .icon-btn').last().click()
+    // Toggle to dark — use title attribute to avoid ambiguity with logout button
+    const themeBtn = page.locator('.topbar .icon-btn[title="Alternar tema"]')
+    await themeBtn.click()
     await expect(html).toHaveClass(/dark/)
 
     // Verify localStorage persisted
@@ -63,7 +64,7 @@ test.describe('Shell — Sidebar e Topbar', () => {
     expect(stored).toBe('dark')
 
     // Toggle back to light
-    await page.locator('.topbar .icon-btn').last().click()
+    await themeBtn.click()
     await expect(html).not.toHaveClass(/dark/)
   })
 
