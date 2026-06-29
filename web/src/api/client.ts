@@ -68,3 +68,75 @@ export function putConfig(patch: Partial<Config>): Promise<Config> {
 export function getAlerts(): Promise<Alert[]> {
   return request<Alert[]>('/alerts')
 }
+
+import type { Document, Certificate, Proposal, Client, CalcInput, CalcOut } from './types'
+
+export function getDocuments(type?: string, valid?: boolean): Promise<Document[]> {
+  const params = new URLSearchParams()
+  if (type) params.set('type', type)
+  if (valid != null) params.set('valid', String(valid))
+  const qs = params.toString()
+  return request<Document[]>(`/documents${qs ? `?${qs}` : ''}`)
+}
+
+export function uploadDocument(formData: FormData): Promise<Document> {
+  return request<Document>('/documents', { method: 'POST', body: formData })
+}
+
+export function deleteDocument(id: string): Promise<void> {
+  return request<void>(`/documents/${id}`, { method: 'DELETE' })
+}
+
+export function getCertificates(): Promise<Certificate[]> {
+  return request<Certificate[]>('/certificates')
+}
+
+export function uploadCertificate(formData: FormData): Promise<Certificate> {
+  return request<Certificate>('/certificates', { method: 'POST', body: formData })
+}
+
+export function deleteCertificate(id: string): Promise<void> {
+  return request<void>(`/certificates/${id}`, { method: 'DELETE' })
+}
+
+export function getProposals(status?: string): Promise<Proposal[]> {
+  const params = new URLSearchParams()
+  if (status) params.set('status', status)
+  const qs = params.toString()
+  return request<Proposal[]>(`/proposals${qs ? `?${qs}` : ''}`)
+}
+
+export function createProposal(body: { tender_id: string; status?: string; price_offered?: number; validity_days?: number; notes?: string }): Promise<Proposal> {
+  return request<Proposal>('/proposals', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+}
+
+export function patchProposalStatus(id: string, status: string): Promise<Proposal> {
+  return request<Proposal>(`/proposals/${id}/status`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) })
+}
+
+export function deleteProposal(id: string): Promise<void> {
+  return request<void>(`/proposals/${id}`, { method: 'DELETE' })
+}
+
+export function getClients(status?: string): Promise<Client[]> {
+  const params = new URLSearchParams()
+  if (status) params.set('status', status)
+  const qs = params.toString()
+  return request<Client[]>(`/clients${qs ? `?${qs}` : ''}`)
+}
+
+export function createClient(body: { name: string; type?: string; cnpj?: string; contact_name?: string; email?: string; phone?: string; status?: string; notes?: string }): Promise<Client> {
+  return request<Client>('/clients', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+}
+
+export function patchClient(id: string, patch: Partial<{ name: string; status: string; contact_name: string; email: string; phone: string; notes: string }>): Promise<Client> {
+  return request<Client>(`/clients/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(patch) })
+}
+
+export function deleteClient(id: string): Promise<void> {
+  return request<void>(`/clients/${id}`, { method: 'DELETE' })
+}
+
+export function calcPrice(body: CalcInput): Promise<CalcOut> {
+  return request<CalcOut>('/calc', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+}

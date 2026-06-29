@@ -5,7 +5,7 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.routers import alerts, collect, config, report, tenders
+from api.routers import alerts, calc, certificates, clients, collect, config, documents, proposals, report, tenders
 
 app = FastAPI(
     title="Danzeroum Tracker API",
@@ -28,6 +28,11 @@ app.include_router(collect.router)
 app.include_router(report.router)
 app.include_router(config.router)
 app.include_router(alerts.router)
+app.include_router(calc.router)
+app.include_router(certificates.router)
+app.include_router(clients.router)
+app.include_router(documents.router)
+app.include_router(proposals.router)
 
 
 @app.get("/health")

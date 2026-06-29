@@ -7,6 +7,11 @@ import TenderList from './screens/TenderList'
 import TenderDetail from './screens/TenderDetail'
 import Collect from './screens/Collect'
 import Config from './screens/Config'
+import Documents from './screens/Documents'
+import Certificates from './screens/Certificates'
+import Proposals from './screens/Proposals'
+import CRM from './screens/CRM'
+import Calc from './screens/Calc'
 
 function getInitialTheme(): boolean {
   const stored = localStorage.getItem('dz-theme')
@@ -35,6 +40,11 @@ export default function App() {
             <Route path="/oportunidades/:id" element={<TenderDetail />} />
             <Route path="/coleta" element={<Collect />} />
             <Route path="/config" element={<Config />} />
+            <Route path="/documentos" element={<Documents />} />
+            <Route path="/atestados" element={<Certificates />} />
+            <Route path="/propostas" element={<Proposals />} />
+            <Route path="/crm" element={<CRM />} />
+            <Route path="/calculadora" element={<Calc />} />
           </Routes>
         </div>
       </main>

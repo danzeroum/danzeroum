@@ -8,6 +8,16 @@ const NAV = [
       { key: 'dashboard', label: 'Painel', path: '/' },
       { key: 'list', label: 'Oportunidades', path: '/oportunidades' },
       { key: 'collect', label: 'Coleta', path: '/coleta' },
+      { key: 'proposals', label: 'Propostas', path: '/propostas' },
+      { key: 'calc', label: 'Calculadora', path: '/calculadora' },
+    ],
+  },
+  {
+    group: 'Empresa',
+    items: [
+      { key: 'docs', label: 'Documentos', path: '/documentos' },
+      { key: 'certs', label: 'Atestados', path: '/atestados' },
+      { key: 'crm', label: 'CRM', path: '/crm' },
     ],
   },
   {

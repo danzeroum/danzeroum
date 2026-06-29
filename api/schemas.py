@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any
 
 from pydantic import BaseModel
@@ -91,3 +91,115 @@ class AlertOut(BaseModel):
     title: str
     body: str
     tender_id: str | None = None
+
+
+# Documents
+class DocumentOut(BaseModel):
+    id: str
+    type: str
+    subtype: str | None = None
+    name: str | None = None
+    file_name: str | None = None
+    mime_type: str | None = None
+    issue_date: date | None = None
+    expiry_date: date | None = None
+    is_valid: bool = True
+    notes: str | None = None
+    created_at: datetime
+
+class DocumentCreate(BaseModel):
+    type: str
+    subtype: str | None = None
+    name: str | None = None
+    issue_date: date | None = None
+    expiry_date: date | None = None
+    notes: str | None = None
+
+# Proposals
+class ProposalOut(BaseModel):
+    id: str
+    tender_id: str
+    tender_title: str | None = None
+    status: str
+    price_offered: float | None = None
+    validity_days: int | None = None
+    version: int = 1
+    notes: str | None = None
+    submitted_at: datetime | None = None
+
+class ProposalCreate(BaseModel):
+    tender_id: str
+    status: str = "DRAFT"
+    price_offered: float | None = None
+    validity_days: int | None = None
+    notes: str | None = None
+
+class ProposalStatusPatch(BaseModel):
+    status: str  # DRAFT|SENT|UNDER_REVIEW|WIN|LOST|DISQUALIFIED
+
+# Clients
+class ClientOut(BaseModel):
+    id: str
+    name: str | None = None
+    type: str | None = None
+    cnpj: str | None = None
+    contact_name: str | None = None
+    email: str | None = None
+    phone: str | None = None
+    status: str | None = None
+    notes: str | None = None
+    created_at: datetime
+
+class ClientCreate(BaseModel):
+    name: str
+    type: str = "LEAD"
+    cnpj: str | None = None
+    contact_name: str | None = None
+    email: str | None = None
+    phone: str | None = None
+    status: str = "LEAD"
+    notes: str | None = None
+
+class ClientPatch(BaseModel):
+    name: str | None = None
+    status: str | None = None
+    contact_name: str | None = None
+    email: str | None = None
+    phone: str | None = None
+    notes: str | None = None
+
+# Technical Certificates
+class CertificateOut(BaseModel):
+    id: str
+    client_name: str | None = None
+    project_description: str | None = None
+    start_date: date | None = None
+    end_date: date | None = None
+    project_value: float | None = None
+    scope: str | None = None
+    file_name: str | None = None
+    mime_type: str | None = None
+    created_at: datetime
+
+class CertificateCreate(BaseModel):
+    client_name: str
+    project_description: str | None = None
+    start_date: date | None = None
+    end_date: date | None = None
+    project_value: float | None = None
+    scope: str | None = None
+
+# Calculator (stateless)
+class CalcInput(BaseModel):
+    revenue: float
+    payroll_pct: float
+    direct_cost_pct: float
+    margin_pct: float
+
+class CalcOut(BaseModel):
+    min_price: float
+    direct_cost: float
+    tax_burden: float
+    effective_margin: float
+    anexo: str
+    fator_r: float
