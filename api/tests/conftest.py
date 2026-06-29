@@ -59,5 +59,31 @@ def mem_repo() -> InMemoryRepository:
 @pytest.fixture()
 def client(mem_repo: InMemoryRepository):
     app.dependency_overrides[get_repo] = lambda: mem_repo
-    yield TestClient(app)
+    c = TestClient(app)
+    c.post("/auth/login", json={"username": "admin", "password": "test"})
+    yield c
     app.dependency_overrides.clear()
+
+
+# --- Auth fixture helpers ---
+import bcrypt
+import api.routers.auth as auth_mod
+from itsdangerous import URLSafeTimedSerializer
+
+_TEST_HASH = bcrypt.hashpw(b"test", bcrypt.gensalt()).decode()
+
+
+@pytest.fixture(autouse=True)
+def _patch_auth(monkeypatch):
+    """Patch auth module vars and auto-login all test clients."""
+    monkeypatch.setattr(auth_mod, "_USERNAME", "admin")
+    monkeypatch.setattr(auth_mod, "_PASSWORD_HASH", _TEST_HASH)
+    monkeypatch.setattr(auth_mod, "_SECRET", "test-secret")
+    monkeypatch.setattr(auth_mod, "_signer", URLSafeTimedSerializer("test-secret", salt="dz-session"))
+
+
+@pytest.fixture()
+def authed_client(client):
+    """Retorna o client já autenticado (cookie dz_session injetado)."""
+    client.post("/auth/login", json={"username": "admin", "password": "test"})
+    return client

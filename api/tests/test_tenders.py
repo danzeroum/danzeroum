@@ -45,7 +45,9 @@ def client(monkeypatch):
     # get_conn raises 503 without DATABASE_URL — override to return a sentinel
     from api.deps import get_conn
     app.dependency_overrides[get_conn] = lambda: None
-    yield TestClient(app)
+    c = TestClient(app)
+    c.post("/auth/login", json={"username": "admin", "password": "test"})
+    yield c
     app.dependency_overrides.clear()
 
 
