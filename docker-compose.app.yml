@@ -47,9 +47,10 @@ services:
       SMTP_PASS:         ${SMTP_PASS:-}
       MAIL_TO:           ${MAIL_TO:-}
       AUTH_USERNAME:     ${AUTH_USERNAME:-admin}
-      AUTH_PASSWORD_HASH: ${AUTH_PASSWORD_HASH:-}
-      SESSION_SECRET:    ${SESSION_SECRET:-}
       SESSION_TTL_HOURS: ${SESSION_TTL_HOURS:-8}
+    env_file:
+      - path: .env
+        required: false
     ports:
       - "8000:8000"
     healthcheck:
