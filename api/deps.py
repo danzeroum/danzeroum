@@ -9,6 +9,7 @@ from psycopg.rows import dict_row
 from fastapi import HTTPException
 
 from danzeroum_tracker.config import Settings
+from danzeroum_tracker.storage import TenderRepository, build_repository
 
 _settings: Settings | None = None
 
@@ -18,6 +19,11 @@ def get_settings() -> Settings:
     if _settings is None:
         _settings = Settings.from_env()
     return _settings
+
+
+def get_repo() -> TenderRepository:
+    cfg = get_settings()
+    return build_repository(cfg.database_url)
 
 
 def get_conn() -> Generator[psycopg.Connection, None, None]:

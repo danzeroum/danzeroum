@@ -1,23 +1,23 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, HTTPException
+from typing import Annotated
 
-from api.deps import get_settings
+from fastapi import APIRouter, Depends, HTTPException
+
+from api.deps import get_repo
 from api.schemas import ReportOut
+from danzeroum_tracker.storage import TenderRepository
 
 router = APIRouter(prefix="/report", tags=["report"])
 
+Repo = Annotated[TenderRepository, Depends(get_repo)]
+
 
 @router.get("", response_model=ReportOut)
-def get_report(top_n: int = 10):
-    cfg = get_settings()
-    if not cfg.database_url:
-        raise HTTPException(503, "DATABASE_URL não configurado")
+def get_report(repo: Repo, top_n: int = 10):
     try:
         from danzeroum_tracker.reporting import build_report
-        from danzeroum_tracker.storage.postgres import PostgresRepository
 
-        repo = PostgresRepository(cfg.database_url)
         rows = repo.list_scored(limit=500)
         return build_report(rows, top_n=top_n)
     except Exception as exc:

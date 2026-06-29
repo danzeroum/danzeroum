@@ -23,12 +23,24 @@ _runs: dict[str, dict[str, Any]] = {}
 def _execute_collection(run_id: str) -> None:
     cfg = get_settings()
     try:
+        from danzeroum_tracker.cli import build_adapters
+        from danzeroum_tracker.notifications import build_notifier
         from danzeroum_tracker.pipeline import run_collection
-        from danzeroum_tracker.storage.postgres import PostgresRepository
+        from danzeroum_tracker.scoring import get_scorer
+        from danzeroum_tracker.storage import build_repository
 
-        repo = PostgresRepository(cfg.database_url)
-        result = run_collection(cfg, repo)
-        _runs[run_id] = {"status": "done", "result": result.to_dict()}
+        repo = build_repository(cfg.database_url)
+        adapters = build_adapters(cfg)
+        scorer = get_scorer(cfg.scorer)
+        notifier = build_notifier(cfg)
+        result = run_collection(adapters, repo, scorer, min_fit_alert=cfg.min_fit_alert)
+        payload = result.to_dict()
+        try:
+            payload["notified"] = notifier.notify(payload)
+        except Exception as exc:  # noqa: BLE001
+            payload["notified"] = 0
+            payload["notify_error"] = str(exc)
+        _runs[run_id] = {"status": "done", "result": payload}
     except Exception as exc:  # noqa: BLE001
         _runs[run_id] = {"status": "error", "result": {"error": str(exc)}}
 
