@@ -95,7 +95,7 @@ export function RecoTag({ rec, sm }: { rec: string; sm?: boolean }) {
 export function Gauge({ value, label, tone = 'accent', size = 64 }: {
   value: number | null; label: string; tone?: string; size?: number
 }) {
-  const v = value ?? 0
+  const v = value != null ? Number(value) : 0
   const r = 26
   const c = 2 * Math.PI * r
   const off = c * (1 - Math.max(0, Math.min(1, v)))
@@ -125,7 +125,7 @@ export function Gauge({ value, label, tone = 'accent', size = 64 }: {
 }
 
 export function FitBar({ value }: { value: number | null }) {
-  const v = value ?? 0
+  const v = value != null ? Number(value) : 0
   const color = v >= 0.8 ? 'var(--go)' : v >= 0.65 ? 'var(--review)' : 'var(--skip)'
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
