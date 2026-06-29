@@ -19,7 +19,9 @@ def client(monkeypatch):
         lambda conn, limit=20: _ALERTS,
     )
     app.dependency_overrides[get_conn] = lambda: None
-    yield TestClient(app)
+    c = TestClient(app)
+    c.post("/auth/login", json={"username": "admin", "password": "test"})
+    yield c
     app.dependency_overrides.clear()
 
 
@@ -41,6 +43,7 @@ def test_alerts_empty(monkeypatch):
     )
     app.dependency_overrides[get_conn] = lambda: None
     with TestClient(app) as c:
+        c.post("/auth/login", json={"username": "admin", "password": "test"})
         r = c.get("/alerts")
     app.dependency_overrides.clear()
     assert r.status_code == 200

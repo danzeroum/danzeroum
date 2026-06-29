@@ -19,7 +19,9 @@ def client(monkeypatch, tmp_path):
     monkeypatch.setattr("api.config_store._STORE", tmp_path / "cfg.json")
     # Reset settings singleton so env changes don't bleed across tests
     deps_mod._settings = None
-    yield TestClient(app)
+    c = TestClient(app)
+    c.post("/auth/login", json={"username": "admin", "password": "test"})
+    yield c
     deps_mod._settings = None
 
 

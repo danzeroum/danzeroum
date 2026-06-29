@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { Icons } from '../icons'
 import { getAlerts, startCollection } from '../../api/client'
+import { useAuth } from '../../context/AuthContext'
 
 interface Props {
   dark: boolean
@@ -12,6 +13,7 @@ interface Props {
 
 export function Topbar({ dark, onToggleTheme, onSearch }: Props) {
   const navigate = useNavigate()
+  const { logout } = useAuth()
   const [q, setQ] = useState('')
 
   const { data: alerts } = useQuery({ queryKey: ['alerts'], queryFn: getAlerts, refetchInterval: 60_000 })
@@ -28,6 +30,11 @@ export function Topbar({ dark, onToggleTheme, onSearch }: Props) {
       onSearch(q.trim())
       navigate('/oportunidades')
     }
+  }
+
+  async function handleLogout() {
+    await logout()
+    navigate('/login')
   }
 
   return (
@@ -70,6 +77,10 @@ export function Topbar({ dark, onToggleTheme, onSearch }: Props) {
 
         <button className="icon-btn" onClick={onToggleTheme} title="Alternar tema">
           {dark ? <Icons.sun size={16} /> : <Icons.moon size={16} />}
+        </button>
+
+        <button className="icon-btn" onClick={handleLogout} title="Sair" style={{ color: 'var(--muted)' }}>
+          <Icons.ext size={16} />
         </button>
       </div>
     </header>

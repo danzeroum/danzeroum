@@ -24,6 +24,7 @@ def client():
     mock_conn.execute.side_effect = fake_execute
     app.dependency_overrides[get_conn] = lambda: mock_conn
     with TestClient(app) as c:
+        c.post("/auth/login", json={"username": "admin", "password": "test"})
         yield c
     app.dependency_overrides.clear()
 

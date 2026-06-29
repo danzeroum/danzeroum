@@ -11,7 +11,8 @@ import type {
 const BASE = '/api'
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, init)
+  const res = await fetch(`${BASE}${path}`, { credentials: 'include', ...init })
+  if (res.status === 401 && !path.startsWith("/auth")) { window.location.href = "/login"; throw new Error("401") }
   if (!res.ok) {
     const text = await res.text().catch(() => res.statusText)
     throw new Error(`${res.status} ${text}`)

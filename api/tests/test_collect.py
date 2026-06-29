@@ -24,7 +24,9 @@ def client(monkeypatch):
     monkeypatch.setattr(collect_mod, "_execute_collection", _fake_execute)
     # Clear run registry between tests
     collect_mod._runs.clear()
-    yield TestClient(app)
+    c = TestClient(app)
+    c.post("/auth/login", json={"username": "admin", "password": "test"})
+    yield c
     collect_mod._runs.clear()
 
 
