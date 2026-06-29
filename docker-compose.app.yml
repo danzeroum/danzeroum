@@ -1,0 +1,74 @@
+# ============================================================
+# Danzeroum — Buscador de Oportunidades (App Operacional)
+# Sobe: PostgreSQL + FastAPI (api/) + React/nginx (web/)
+#
+#   cp .env.example .env      # ajuste DATABASE_URL se quiser dados externos
+#   docker compose -f docker-compose.app.yml up -d --build
+#   Acesse: http://localhost:3000
+# ============================================================
+name: danzeroum-app
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER:     ${POSTGRES_USER:-danzeroum}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-danzeroum}
+      POSTGRES_DB:       ${POSTGRES_DB:-oportunidades}
+    volumes:
+      - app_pgdata:/var/lib/postgresql/data
+      - ./tracker/sql/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    ports:
+      - "5433:5432"   # porta externa diferente para não colidir com o tracker
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-danzeroum} -d ${POSTGRES_DB:-oportunidades}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-danzeroum}:${POSTGRES_PASSWORD:-danzeroum}@db:5432/${POSTGRES_DB:-oportunidades}
+      TRACKER_SOURCES:   ${TRACKER_SOURCES:-pncp}
+      TRACKER_UF:        ${TRACKER_UF:-SP}
+      TRACKER_SCORER:    ${TRACKER_SCORER:-heuristic}
+      TRACKER_MIN_FIT:   ${TRACKER_MIN_FIT:-0.4}
+      SMTP_HOST:         ${SMTP_HOST:-}
+      SMTP_PORT:         ${SMTP_PORT:-465}
+      SMTP_USER:         ${SMTP_USER:-}
+      SMTP_PASS:         ${SMTP_PASS:-}
+      MAIL_TO:           ${MAIL_TO:-}
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:8000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: web
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "3000:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  app_pgdata:

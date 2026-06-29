@@ -11,3 +11,6 @@ crm/*.private.json
 .DS_Store
 Thumbs.db
 *.swp
+__pycache__/
+web/test-results/
+web/e2e-report/
