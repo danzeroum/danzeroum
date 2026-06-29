@@ -33,7 +33,7 @@ test.describe('Calculadora Fator R', () => {
 
   test('Resultado exibe "Preço mínimo"', async ({ page }) => {
     await page.locator('button.btn', { hasText: /Calcular/ }).click()
-    await expect(page.locator('text=Preço mínimo')).toBeVisible({ timeout: 5000 })
+    await expect(page.locator('text="Preço mínimo"')).toBeVisible({ timeout: 5000 })
   })
 
   test('Resultado exibe Fator R formatado como percentual', async ({ page }) => {
