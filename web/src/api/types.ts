@@ -101,3 +101,71 @@ export interface TenderFilters {
   page?: number
   size?: number
 }
+
+export interface Document {
+  id: string
+  type: string
+  subtype: string | null
+  name: string | null
+  file_name: string | null
+  mime_type: string | null
+  issue_date: string | null
+  expiry_date: string | null
+  is_valid: boolean
+  notes: string | null
+  created_at: string
+}
+
+export interface Certificate {
+  id: string
+  client_name: string | null
+  project_description: string | null
+  start_date: string | null
+  end_date: string | null
+  project_value: number | null
+  scope: string | null
+  file_name: string | null
+  mime_type: string | null
+  created_at: string
+}
+
+export interface Proposal {
+  id: string
+  tender_id: string
+  tender_title: string | null
+  status: string
+  price_offered: number | null
+  validity_days: number | null
+  version: number
+  notes: string | null
+  submitted_at: string | null
+}
+
+export interface Client {
+  id: string
+  name: string | null
+  type: string | null
+  cnpj: string | null
+  contact_name: string | null
+  email: string | null
+  phone: string | null
+  status: string | null
+  notes: string | null
+  created_at: string
+}
+
+export interface CalcInput {
+  revenue: number
+  payroll_pct: number
+  direct_cost_pct: number
+  margin_pct: number
+}
+
+export interface CalcOut {
+  min_price: number
+  direct_cost: number
+  tax_burden: number
+  effective_margin: number
+  anexo: string
+  fator_r: number
+}
