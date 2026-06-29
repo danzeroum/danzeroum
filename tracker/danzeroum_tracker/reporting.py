@@ -21,15 +21,24 @@ def build_report(rows: list[dict], top_n: int = 10) -> dict[str, Any]:
                 "external_id": r.get("external_id"),
                 "title": r.get("title"),
                 "url": r.get("url"),
-                "budget_estimate": r.get("budget_estimate"),
+                "budget_estimate": _num(r.get("budget_estimate")),
                 "deadline": _iso(r.get("deadline")),
-                "fit_score": r.get("fit_score"),
-                "risk_score": r.get("risk_score"),
+                "fit_score": _num(r.get("fit_score")),
+                "risk_score": _num(r.get("risk_score")),
                 "recommendation": r.get("recommendation"),
             }
             for r in top
         ],
     }
+
+
+def _num(value: Any) -> float | None:
+    if value is None:
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
 
 
 def _iso(value: Any) -> str | None:
