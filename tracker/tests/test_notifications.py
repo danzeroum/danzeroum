@@ -1,7 +1,10 @@
 from danzeroum_tracker.config import Settings
 from danzeroum_tracker.notifications import (
     EmailNotifier,
+    MultiNotifier,
     NullNotifier,
+    TelegramNotifier,
+    build_all_notifiers,
     build_notifier,
     format_alerts,
 )
@@ -99,3 +102,58 @@ def test_build_notifier_email_when_configured():
     )
     notifier = build_notifier(settings, transport=lambda **k: None)
     assert isinstance(notifier, EmailNotifier)
+
+
+# ── Telegram / multicanal ────────────────────────────────────────────────────────
+
+
+def test_telegram_notifier_posts_text():
+    captured = {}
+
+    def fake_poster(*, bot_token, chat_id, text):
+        captured.update(bot_token=bot_token, chat_id=chat_id, text=text)
+
+    n = TelegramNotifier(bot_token="tok", chat_id="42", poster=fake_poster)
+    sent = n.notify(RESULT)
+    assert sent == 1
+    assert captured["bot_token"] == "tok"
+    assert captured["chat_id"] == "42"
+    assert "Suporte de TI" in captured["text"]
+
+
+def test_telegram_notifier_skips_when_no_alerts():
+    calls = []
+    n = TelegramNotifier(bot_token="t", chat_id="1", poster=lambda **k: calls.append(k))
+    assert n.notify({"alerts": []}) == 0
+    assert calls == []
+
+
+def test_multi_notifier_sums_and_isolates_failures():
+    class Boom:
+        def notify(self, result):
+            raise RuntimeError("canal quebrado")
+
+    class Ok:
+        def notify(self, result):
+            return 2
+
+    assert MultiNotifier([Ok(), Boom(), Ok()]).notify(RESULT) == 4
+
+
+def test_build_all_notifiers_composes_email_and_telegram():
+    settings = Settings.from_env({
+        "SMTP_HOST": "smtp.test", "MAIL_TO": "to@d.com", "SMTP_USER": "u",
+        "TELEGRAM_BOT_TOKEN": "tok", "TELEGRAM_CHAT_ID": "42",
+    })
+    n = build_all_notifiers(settings, transport=lambda **k: None, telegram_poster=lambda **k: None)
+    assert isinstance(n, MultiNotifier)
+    assert {x.name for x in n.notifiers} == {"email", "telegram"}
+
+
+def test_build_all_notifiers_telegram_only():
+    settings = Settings.from_env({"TELEGRAM_BOT_TOKEN": "tok", "TELEGRAM_CHAT_ID": "42"})
+    assert isinstance(build_all_notifiers(settings), TelegramNotifier)
+
+
+def test_build_all_notifiers_null_when_unconfigured():
+    assert isinstance(build_all_notifiers(Settings.from_env({})), NullNotifier)

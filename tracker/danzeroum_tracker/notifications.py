@@ -153,3 +153,81 @@ def build_notifier(settings: Settings, transport: Transport | None = None) -> No
             transport=transport,
         )
     return NullNotifier()
+
+
+# ── Telegram (multicanal) ────────────────────────────────────────────────────────
+
+TelegramPoster = Callable[..., None]
+
+
+def _requests_telegram_post(*, bot_token: str, chat_id: str, text: str) -> None:  # pragma: no cover
+    import requests
+
+    requests.post(
+        f"https://api.telegram.org/bot{bot_token}/sendMessage",
+        json={"chat_id": chat_id, "text": text, "disable_web_page_preview": True},
+        timeout=30,
+    )
+
+
+class TelegramNotifier(Notifier):
+    name = "telegram"
+
+    def __init__(
+        self, *, bot_token: str, chat_id: str, poster: TelegramPoster | None = None
+    ) -> None:
+        self.bot_token = bot_token
+        self.chat_id = chat_id
+        self._poster = poster or _requests_telegram_post
+
+    def notify(self, result: dict) -> int:
+        alerts = result.get("alerts", [])
+        if not alerts:
+            return 0
+        _subject, text, _html = format_alerts(result)
+        self._poster(bot_token=self.bot_token, chat_id=self.chat_id, text=text)
+        return len(alerts)
+
+
+class MultiNotifier(Notifier):
+    """Envia por todos os canais configurados (best-effort por canal)."""
+
+    name = "multi"
+
+    def __init__(self, notifiers: list[Notifier]) -> None:
+        self.notifiers = notifiers
+
+    def notify(self, result: dict) -> int:
+        total = 0
+        for n in self.notifiers:
+            try:
+                total += n.notify(result)
+            except Exception:  # noqa: BLE001 - um canal não derruba os demais
+                continue
+        return total
+
+
+def build_all_notifiers(
+    settings: Settings,
+    *,
+    transport: Transport | None = None,
+    telegram_poster: TelegramPoster | None = None,
+) -> Notifier:
+    """Compõe e-mail + Telegram conforme configurados. Sem nenhum, no-op."""
+    channels: list[Notifier] = []
+    email = build_notifier(settings, transport=transport)
+    if not isinstance(email, NullNotifier):
+        channels.append(email)
+    if settings.telegram_bot_token and settings.telegram_chat_id:
+        channels.append(
+            TelegramNotifier(
+                bot_token=settings.telegram_bot_token,
+                chat_id=settings.telegram_chat_id,
+                poster=telegram_poster,
+            )
+        )
+    if not channels:
+        return NullNotifier()
+    if len(channels) == 1:
+        return channels[0]
+    return MultiNotifier(channels)

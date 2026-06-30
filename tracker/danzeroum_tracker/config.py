@@ -80,6 +80,9 @@ class Settings:
     smtp_from_name: str = "Rastreador Danzeroum"
     smtp_encryption: str = "ssl"
     mail_to: str = ""
+    # Telegram (alertas multicanal) — opt-in. Vazio = no-op.
+    telegram_bot_token: str = ""
+    telegram_chat_id: str = ""
 
     @classmethod
     def from_env(cls, env: dict[str, str] | None = None) -> Settings:
@@ -113,4 +116,6 @@ class Settings:
             smtp_from_name=_env(e, "SMTP_FROM_NAME", "Rastreador Danzeroum"),
             smtp_encryption=_env(e, "SMTP_ENCRYPTION", "ssl"),
             mail_to=e.get("MAIL_TO", ""),
+            telegram_bot_token=e.get("TELEGRAM_BOT_TOKEN", ""),
+            telegram_chat_id=e.get("TELEGRAM_CHAT_ID", ""),
         )
