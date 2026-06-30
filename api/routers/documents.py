@@ -5,11 +5,18 @@ from typing import Annotated
 import psycopg
 from fastapi import APIRouter, Depends, Form, HTTPException, UploadFile, File
 from fastapi.responses import Response
+from api.db import get_expiring_documents
 from api.deps import get_conn
-from api.schemas import DocumentCreate, DocumentOut
+from api.schemas import DocumentCreate, DocumentExpiringOut, DocumentOut
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 Conn = Annotated[psycopg.Connection, Depends(get_conn)]
+
+
+@router.get("/expiring", response_model=list[DocumentExpiringOut])
+def list_expiring_documents(conn: Conn, within: int = 30):
+    """Certidões/documentos a vencer em até ``within`` dias (inclui vencidos)."""
+    return get_expiring_documents(conn, within_days=within)
 
 @router.get("", response_model=list[DocumentOut])
 def list_documents(conn: Conn, type: str | None = None, valid: bool | None = None):

@@ -203,8 +203,74 @@ def get_proposal_analytics(conn: psycopg.Connection) -> dict:
     return _compute_analytics(status_rows, monthly_rows)  # type: ignore[arg-type]
 
 
+# ── Vencimento de certidões/documentos ──────────────────────────────────────────
+
+
+def _doc_level(days_left: int) -> str:
+    if days_left < 0:
+        return "expired"
+    if days_left <= 7:
+        return "critical"
+    if days_left <= 15:
+        return "warning"
+    return "notice"
+
+
+def get_expiring_documents(conn: psycopg.Connection, within_days: int = 30) -> list[dict]:
+    """Documentos/certidões com ``expiry_date`` em até ``within_days`` (inclui vencidos)."""
+    with conn.cursor() as cur:
+        cur.execute(
+            "SELECT id::text AS id, type, name, expiry_date, "
+            "(expiry_date - CURRENT_DATE) AS days_left "
+            "FROM documents "
+            "WHERE expiry_date IS NOT NULL AND expiry_date <= (CURRENT_DATE + %s) "
+            "ORDER BY expiry_date ASC",
+            [within_days],
+        )
+        rows = cur.fetchall()
+    out = []
+    for r in rows:  # type: ignore[union-attr]
+        days = int(r["days_left"])  # type: ignore[index]
+        out.append(
+            {
+                "id": r["id"],  # type: ignore[index]
+                "type": r["type"],  # type: ignore[index]
+                "name": r["name"],  # type: ignore[index]
+                "expiry_date": r["expiry_date"],  # type: ignore[index]
+                "days_left": days,
+                "level": _doc_level(days),
+            }
+        )
+    return out
+
+
+def expiring_docs_as_alerts(docs: list[dict]) -> list[dict]:
+    """Converte documentos a vencer em alertas (kind=documento). Função pura."""
+    alerts = []
+    for d in docs:
+        days = int(d["days_left"])
+        label = d.get("name") or d.get("type") or "documento"
+        if days < 0:
+            body = f"VENCIDA há {abs(days)} dia(s)"
+            level = "danger"
+        else:
+            body = f"vence em {days} dia(s)"
+            level = "danger" if days <= 7 else "review"
+        alerts.append(
+            {
+                "id": f"doc-{d['id']}",
+                "kind": "documento",
+                "level": level,
+                "title": f"Certidão {label}",
+                "body": body,
+                "tender_id": None,
+            }
+        )
+    return alerts
+
+
 def get_recent_alerts(conn: psycopg.Connection, limit: int = 20) -> list[dict]:
-    """Derive alerts from recent GO/REVIEW tenders (no alerts table in schema)."""
+    """Alertas: oportunidades (GO/REVIEW) + certidões a vencer (kind=documento)."""
     with conn.cursor() as cur:
         cur.execute(
             """
@@ -240,4 +306,11 @@ def get_recent_alerts(conn: psycopg.Connection, limit: int = 20) -> list[dict]:
                 "tender_id": r["id"],  # type: ignore[index]
             }
         )
-    return alerts
+
+    # Certidões a vencer entram primeiro (mais críticas). Best-effort: se a query
+    # de documentos falhar, os alertas de oportunidade ainda são devolvidos.
+    try:
+        docs = expiring_docs_as_alerts(get_expiring_documents(conn, within_days=30))
+    except Exception:  # noqa: BLE001
+        docs = []
+    return docs + alerts

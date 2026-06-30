@@ -125,6 +125,22 @@ def cmd_collect(
     return 0
 
 
+def cmd_certs_alert(
+    settings: Settings,
+    *,
+    within_days: int = 30,
+    transport=None,
+    rows: list[dict] | None = None,
+    out: TextIO = sys.stdout,
+) -> int:
+    """Varre vencimentos de certidões/documentos e (best-effort) envia e-mail."""
+    from danzeroum_tracker.certs import run_cert_alert
+
+    payload = run_cert_alert(settings, within_days=within_days, rows=rows, transport=transport)
+    _emit(payload, out)
+    return 0
+
+
 def cmd_report(
     settings: Settings,
     *,
@@ -176,6 +192,13 @@ def cmd_schedule(
         cmd_collect(
             settings, repo=repo, adapters=adapters, scorer=scorer, notifier=notifier, out=out
         )
+        # Aviso de vencimento de certidões — diário, junto da coleta (best-effort).
+        try:
+            from danzeroum_tracker.certs import run_cert_alert
+
+            _emit({"certs_alert": run_cert_alert(settings)}, out)
+        except Exception as exc:  # noqa: BLE001 - aviso é best-effort, não derruba o loop
+            _emit({"certs_alert_error": str(exc)}, out)
         count += 1
         if iterations is not None and count >= iterations:
             return 0
@@ -201,6 +224,9 @@ def build_parser() -> argparse.ArgumentParser:
     rp.add_argument("--limit", type=int, default=10)
     rp.add_argument("--format", dest="fmt", choices=["text", "md", "json"], default="text")
 
+    cp = sub.add_parser("certs-alert", help="avisa certidões/documentos a vencer (e-mail)")
+    cp.add_argument("--within", dest="within_days", type=int, default=30)
+
     sub.add_parser("schedule", help="loop periódico (Docker)")
     return p
 
@@ -219,6 +245,8 @@ def main(argv: list[str] | None = None, out: TextIO = sys.stdout) -> int:
         return cmd_list(settings, limit=args.limit, out=out)
     if args.command == "report":
         return cmd_report(settings, limit=args.limit, fmt=args.fmt, out=out)
+    if args.command == "certs-alert":
+        return cmd_certs_alert(settings, within_days=args.within_days, out=out)
     if args.command == "schedule":
         return cmd_schedule(settings, out=out)
     return 2

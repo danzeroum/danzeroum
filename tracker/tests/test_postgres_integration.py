@@ -87,6 +87,26 @@ def test_upsert_is_idempotent_and_scores_persist(repo):
     assert scored[0]["recommendation"] == "GO"
 
 
+def test_query_expiring_documents(repo):
+    import psycopg
+
+    from danzeroum_tracker.certs import query_expiring_documents
+
+    with psycopg.connect(DATABASE_URL) as conn, conn.cursor() as cur:
+        cur.execute("TRUNCATE documents CASCADE;")
+        cur.execute(
+            "INSERT INTO documents (type, name, expiry_date) VALUES "
+            "('CND', 'CND Federal', CURRENT_DATE + 5),"      # vence em 5 dias
+            "('FGTS', 'CRF FGTS', CURRENT_DATE - 2),"        # vencida
+            "('CRF', 'Simples', CURRENT_DATE + 90);"         # fora da janela
+        )
+        conn.commit()
+
+    rows = query_expiring_documents(DATABASE_URL, within_days=30)
+    names = {r["name"] for r in rows}
+    assert names == {"CND Federal", "CRF FGTS"}
+
+
 def test_get_tender_returns_domain_object(repo):
     tid, _ = repo.upsert_tender(_tender("PG-GET"))
     got = repo.get_tender(tid)
