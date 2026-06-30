@@ -177,6 +177,7 @@ export interface CalcInput {
   payroll_pct: number
   direct_cost_pct: number
   margin_pct: number
+  iss_pct?: number
 }
 
 export interface CalcOut {
@@ -186,4 +187,6 @@ export interface CalcOut {
   effective_margin: number
   anexo: string
   fator_r: number
+  effective_rate: number
+  iss_pct: number
 }

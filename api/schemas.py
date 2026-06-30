@@ -217,10 +217,11 @@ class CertificateCreate(BaseModel):
 
 # Calculator (stateless)
 class CalcInput(BaseModel):
-    revenue: float
-    payroll_pct: float
+    revenue: float           # usado como RBT12 (receita dos últimos 12 meses)
+    payroll_pct: float       # folha/receita → Fator R
     direct_cost_pct: float
     margin_pct: float
+    iss_pct: float = 0.0     # ISS municipal adicional, fora do Simples (opcional)
 
 class CalcOut(BaseModel):
     min_price: float
@@ -229,3 +230,5 @@ class CalcOut(BaseModel):
     effective_margin: float
     anexo: str
     fator_r: float
+    effective_rate: float    # alíquota efetiva do Simples (progressiva)
+    iss_pct: float = 0.0
