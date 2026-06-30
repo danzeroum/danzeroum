@@ -4,7 +4,9 @@ import uuid
 from typing import Annotated
 import psycopg
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import Response
 from api.deps import get_conn
+from api.pdf import build_proposal_pdf
 from api.schemas import ProposalCreate, ProposalOut, ProposalStatusPatch
 
 router = APIRouter(prefix="/proposals", tags=["proposals"])
@@ -36,9 +38,41 @@ def create_proposal(body: ProposalCreate, conn: Conn):
     cols = ["id","tender_id","tender_title","status","price_offered","validity_days","version","notes","submitted_at"]
     return ProposalOut(**{k: float(v) if k=="price_offered" and v is not None else v for k,v in zip(cols,row)})
 
+@router.get("/{prop_id}/pdf")
+def proposal_pdf(prop_id: str, conn: Conn):
+    """Gera o PDF da proposta (edital + preço) pronto para envio."""
+    row = conn.execute(
+        f"SELECT {_COLS} FROM proposals p LEFT JOIN tenders t ON t.id=p.tender_id WHERE p.id=%s",
+        [prop_id],
+    ).fetchone()
+    if not row:
+        raise HTTPException(404)
+    cols = ["id","tender_id","tender_title","status","price_offered","validity_days","version","notes","submitted_at"]
+    data = {k: (float(v) if k == "price_offered" and v is not None else v) for k, v in zip(cols, row)}
+    # Enriquecimento opcional do edital (fonte / identificador) para o cabeçalho.
+    tinfo = conn.execute(
+        "SELECT source, external_id FROM tenders WHERE id=%s", [data.get("tender_id")]
+    ).fetchone()
+    if tinfo:
+        data["source"], data["external_id"] = tinfo[0], tinfo[1]
+    pdf = build_proposal_pdf(data)
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="proposta-{prop_id}.pdf"'},
+    )
+
+
 @router.patch("/{prop_id}/status", response_model=ProposalOut)
 def patch_proposal_status(prop_id: str, body: ProposalStatusPatch, conn: Conn):
-    result = conn.execute("UPDATE proposals SET status=%s WHERE id=%s", [body.status, prop_id])
+    # Ao marcar como ENVIADA, carimba submitted_at (alimenta os analytics mensais).
+    if body.status == "SENT":
+        result = conn.execute(
+            "UPDATE proposals SET status=%s, submitted_at=COALESCE(submitted_at, NOW()) WHERE id=%s",
+            [body.status, prop_id],
+        )
+    else:
+        result = conn.execute("UPDATE proposals SET status=%s WHERE id=%s", [body.status, prop_id])
     if result.rowcount == 0:
         raise HTTPException(404)
     conn.commit()

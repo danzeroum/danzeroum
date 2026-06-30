@@ -60,7 +60,10 @@ export default function Proposals() {
                   >
                     {COLUMNS.map(c => <option key={c.key} value={c.key}>{c.label}</option>)}
                   </select>
-                  <button onClick={() => del.mutate(p.id)} style={{ fontSize: '.72rem', color: 'var(--danger)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Remover</button>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <a href={`/api/proposals/${p.id}/pdf`} target="_blank" rel="noopener noreferrer" style={{ fontSize: '.72rem', color: 'var(--accent)', textDecoration: 'none' }}>Baixar PDF</a>
+                    <button onClick={() => del.mutate(p.id)} style={{ fontSize: '.72rem', color: 'var(--danger)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Remover</button>
+                  </div>
                 </div>
               ))}
               {!byStatus[col.key].length && (
