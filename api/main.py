@@ -6,7 +6,7 @@ from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.auth_middleware import require_auth
-from api.routers import alerts, auth, calc, certificates, clients, collect, config, documents, proposals, report, tenders
+from api.routers import alerts, auth, calc, certificates, clients, collect, config, documents, proposals, report, score, tenders
 
 _auth = [Depends(require_auth)]
 
@@ -39,6 +39,7 @@ app.include_router(certificates.router, dependencies=_auth)
 app.include_router(clients.router, dependencies=_auth)
 app.include_router(documents.router, dependencies=_auth)
 app.include_router(proposals.router, dependencies=_auth)
+app.include_router(score.router, dependencies=_auth)
 
 
 @app.get("/health")

@@ -3,9 +3,19 @@
 from __future__ import annotations
 
 import uuid
+from datetime import datetime
 
 from danzeroum_tracker.models import Score, Tender
 from danzeroum_tracker.storage.base import TenderRepository
+
+
+def _parse_dt(value) -> datetime | None:
+    if isinstance(value, datetime) or value is None:
+        return value
+    try:
+        return datetime.fromisoformat(value)
+    except (TypeError, ValueError):
+        return None
 
 
 class InMemoryRepository(TenderRepository):
@@ -24,6 +34,25 @@ class InMemoryRepository(TenderRepository):
         record = {"id": tender_id, **tender.to_dict()}
         self._tenders[key] = record
         return tender_id, True
+
+    def get_tender(self, tender_id: str) -> Tender | None:
+        for rec in self._tenders.values():
+            if rec["id"] == tender_id:
+                return Tender(
+                    source=rec["source"],
+                    external_id=rec["external_id"],
+                    title=rec["title"],
+                    description=rec.get("description"),
+                    status=rec.get("status", "OPEN"),
+                    category=rec.get("category", "OUTROS"),
+                    budget_estimate=rec.get("budget_estimate"),
+                    publish_date=_parse_dt(rec.get("publish_date")),
+                    deadline=_parse_dt(rec.get("deadline")),
+                    url=rec.get("url"),
+                    uf=rec.get("uf"),
+                    raw_json=rec.get("raw_json") or {},
+                )
+        return None
 
     def save_score(self, tender_id: str, score: Score) -> str:
         score_id = str(uuid.uuid4())

@@ -42,6 +42,13 @@ INSERT INTO tender_scores (
 RETURNING id;
 """
 
+_GET_TENDER = """
+SELECT source, external_id, title, description, status, category,
+       budget_estimate, publish_date, deadline, url, uf, raw_json
+FROM tenders
+WHERE id = %(id)s;
+"""
+
 _LIST = """
 SELECT id, source, external_id, title, status, category,
        budget_estimate, deadline, url, uf, created_at
@@ -86,6 +93,30 @@ class PostgresRepository(TenderRepository):
             row = cur.fetchone()
             conn.commit()
         return str(row[0]), bool(row[1])
+
+    def get_tender(self, tender_id: str) -> Tender | None:
+        with self._connect() as conn, conn.cursor() as cur:
+            cur.execute(_GET_TENDER, {"id": tender_id})
+            row = cur.fetchone()
+            cols = [d.name for d in cur.description] if cur.description else []
+        if row is None:
+            return None
+        rec = dict(zip(cols, row, strict=True))
+        budget = rec["budget_estimate"]
+        return Tender(
+            source=rec["source"],
+            external_id=rec["external_id"],
+            title=rec["title"],
+            description=rec["description"],
+            status=rec["status"] or "OPEN",
+            category=rec["category"] or "OUTROS",
+            budget_estimate=float(budget) if budget is not None else None,
+            publish_date=rec["publish_date"],
+            deadline=rec["deadline"],
+            url=rec["url"],
+            uf=rec["uf"],
+            raw_json=rec["raw_json"] or {},
+        )
 
     def save_score(self, tender_id: str, score: Score) -> str:
         params = {

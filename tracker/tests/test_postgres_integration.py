@@ -85,3 +85,14 @@ def test_upsert_is_idempotent_and_scores_persist(repo):
     assert len(scored) == 1
     assert float(scored[0]["fit_score"]) == 0.8
     assert scored[0]["recommendation"] == "GO"
+
+
+def test_get_tender_returns_domain_object(repo):
+    tid, _ = repo.upsert_tender(_tender("PG-GET"))
+    got = repo.get_tender(tid)
+    assert got is not None
+    assert got.external_id == "PG-GET"
+    assert got.category == "TI"
+    assert got.budget_estimate == 120000.0
+    assert got.raw_json.get("numeroControlePNCP") == "PG-GET"
+    assert repo.get_tender("00000000-0000-0000-0000-000000000000") is None

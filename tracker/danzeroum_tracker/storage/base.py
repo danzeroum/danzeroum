@@ -18,6 +18,10 @@ class TenderRepository(ABC):
         """
 
     @abstractmethod
+    def get_tender(self, tender_id: str) -> Tender | None:
+        """Recupera um edital pelo id (para re-scoring sob demanda). ``None`` se não existe."""
+
+    @abstractmethod
     def save_score(self, tender_id: str, score: Score) -> str:
         """Persiste o resultado do scorer e retorna o id do score."""
 
