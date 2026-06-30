@@ -58,6 +58,14 @@ class Settings:
     uf: str = "SP"
     keywords: list[str] = field(default_factory=lambda: list(DEFAULT_KEYWORDS))
     scorer: str = "heuristic"
+    # LLM (DeepSeek) — opcional. Sem DEEPSEEK_API_KEY o scorer "llm" cai no heurístico.
+    # A API do DeepSeek é compatível com o formato OpenAI (Bearer + /chat/completions).
+    deepseek_api_key: str = ""
+    deepseek_base_url: str = "https://api.deepseek.com"
+    # Nomes explícitos (os aliases deepseek-chat/deepseek-reasoner são descontinuados).
+    deepseek_model: str = "deepseek-v4-flash"
+    # Limite de caracteres do texto do edital enviado ao LLM (controle de custo).
+    llm_max_chars: int = 24000
     collect_interval_hours: float = 24.0
     min_fit_alert: float = 0.4
     page_size: int = 50
@@ -88,6 +96,10 @@ class Settings:
             uf=_env(e, "TRACKER_UF", "SP").upper(),
             keywords=_split_csv(e.get("TRACKER_KEYWORDS"), DEFAULT_KEYWORDS),
             scorer=_env(e, "TRACKER_SCORER", "heuristic"),
+            deepseek_api_key=e.get("DEEPSEEK_API_KEY", ""),
+            deepseek_base_url=_env(e, "DEEPSEEK_BASE_URL", cls.deepseek_base_url),
+            deepseek_model=_env(e, "DEEPSEEK_MODEL", cls.deepseek_model),
+            llm_max_chars=int(_env(e, "TRACKER_LLM_MAX_CHARS", "24000")),
             collect_interval_hours=float(_env(e, "COLLECT_INTERVAL_HOURS", "24")),
             min_fit_alert=float(_env(e, "TRACKER_MIN_FIT", "0.4")),
             page_size=int(_env(e, "TRACKER_PAGE_SIZE", "50")),

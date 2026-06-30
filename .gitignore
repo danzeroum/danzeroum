@@ -7,6 +7,10 @@ smtp-config.php
 crm/leads.private.json
 crm/*.private.json
 
+# Ambientes virtuais Python
+.venv/
+venv/
+
 # Lixo de SO / editor
 .DS_Store
 Thumbs.db

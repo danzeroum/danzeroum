@@ -48,6 +48,27 @@ def test_save_and_get_score():
     assert saved[0]["recommendation"] == "GO"
 
 
+def test_get_tender_roundtrip():
+    from datetime import UTC, datetime
+
+    repo = InMemoryRepository()
+    deadline = datetime(2026, 12, 30, 18, 0, tzinfo=UTC)
+    tid, _ = repo.upsert_tender(
+        Tender(source="PNCP", external_id="42", title="Suporte TI",
+               category="TI", budget_estimate=100_000.0, deadline=deadline, uf="SP")
+    )
+    got = repo.get_tender(tid)
+    assert got is not None
+    assert got.external_id == "42"
+    assert got.title == "Suporte TI"
+    assert got.budget_estimate == 100_000.0
+    assert got.deadline == deadline
+
+
+def test_get_tender_missing_returns_none():
+    assert InMemoryRepository().get_tender("nope") is None
+
+
 def test_list_respects_limit():
     repo = InMemoryRepository()
     for i in range(5):

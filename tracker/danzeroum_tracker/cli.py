@@ -84,7 +84,7 @@ def cmd_search(
     out: TextIO = sys.stdout,
 ) -> int:
     adapters = adapters if adapters is not None else build_adapters(settings)
-    scorer = scorer or get_scorer(settings.scorer)
+    scorer = scorer or get_scorer(settings.scorer, settings=settings)
     results = []
     for adapter in adapters:
         for tender in adapter.collect():
@@ -110,7 +110,7 @@ def cmd_collect(
 ) -> int:
     repo = repo if repo is not None else build_repository(settings.database_url)
     adapters = adapters if adapters is not None else build_adapters(settings)
-    scorer = scorer or get_scorer(settings.scorer)
+    scorer = scorer or get_scorer(settings.scorer, settings=settings)
     notifier = notifier if notifier is not None else build_notifier(settings)
     result = run_collection(adapters, repo, scorer, min_fit_alert=settings.min_fit_alert)
     payload = result.to_dict()
