@@ -9,6 +9,8 @@ from danzeroum_tracker.extraction import (
     download_and_extract,
     edital_text_from_raw,
     extract_pdf_text,
+    extract_text_auto,
+    fetch_pncp_edital_text,
 )
 
 
@@ -106,3 +108,95 @@ def test_edital_text_from_raw_keys(key):
 def test_edital_text_from_raw_missing():
     assert edital_text_from_raw({"outra": "coisa"}) == ""
     assert edital_text_from_raw({}) == ""
+
+
+# ── ZIP / detecção automática (PNCP empacota o edital como ZIP de PDFs) ──────────
+
+
+def _zip_with_pdf(name="Anexo.pdf", content=b"%PDF-fake") -> bytes:
+    import io
+    import zipfile
+
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        zf.writestr("pasta/", b"")
+        zf.writestr(f"pasta/{name}", content)
+        zf.writestr("pasta/Planilha.xlsx", b"not a pdf")
+    return buf.getvalue()
+
+
+def test_extract_text_auto_detects_pdf(monkeypatch):
+    monkeypatch.setattr(extraction, "extract_pdf_text", lambda data, max_chars=24000: "PDF-OK")
+    assert extract_text_auto(b"%PDF-1.7 ...") == "PDF-OK"
+
+
+def test_extract_text_auto_detects_zip(monkeypatch):
+    class FakePage:
+        def extract_text(self):
+            return "OBJETO: aquisição de barras"
+
+    class FakeReader:
+        def __init__(self, _stream):
+            self.pages = [FakePage()]
+
+    import pypdf
+
+    monkeypatch.setattr(pypdf, "PdfReader", FakeReader)
+    out = extract_text_auto(_zip_with_pdf())
+    assert "OBJETO: aquisição de barras" in out
+
+
+def test_extract_text_auto_unknown_returns_empty():
+    assert extract_text_auto(b"<html>not a doc</html>") == ""
+    assert extract_text_auto(b"") == ""
+
+
+# ── fetch do edital no PNCP ──────────────────────────────────────────────────────
+
+
+class _Resp:
+    def __init__(self, *, json_data=None, content=b""):
+        self._json = json_data
+        self.content = content
+
+    def raise_for_status(self):
+        pass
+
+    def json(self):
+        return self._json
+
+
+class _PNCPSession:
+    """Devolve o JSON de arquivos na 1ª chamada e os bytes do edital na 2ª."""
+
+    def __init__(self, files, content):
+        self._files = files
+        self._content = content
+        self.urls = []
+
+    def get(self, url, headers=None, timeout=30):
+        self.urls.append(url)
+        if url.endswith("/arquivos"):
+            return _Resp(json_data=self._files)
+        return _Resp(content=self._content)
+
+
+_RAW = {"orgaoEntidade": {"cnpj": "50853555000154"}, "anoCompra": 2024, "sequencialCompra": 169}
+
+
+def test_fetch_pncp_edital_prefers_edital_doc(monkeypatch):
+    monkeypatch.setattr(extraction, "extract_text_auto", lambda data, max_chars=24000: "TEXTO-EDITAL")
+    files = [
+        {"tipoDocumentoNome": "Contrato", "url": "https://x/arquivos/3"},
+        {"tipoDocumentoNome": "Edital", "url": "https://x/arquivos/1"},
+    ]
+    sess = _PNCPSession(files, b"PK\x03\x04zip")
+    out = fetch_pncp_edital_text(_RAW, session=sess, max_chars=1000)
+    assert out == "TEXTO-EDITAL"
+    # baixou o doc do tipo "Edital" (arquivos/1), não o contrato.
+    assert sess.urls[-1].endswith("/arquivos/1")
+
+
+def test_fetch_pncp_edital_missing_keys_returns_empty():
+    assert fetch_pncp_edital_text({"anoCompra": 2024}) == ""
+    assert fetch_pncp_edital_text({}) == ""

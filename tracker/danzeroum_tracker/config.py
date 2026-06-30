@@ -66,6 +66,9 @@ class Settings:
     deepseek_model: str = "deepseek-v4-flash"
     # Limite de caracteres do texto do edital enviado ao LLM (controle de custo).
     llm_max_chars: int = 24000
+    # Baixar o anexo do edital (PNCP) e extrair o texto para o LLM. Custa requests
+    # extras por edital novo — só vale com o scorer 'llm'. Default off.
+    fetch_edital_text: bool = False
     collect_interval_hours: float = 24.0
     min_fit_alert: float = 0.4
     page_size: int = 50
@@ -103,6 +106,7 @@ class Settings:
             deepseek_base_url=_env(e, "DEEPSEEK_BASE_URL", cls.deepseek_base_url),
             deepseek_model=_env(e, "DEEPSEEK_MODEL", cls.deepseek_model),
             llm_max_chars=int(_env(e, "TRACKER_LLM_MAX_CHARS", "24000")),
+            fetch_edital_text=_env(e, "TRACKER_FETCH_EDITAL", "").lower() in ("1", "true", "yes"),
             collect_interval_hours=float(_env(e, "COLLECT_INTERVAL_HOURS", "24")),
             min_fit_alert=float(_env(e, "TRACKER_MIN_FIT", "0.4")),
             page_size=int(_env(e, "TRACKER_PAGE_SIZE", "50")),

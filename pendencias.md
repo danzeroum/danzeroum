@@ -23,16 +23,28 @@ Data: 2026-06-30.
 
 ## ⛔ Pendente — exige decisão/acesso seu
 
-### Frente 6 — Ativar fontes Compras SP (BEC) e Prefeitura SP  *(bloqueada)*
-Os adaptadores existem (`tracker/danzeroum_tracker/adapters/scraper.py`), mas os seletores
-CSS estão marcados como "a confirmar" — placeholders nunca validados contra o HTML real.
-**Não dá para calibrar sem acesso às páginas reais** (e o scraping de portais públicos é
-frágil/muda com frequência).
-- **Decisão necessária:** (a) confirmar se os portais ainda usam as URLs em `config.py`
-  (`bec.sp.gov.br`, `e-negocioscidadesp.prefeitura.sp.gov.br`); (b) me autorizar a acessar as
-  páginas ao vivo para inspecionar o HTML e ajustar os seletores, **ou** me enviar um HTML de
-  exemplo de cada listagem; (c) avaliar se há **API oficial** (preferível a scraping).
-- Enquanto isso, o default segue `TRACKER_SOURCES=pncp` (1 fonte).
+### Frente 6 — Ativar fontes Compras SP (BEC) e Prefeitura SP  *(investigada ao vivo — inviável agora)*
+Com a internet liberada, investiguei os dois portais ao vivo (2026-06-30):
+- **Prefeitura SP** (`e-negocioscidadesp.prefeitura.sp.gov.br`): **inacessível** deste ambiente
+  — o handshake TLS falha (HTTP 000) em `www` e sem `www`. Bloqueio de rede/host, não de código.
+- **BEC SP** (`bec.sp.gov.br`): o caminho antigo em `config.py` (`OfertaPesquisa.aspx`) **está
+  morto (404)**. O portal é ASP.NET WebForms: a listagem de **ofertas abertas** (com objeto,
+  valor e prazo) só aparece via fluxo de **postback/viewstate** (busca → submit → paginação),
+  frágil e de alta manutenção. As páginas GET-áveis que encontrei (`pregaoOCSuspensa.aspx` = log
+  de OCs suspensas; `DetalheOCItens.aspx` = catálogo de itens) **não** trazem objeto/valor/prazo
+  de oportunidades, então não servem ao modelo `Tender`.
+- **Conclusão/recomendação:** o ganho marginal é baixo — pela **Lei 14.133/2021**, os entes
+  públicos são obrigados a publicar no **PNCP** (já integrado e funcionando), que hoje agrega a
+  maior parte das licitações municipais/estaduais de SP. Sugiro **não** investir no scraping do
+  BEC/Prefeitura por ora e manter o foco no PNCP. Se houver uma **API oficial** do BEC/Prefeitura
+  no futuro, plugo um adaptador. Default segue `TRACKER_SOURCES=pncp`.
+- **Em vez disso**, usei o acesso liberado para entregar a pendência de maior valor (abaixo).
+
+### ✅ Resolvido com o acesso liberado — download do anexo do edital (PNCP) para o LLM
+A pendência "o LLM só vê título/descrição" foi **resolvida** (PR desta rodada): validei ao vivo a
+API de arquivos do PNCP, o download do **Edital** (vem como **ZIP de PDFs**) e a extração do texto
+(ex.: "TERMO DE REFERÊNCIA / OBJETO"). Com `TRACKER_FETCH_EDITAL=true` (e `TRACKER_SCORER=llm`), o
+scorer passa a ler o **edital completo**. Best-effort: qualquer falha cai no texto de título/descrição.
 
 ### Frente 8 — resto da robustez operacional
 - **Redis + Celery** (fila/retry no lugar do loop `sleep`): exige novos serviços no
