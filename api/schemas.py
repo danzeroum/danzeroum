@@ -58,6 +58,24 @@ class ReportOut(BaseModel):
     top: list[dict[str, Any]]
 
 
+class MonthlyPoint(BaseModel):
+    month: str  # YYYY-MM
+    sent: int
+    won: int
+    lost: int
+
+
+class AnalyticsOut(BaseModel):
+    total_proposals: int
+    by_status: dict[str, int]
+    win_rate: float          # WIN / (WIN + LOST)
+    decided: int             # WIN + LOST
+    value_won: float
+    value_lost: float
+    value_pipeline: float    # DRAFT + SENT + UNDER_REVIEW
+    monthly: list[MonthlyPoint]
+
+
 class ConfigOut(BaseModel):
     sources: list[str]
     modalidades: list[int]

@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { getReport } from '../api/client'
 import { RecoTag, FitBar, DeadlinePill, Icons } from '../components/icons'
+import BusinessAnalytics from '../components/BusinessAnalytics'
 import type { ReportTopItem } from '../api/types'
 
 function fmtBRL(n: number | null): string {
@@ -133,6 +134,8 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      <BusinessAnalytics />
     </div>
   )
 }
