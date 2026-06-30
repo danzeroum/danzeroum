@@ -41,10 +41,6 @@ jobs:
           --health-timeout 5s
           --health-retries 10
 
-    env:
-      # Habilita o teste de integração do runner de migrations (test_migrate.py).
-      DATABASE_URL: postgresql://danzeroum:danzeroum@localhost:5432/oportunidades
-
     steps:
       - uses: actions/checkout@v4
 
@@ -58,5 +54,13 @@ jobs:
           pip install ./tracker
           pip install -r api/requirements.txt
 
-      - name: Testes (unitários + integração do runner de migrations)
-        run: python -m pytest api/tests -q
+      # Suíte unitária SEM DATABASE_URL: a API cai no repositório em memória, como os
+      # testes esperam (com um Postgres vazio, endpoints que usam get_repo dariam 503).
+      - name: Testes unitários (sem banco)
+        run: python -m pytest api/tests -q -m "not integration"
+
+      # Só o teste de integração do runner de migrations enxerga o Postgres.
+      - name: Integração do runner de migrations (Postgres)
+        env:
+          DATABASE_URL: postgresql://danzeroum:danzeroum@localhost:5432/oportunidades
+        run: python -m pytest api/tests -q -m integration
