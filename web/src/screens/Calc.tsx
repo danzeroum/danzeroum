@@ -29,6 +29,7 @@ export default function Calc() {
   const [payrollPct, setPayrollPct] = useState(0.28)
   const [directCostPct, setDirectCostPct] = useState(0.50)
   const [marginPct, setMarginPct] = useState(0.15)
+  const [issPct, setIssPct] = useState(0)
   const [result, setResult] = useState<CalcOut | null>(null)
 
   const calc = useMutation({
@@ -51,7 +52,9 @@ export default function Calc() {
             onChange={setDirectCostPct} fmt={v => `${(v * 100).toFixed(0)}%`} />
           <Slider label="Margem desejada" value={marginPct} min={0.05} max={0.40} step={0.01}
             onChange={setMarginPct} fmt={v => `${(v * 100).toFixed(0)}%`} />
-          <button className="btn" onClick={() => calc.mutate({ revenue, payroll_pct: payrollPct, direct_cost_pct: directCostPct, margin_pct: marginPct })}
+          <Slider label="ISS extra (fora do Simples)" value={issPct} min={0} max={0.05} step={0.005}
+            onChange={setIssPct} fmt={v => `${(v * 100).toFixed(1)}%`} />
+          <button className="btn" onClick={() => calc.mutate({ revenue, payroll_pct: payrollPct, direct_cost_pct: directCostPct, margin_pct: marginPct, iss_pct: issPct })}
             disabled={calc.isPending} style={{ marginTop: 8, width: '100%' }}>
             {calc.isPending ? 'Calculando…' : 'Calcular preço mínimo'}
           </button>
@@ -73,6 +76,7 @@ export default function Calc() {
                 </span>
                 <p style={{ fontSize: '.84rem', color: 'var(--muted)' }}>
                   Fator R: <span className="tnum" style={{ fontWeight: 600, color: 'var(--ink)' }}>{(result.fator_r * 100).toFixed(1)}%</span>
+                  {' · '}Alíquota efetiva: <span className="tnum" style={{ fontWeight: 600, color: 'var(--ink)' }}>{(result.effective_rate * 100).toFixed(2)}%</span>
                 </p>
               </div>
               <div style={{ borderTop: '1px solid var(--line)', paddingTop: 16 }}>
