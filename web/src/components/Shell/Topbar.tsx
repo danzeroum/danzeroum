@@ -18,6 +18,7 @@ export function Topbar({ dark, onToggleTheme, onSearch }: Props) {
 
   const { data: alerts } = useQuery({ queryKey: ['alerts'], queryFn: getAlerts, refetchInterval: 60_000 })
   const alertCount = alerts?.length ?? 0
+  const hasDanger = alerts?.some(a => a.level === 'danger') ?? false
 
   const collectMutation = useMutation({
     mutationFn: startCollection,
@@ -70,7 +71,7 @@ export function Topbar({ dark, onToggleTheme, onSearch }: Props) {
           {alertCount > 0 && (
             <span style={{
               position: 'absolute', top: 4, right: 4, width: 8, height: 8,
-              borderRadius: '50%', background: 'var(--go)',
+              borderRadius: '50%', background: hasDanger ? 'var(--danger)' : 'var(--go)',
             }} />
           )}
         </button>

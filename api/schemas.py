@@ -125,6 +125,14 @@ class DocumentOut(BaseModel):
     notes: str | None = None
     created_at: datetime
 
+class DocumentExpiringOut(BaseModel):
+    id: str
+    type: str
+    name: str | None = None
+    expiry_date: date
+    days_left: int
+    level: str  # expired | critical | warning | notice
+
 class DocumentCreate(BaseModel):
     type: str
     subtype: str | None = None
