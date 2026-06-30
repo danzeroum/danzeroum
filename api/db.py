@@ -140,6 +140,69 @@ def get_tender_detail(conn: psycopg.Connection, tender_id: str) -> dict | None:
     return result
 
 
+# ── Analytics de propostas (win rate, valor ganho/perdido, série mensal) ────────
+
+# Status que ainda estão "em jogo" (compõem o valor em pipeline).
+_PIPELINE_STATUSES = ("DRAFT", "SENT", "UNDER_REVIEW")
+
+
+def _compute_analytics(status_rows: list[dict], monthly_rows: list[dict]) -> dict:
+    """Agrega contagens/valores por status e a série mensal. Função pura (testável)."""
+    by_status: dict[str, int] = {}
+    value_by_status: dict[str, float] = {}
+    for r in status_rows:
+        st = r["status"] or "UNKNOWN"
+        by_status[st] = int(r["cnt"])
+        value_by_status[st] = float(r["total_value"] or 0)
+
+    won = by_status.get("WIN", 0)
+    lost = by_status.get("LOST", 0)
+    decided = won + lost
+    win_rate = (won / decided) if decided else 0.0
+
+    months: dict[str, dict] = {}
+    for r in monthly_rows:
+        m = r["month"]
+        st = r["status"] or "UNKNOWN"
+        c = int(r["cnt"])
+        point = months.setdefault(m, {"month": m, "sent": 0, "won": 0, "lost": 0})
+        point["sent"] += c
+        if st == "WIN":
+            point["won"] += c
+        elif st == "LOST":
+            point["lost"] += c
+
+    return {
+        "total_proposals": sum(by_status.values()),
+        "by_status": by_status,
+        "win_rate": round(win_rate, 4),
+        "decided": decided,
+        "value_won": round(value_by_status.get("WIN", 0.0), 2),
+        "value_lost": round(value_by_status.get("LOST", 0.0), 2),
+        "value_pipeline": round(
+            sum(value_by_status.get(s, 0.0) for s in _PIPELINE_STATUSES), 2
+        ),
+        "monthly": [months[k] for k in sorted(months)],
+    }
+
+
+def get_proposal_analytics(conn: psycopg.Connection) -> dict:
+    """Indicadores de negócio a partir da tabela ``proposals``."""
+    with conn.cursor() as cur:
+        cur.execute(
+            "SELECT status, COUNT(*) AS cnt, COALESCE(SUM(price_offered), 0) AS total_value "
+            "FROM proposals GROUP BY status"
+        )
+        status_rows = cur.fetchall()
+        cur.execute(
+            "SELECT to_char(date_trunc('month', submitted_at), 'YYYY-MM') AS month, "
+            "status, COUNT(*) AS cnt FROM proposals "
+            "WHERE submitted_at IS NOT NULL GROUP BY 1, 2 ORDER BY 1"
+        )
+        monthly_rows = cur.fetchall()
+    return _compute_analytics(status_rows, monthly_rows)  # type: ignore[arg-type]
+
+
 def get_recent_alerts(conn: psycopg.Connection, limit: int = 20) -> list[dict]:
     """Derive alerts from recent GO/REVIEW tenders (no alerts table in schema)."""
     with conn.cursor() as cur:

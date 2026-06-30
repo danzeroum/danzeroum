@@ -1,5 +1,6 @@
 import type {
   Alert,
+  Analytics,
   CollectionRunStatus,
   Config,
   PaginatedTenders,
@@ -52,6 +53,10 @@ export function getCollectRuns(): Promise<CollectionRunStatus[]> {
 
 export function getReport(): Promise<Report> {
   return request<Report>('/report')
+}
+
+export function getAnalytics(): Promise<Analytics> {
+  return request<Analytics>('/analytics')
 }
 
 export function getConfig(): Promise<Config> {

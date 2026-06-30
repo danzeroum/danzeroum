@@ -69,6 +69,24 @@ export interface Report {
   top: ReportTopItem[]
 }
 
+export interface MonthlyPoint {
+  month: string // YYYY-MM
+  sent: number
+  won: number
+  lost: number
+}
+
+export interface Analytics {
+  total_proposals: number
+  by_status: Record<string, number>
+  win_rate: number // 0..1
+  decided: number
+  value_won: number
+  value_lost: number
+  value_pipeline: number
+  monthly: MonthlyPoint[]
+}
+
 export interface Config {
   sources: string[]
   modalidades: number[]
