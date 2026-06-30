@@ -102,6 +102,38 @@ def test_llm_scorer_includes_edital_text_in_prompt():
     assert "aquisição de licenças de software" in user
 
 
+def test_llm_scorer_uses_edital_fetcher_when_no_raw_text():
+    provider = StubProvider(_VALID)
+    fetched = []
+
+    def fake_fetcher(tender):
+        fetched.append(tender.external_id)
+        return "TERMO DE REFERÊNCIA — objeto: suporte de rede"
+
+    LLMScorer(provider, edital_fetcher=fake_fetcher).score(_tender())
+    _system, user = provider.calls[0]
+    assert "TERMO DE REFERÊNCIA" in user
+    assert fetched == ["ext-1"]
+
+
+def test_llm_scorer_skips_fetcher_when_raw_text_present():
+    provider = StubProvider(_VALID)
+    calls = []
+    t = _tender(raw_json={"edital_text": "já tenho o texto"})
+    LLMScorer(provider, edital_fetcher=lambda x: calls.append(x) or "x").score(t)
+    assert calls == []  # não busca se já há texto em raw_json
+
+
+def test_llm_scorer_fetcher_failure_is_best_effort():
+    provider = StubProvider(_VALID)
+
+    def boom(_tender):
+        raise RuntimeError("rede caiu")
+
+    score = LLMScorer(provider, edital_fetcher=boom).score(_tender())
+    assert score.recommendation == "GO"  # não derruba o scoring
+
+
 # ── DeepSeekProvider (cliente HTTP, sem rede real) ──────────────────────────────
 
 
@@ -172,6 +204,14 @@ def test_get_scorer_llm_returns_llm_scorer_with_key():
     settings = Settings.from_env({"DEEPSEEK_API_KEY": "sk-x"})
     scorer = get_scorer("deepseek", settings=settings)
     assert isinstance(scorer, LLMScorer)
+    assert scorer.edital_fetcher is None  # fetch_edital off por padrão
+
+
+def test_get_scorer_llm_wires_edital_fetcher_when_enabled():
+    settings = Settings.from_env({"DEEPSEEK_API_KEY": "sk-x", "TRACKER_FETCH_EDITAL": "true"})
+    scorer = get_scorer("llm", settings=settings)
+    assert isinstance(scorer, LLMScorer)
+    assert callable(scorer.edital_fetcher)
 
 
 def test_get_scorer_heuristic_unchanged():

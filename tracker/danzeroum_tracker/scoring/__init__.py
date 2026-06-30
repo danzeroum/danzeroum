@@ -51,10 +51,19 @@ def get_scorer(name: str = "heuristic", *, settings: Settings | None = None) -> 
                 name,
             )
             return HeuristicScorer()
+        max_chars = settings.llm_max_chars if settings else 24000
+        edital_fetcher = None
+        if settings is not None and settings.fetch_edital_text:
+            from danzeroum_tracker.extraction import fetch_pncp_edital_text
+
+            def edital_fetcher(tender):
+                return fetch_pncp_edital_text(tender.raw_json or {}, max_chars=max_chars)
+
         return LLMScorer(
             provider,
             fallback=HeuristicScorer(),
-            max_chars=settings.llm_max_chars if settings else 24000,
+            max_chars=max_chars,
+            edital_fetcher=edital_fetcher,
         )
     raise ValueError(
         f"scorer desconhecido: {name!r} (disponíveis: heuristic, llm)."

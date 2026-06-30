@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import json
 import logging
+from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 import requests
@@ -159,10 +160,13 @@ class LLMScorer(Scorer):
         *,
         fallback: Scorer | None = None,
         max_chars: int = 24000,
+        edital_fetcher: Callable[[Tender], str] | None = None,
     ) -> None:
         self.provider = provider
         self.fallback = fallback or HeuristicScorer()
         self.max_chars = max_chars
+        # Opcional: baixa o texto do edital quando não está em raw_json (best-effort).
+        self.edital_fetcher = edital_fetcher
 
     def score(self, tender: Tender) -> Score:
         try:
@@ -194,6 +198,12 @@ class LLMScorer(Scorer):
         from danzeroum_tracker.extraction import edital_text_from_raw
 
         edital = edital_text_from_raw(tender.raw_json or {}, max_chars=self.max_chars)
+        if not edital and self.edital_fetcher is not None:
+            try:
+                edital = self.edital_fetcher(tender)
+            except Exception as exc:  # noqa: BLE001 - download é best-effort
+                logger.warning("falha ao buscar edital de %s: %s", tender.external_id, exc)
+                edital = ""
         budget = tender.budget_estimate if tender.budget_estimate is not None else "(não divulgado)"
         prazo = tender.deadline.isoformat() if tender.deadline else "(não informado)"
         lines = [
