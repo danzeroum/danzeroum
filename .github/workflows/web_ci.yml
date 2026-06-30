@@ -1,0 +1,46 @@
+name: Web — CI
+
+# Build + lint do SPA (web/). O build (tsc -b && vite build) é o porteiro principal.
+# Não faz deploy.
+on:
+  push:
+    branches:
+      - main
+      - 'claude/**'
+    paths:
+      - 'web/**'
+      - '.github/workflows/web_ci.yml'
+  pull_request:
+    paths:
+      - 'web/**'
+      - '.github/workflows/web_ci.yml'
+
+concurrency:
+  group: web-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Build (tsc + vite)
+        run: npm run build
+
+      - name: Lint (oxlint)
+        run: npm run lint

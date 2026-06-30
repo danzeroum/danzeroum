@@ -18,10 +18,13 @@ RUN pip install --no-cache-dir -r ./api/requirements.txt
 
 # Copy API source
 COPY api ./api
+RUN chmod +x ./api/entrypoint.sh
 
 # Run as non-root
 RUN useradd --create-home --uid 10001 apiuser
 USER apiuser
 
 EXPOSE 8000
+# O entrypoint aplica as migrations antes de subir o uvicorn (o CMD vira seus args).
+ENTRYPOINT ["./api/entrypoint.sh"]
 CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -10,6 +10,12 @@ Strategy:
 from __future__ import annotations
 
 import pytest
+
+
+def pytest_configure(config):
+    config.addinivalue_line(
+        "markers", "integration: testes que exigem um PostgreSQL real (DATABASE_URL)"
+    )
 from fastapi.testclient import TestClient
 
 from api.main import app

@@ -1,0 +1,62 @@
+name: API — CI
+
+# Testa o subprojeto api/ (FastAPI). A API importa o pacote danzeroum_tracker, então
+# uma mudança no tracker também dispara este CI. Inclui o teste de integração do runner
+# de migrations contra um Postgres real. Não faz deploy.
+on:
+  push:
+    branches:
+      - main
+      - 'claude/**'
+    paths:
+      - 'api/**'
+      - 'tracker/**'
+      - '.github/workflows/api_ci.yml'
+  pull_request:
+    paths:
+      - 'api/**'
+      - 'tracker/**'
+      - '.github/workflows/api_ci.yml'
+
+concurrency:
+  group: api-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: danzeroum
+          POSTGRES_PASSWORD: danzeroum
+          POSTGRES_DB: oportunidades
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U danzeroum -d oportunidades"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      # Habilita o teste de integração do runner de migrations (test_migrate.py).
+      DATABASE_URL: postgresql://danzeroum:danzeroum@localhost:5432/oportunidades
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install (tracker + API)
+        run: |
+          pip install ./tracker
+          pip install -r api/requirements.txt
+
+      - name: Testes (unitários + integração do runner de migrations)
+        run: python -m pytest api/tests -q

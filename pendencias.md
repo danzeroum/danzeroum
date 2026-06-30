@@ -61,19 +61,17 @@ scorer passa a ler o **edital completo**. Best-effort: qualquer falha cai no tex
 
 ## ⚠️ Decisões técnicas transversais (recomendações)
 
-1. **CI para `api/` e `web/`** — hoje **não há** CI para esses diretórios (só `tracker/` e
-   `docker/`). As PRs de API/web foram validadas **localmente** (pytest + `tsc`/build), mas
-   sem porteiro automático. **Recomendo** adicionar dois workflows: `api_ci` (pytest em
-   `api/tests`) e `web_ci` (`tsc -b && vite build` + `oxlint`). Posso fazer isso numa PR.
+1. ~~**CI para `api/` e `web/`**~~ — ✅ **RESOLVIDO** (PR desta rodada): novos workflows
+   `api_ci.yml` (pytest em `api/tests` + Postgres para o teste de integração do runner) e
+   `web_ci.yml` (`npm ci` + `tsc -b && vite build` + `oxlint`).
 
-2. **Runner de migrations da API** — `api/migrations/*.sql` não têm runner automático (só o
-   `tracker/sql/schema.sql` é aplicado no Docker/CI). Isso **bloqueou** três itens menores:
-   - **Histórico de cálculos** (Frente 7, previsto na V2).
-   - **Vínculo persistido proposta↔cálculo de preço** (Frente 5).
-   - **`clients.external_id`** para dedupe do CRM à prova de homônimos (Frente 4 — hoje o
-     dedupe usa e-mail/nome).
-   **Decisão:** definir o mecanismo (ex.: aplicar `api/migrations/*.sql` no entrypoint do
-   container, ou adotar Alembic). Com isso definido, eu entrego os três itens.
+2. ~~**Runner de migrations da API**~~ — ✅ **RESOLVIDO** (PR desta rodada): `api/migrate.py`
+   aplica `api/migrations/*.sql` idempotentemente (controle em `schema_migrations`), rodando no
+   startup do contêiner via `api/entrypoint.sh`. Isso **destrava** os três itens abaixo, que
+   ficam para uma **próxima rodada** (agora têm onde apoiar):
+   - **Histórico de cálculos** (Frente 7, previsto na V2) — nova migration + tabela `calc_history`.
+   - **Vínculo persistido proposta↔cálculo de preço** (Frente 5) — coluna/migration.
+   - **`clients.external_id`** para dedupe do CRM à prova de homônimos (Frente 4).
 
 3. **DeepSeek (Frente 1)** — implementado e testado com provider mockado. **Ao configurar a
    `DEEPSEEK_API_KEY` real**, validar contra a API ao vivo (nomes `deepseek-v4-flash`/`-pro`
