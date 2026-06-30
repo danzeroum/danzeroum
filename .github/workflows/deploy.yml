@@ -14,6 +14,8 @@ on:
       - '.github/workflows/crm_collect.yml'
       - '.github/workflows/tracker_ci.yml'
       - '.github/workflows/services_ci.yml'
+      - '.github/workflows/api_ci.yml'
+      - '.github/workflows/web_ci.yml'
       - 'README.md'
   workflow_dispatch:
 
