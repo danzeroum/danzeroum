@@ -60,6 +60,9 @@ services:
       SMTP_FROM: ${SMTP_FROM:-}
       SMTP_FROM_NAME: ${SMTP_FROM_NAME:-Rastreador Danzeroum}
       MAIL_TO: ${MAIL_TO:-}
+      # Telegram (alertas multicanal, opt-in). Vazio = no-op.
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
+      TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
     command: ["schedule"]
 
 volumes:

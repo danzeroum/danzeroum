@@ -25,7 +25,7 @@ from danzeroum_tracker.adapters.comprasgov import ComprasGovAdapter
 from danzeroum_tracker.adapters.pncp import PNCPAdapter
 from danzeroum_tracker.adapters.scraper import ComprasSPAdapter, PrefeituraSPAdapter
 from danzeroum_tracker.config import Settings
-from danzeroum_tracker.notifications import Notifier, build_notifier
+from danzeroum_tracker.notifications import Notifier, build_all_notifiers
 from danzeroum_tracker.pipeline import run_collection
 from danzeroum_tracker.reporting import build_report, render_markdown, render_text
 from danzeroum_tracker.scoring import SCORE_SCHEMA, Scorer, get_scorer
@@ -111,7 +111,7 @@ def cmd_collect(
     repo = repo if repo is not None else build_repository(settings.database_url)
     adapters = adapters if adapters is not None else build_adapters(settings)
     scorer = scorer or get_scorer(settings.scorer, settings=settings)
-    notifier = notifier if notifier is not None else build_notifier(settings)
+    notifier = notifier if notifier is not None else build_all_notifiers(settings)
     result = run_collection(adapters, repo, scorer, min_fit_alert=settings.min_fit_alert)
     payload = result.to_dict()
     # A coleta já está persistida; uma falha no envio de e-mail NÃO pode derrubar
