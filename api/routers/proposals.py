@@ -23,8 +23,7 @@ def list_proposals(conn: Conn, status: str | None = None):
         params.append(status)
     q += " ORDER BY p.submitted_at DESC NULLS LAST"
     rows = conn.execute(q, params).fetchall()
-    cols = ["id","tender_id","tender_title","status","price_offered","validity_days","version","notes","submitted_at"]
-    return [ProposalOut(**{k: float(v) if k=="price_offered" and v is not None else v for k,v in zip(cols,r)}) for r in rows]
+    return [ProposalOut(**{k: float(v) if k=="price_offered" and v is not None else v for k,v in r.items()}) for r in rows]
 
 @router.post("", response_model=ProposalOut, status_code=201)
 def create_proposal(body: ProposalCreate, conn: Conn):
@@ -35,8 +34,7 @@ def create_proposal(body: ProposalCreate, conn: Conn):
     )
     conn.commit()
     row = conn.execute(f"SELECT {_COLS} FROM proposals p LEFT JOIN tenders t ON t.id=p.tender_id WHERE p.id=%s", [prop_id]).fetchone()
-    cols = ["id","tender_id","tender_title","status","price_offered","validity_days","version","notes","submitted_at"]
-    return ProposalOut(**{k: float(v) if k=="price_offered" and v is not None else v for k,v in zip(cols,row)})
+    return ProposalOut(**{k: float(v) if k=="price_offered" and v is not None else v for k,v in row.items()})
 
 @router.get("/{prop_id}/pdf")
 def proposal_pdf(prop_id: str, conn: Conn):
@@ -47,14 +45,13 @@ def proposal_pdf(prop_id: str, conn: Conn):
     ).fetchone()
     if not row:
         raise HTTPException(404)
-    cols = ["id","tender_id","tender_title","status","price_offered","validity_days","version","notes","submitted_at"]
-    data = {k: (float(v) if k == "price_offered" and v is not None else v) for k, v in zip(cols, row)}
+    data = {k: (float(v) if k == "price_offered" and v is not None else v) for k, v in row.items()}
     # Enriquecimento opcional do edital (fonte / identificador) para o cabeçalho.
     tinfo = conn.execute(
         "SELECT source, external_id FROM tenders WHERE id=%s", [data.get("tender_id")]
     ).fetchone()
     if tinfo:
-        data["source"], data["external_id"] = tinfo[0], tinfo[1]
+        data["source"], data["external_id"] = tinfo["source"], tinfo["external_id"]
     pdf = build_proposal_pdf(data)
     return Response(
         content=pdf,
@@ -77,8 +74,7 @@ def patch_proposal_status(prop_id: str, body: ProposalStatusPatch, conn: Conn):
         raise HTTPException(404)
     conn.commit()
     row = conn.execute(f"SELECT {_COLS} FROM proposals p LEFT JOIN tenders t ON t.id=p.tender_id WHERE p.id=%s", [prop_id]).fetchone()
-    cols = ["id","tender_id","tender_title","status","price_offered","validity_days","version","notes","submitted_at"]
-    return ProposalOut(**{k: float(v) if k=="price_offered" and v is not None else v for k,v in zip(cols,row)})
+    return ProposalOut(**{k: float(v) if k=="price_offered" and v is not None else v for k,v in row.items()})
 
 @router.delete("/{prop_id}", status_code=204)
 def delete_proposal(prop_id: str, conn: Conn):

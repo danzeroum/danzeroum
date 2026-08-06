@@ -1,15 +1,25 @@
+import uuid
+
 import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import MagicMock
 from api.main import app
 from api.deps import get_conn
 
+# get_conn usa row_factory=dict_row: as linhas chegam como dict, e a coluna
+# uuid chega como objeto UUID — é o que os mocks precisam reproduzir.
+_CLIENT_ID = uuid.UUID("11111111-1111-4111-8111-111111111111")
+
 @pytest.fixture()
 def client():
     mock_conn = MagicMock()
     list_cur = MagicMock(); list_cur.fetchall.return_value = []
     fetch_cur = MagicMock()
-    fetch_cur.fetchone.return_value = ("client-id","Acme Corp","LEAD",None,None,None,None,"LEAD",None,"2024-01-01T00:00:00")
+    fetch_cur.fetchone.return_value = {
+        "id": _CLIENT_ID, "name": "Acme Corp", "type": "LEAD", "cnpj": None,
+        "contact_name": None, "email": None, "phone": None, "status": "LEAD",
+        "notes": None, "created_at": "2024-01-01T00:00:00",
+    }
     update_cur = MagicMock(); update_cur.rowcount = 1
     def fake_execute(q, params=None):
         if "INSERT" in q: return MagicMock(rowcount=1)
@@ -32,6 +42,8 @@ def test_create_client(client):
     r = client.post("/clients", json={"name": "Acme Corp"})
     assert r.status_code == 201
     assert r.json()["name"] == "Acme Corp"
+    # UUID do banco sai serializado como str, não como objeto.
+    assert r.json()["id"] == str(_CLIENT_ID)
 
 def test_patch_client(client):
     r = client.patch("/clients/client-id", json={"status": "CLIENT"})

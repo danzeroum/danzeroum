@@ -83,3 +83,21 @@ def test_logout_clears_cookie(client):
     assert r.status_code == 200
     r2 = client.get("/auth/me")
     assert r2.status_code == 401
+
+
+def test_sem_session_secret_recusa_tudo(client, monkeypatch):
+    """Sem SESSION_SECRET a API recusa, em vez de assinar com segredo público.
+
+    O default está no código, então uma sessão assinada com ele é forjável.
+    Nesse estado o login precisa falhar e o cookie deixar de valer — inclusive
+    um cookie emitido antes, quando o segredo ainda era válido.
+    """
+    client.post("/auth/login", json={"username": "admin", "password": "secret123"})
+    assert client.get("/auth/me").status_code == 200
+
+    monkeypatch.setattr(auth_mod, "_SECRET", auth_mod._DEV_SECRET)
+
+    assert client.get("/auth/me").status_code == 401
+    assert client.get("/report").status_code == 401
+    r = client.post("/auth/login", json={"username": "admin", "password": "secret123"})
+    assert r.status_code == 500

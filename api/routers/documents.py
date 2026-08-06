@@ -32,8 +32,7 @@ def list_documents(conn: Conn, type: str | None = None, valid: bool | None = Non
         params.append(valid)
     q += " ORDER BY created_at DESC"
     rows = conn.execute(q, params).fetchall()
-    cols = ["id","type","subtype","name","file_name","mime_type","issue_date","expiry_date","is_valid","notes","created_at"]
-    return [DocumentOut(**dict(zip(cols, r))) for r in rows]
+    return [DocumentOut(**r) for r in rows]
 
 @router.post("", response_model=DocumentOut, status_code=201)
 async def create_document(
@@ -65,8 +64,7 @@ async def create_document(
         "SELECT id,type,subtype,name,file_name,mime_type,issue_date,expiry_date,is_valid,notes,created_at FROM documents WHERE id=%s",
         [doc_id]
     ).fetchone()
-    cols = ["id","type","subtype","name","file_name","mime_type","issue_date","expiry_date","is_valid","notes","created_at"]
-    return DocumentOut(**dict(zip(cols, row)))
+    return DocumentOut(**row)
 
 @router.get("/{doc_id}/file")
 def get_document_file(doc_id: str, conn: Conn):
@@ -75,7 +73,7 @@ def get_document_file(doc_id: str, conn: Conn):
     ).fetchone()
     if not row:
         raise HTTPException(404)
-    file_data, file_name, mime_type = row
+    file_data, file_name, mime_type = row["file_data"], row["file_name"], row["mime_type"]
     if not file_data:
         raise HTTPException(404, "No file attached")
     return Response(

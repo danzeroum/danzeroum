@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import uuid
 from unittest.mock import MagicMock
 
 import pytest
@@ -11,8 +12,20 @@ from api.deps import get_conn
 from api.main import app
 from api.pdf import build_proposal_pdf
 
-# (id, tender_id, tender_title, status, price_offered, validity_days, version, notes, submitted_at)
-_ROW = ("prop-1", "tender-1", "Suporte técnico de TI", "SENT", 95000.0, 60, 1, "Inclui SLA 8x5", None)
+# get_conn usa row_factory=dict_row: linhas são dict, uuid vem como UUID.
+_PROP_ID = uuid.UUID("66666666-6666-4666-8666-666666666666")
+_TENDER_ID = uuid.UUID("77777777-7777-4777-8777-777777777777")
+_ROW = {
+    "id": _PROP_ID,
+    "tender_id": _TENDER_ID,
+    "tender_title": "Suporte técnico de TI",
+    "status": "SENT",
+    "price_offered": 95000.0,
+    "validity_days": 60,
+    "version": 1,
+    "notes": "Inclui SLA 8x5",
+    "submitted_at": None,
+}
 
 
 def test_build_proposal_pdf_returns_pdf_bytes():
@@ -43,7 +56,7 @@ def client():
         if "WHERE p.id=" in q:
             cur.fetchone.return_value = _ROW
         elif "FROM tenders WHERE id=" in q:
-            cur.fetchone.return_value = ("PNCP", "ext-9")
+            cur.fetchone.return_value = {"source": "PNCP", "external_id": "ext-9"}
         else:
             cur.fetchone.return_value = None
         cur.rowcount = 1
@@ -59,7 +72,7 @@ def client():
 
 
 def test_proposal_pdf_endpoint(client):
-    r = client.get("/proposals/prop-1/pdf")
+    r = client.get(f"/proposals/{_PROP_ID}/pdf")
     assert r.status_code == 200
     assert r.headers["content-type"] == "application/pdf"
     assert r.content.startswith(b"%PDF")

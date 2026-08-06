@@ -46,6 +46,13 @@ services:
       SMTP_USER:         ${SMTP_USER:-}
       SMTP_PASS:         ${SMTP_PASS:-}
       MAIL_TO:           ${MAIL_TO:-}
+      AUTH_USERNAME:     ${AUTH_USERNAME:-admin}
+      SESSION_TTL_HOURS: ${SESSION_TTL_HOURS:-8}
+    # AUTH_PASSWORD_HASH e SESSION_SECRET vêm do .env (ver .env.example).
+    # Sem eles a API assina a sessão com o segredo default do código, e o
+    # cookie dz_session passa a ser forjável — o login deixa de valer.
+    env_file:
+      - .env
     ports:
       - "8000:8000"
     healthcheck:

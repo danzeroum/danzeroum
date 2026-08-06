@@ -1,9 +1,13 @@
 import io
+import uuid
+
 import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import MagicMock
 from api.main import app
 from api.deps import get_conn
+
+_DOC_ID = uuid.UUID("55555555-5555-4555-8555-555555555555")
 
 @pytest.fixture()
 def client():
@@ -11,7 +15,13 @@ def client():
     list_cur = MagicMock()
     list_cur.fetchall.return_value = []
     fetch_cur = MagicMock()
-    fetch_cur.fetchone.return_value = ("abc-id", "CND", None, "CND Federal", None, None, None, None, True, None, "2024-01-01T00:00:00")
+    # get_conn usa row_factory=dict_row: linhas são dict, uuid vem como UUID.
+    fetch_cur.fetchone.return_value = {
+        "id": _DOC_ID, "type": "CND", "subtype": None, "name": "CND Federal",
+        "file_name": None, "mime_type": None, "issue_date": None,
+        "expiry_date": None, "is_valid": True, "notes": None,
+        "created_at": "2024-01-01T00:00:00",
+    }
 
     def fake_execute(q, params=None):
         if "INSERT INTO documents" in q:
