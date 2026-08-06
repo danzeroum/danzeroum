@@ -21,8 +21,7 @@ def list_clients(conn: Conn, status: str | None = None):
         params.append(status)
     q += " ORDER BY created_at DESC"
     rows = conn.execute(q, params).fetchall()
-    cols = _COLS.split(", ")
-    return [ClientOut(**dict(zip(cols, r))) for r in rows]
+    return [ClientOut(**r) for r in rows]
 
 @router.post("", response_model=ClientOut, status_code=201)
 def create_client(body: ClientCreate, conn: Conn):
@@ -33,8 +32,7 @@ def create_client(body: ClientCreate, conn: Conn):
     )
     conn.commit()
     row = conn.execute(f"SELECT {_COLS} FROM clients WHERE id=%s", [c_id]).fetchone()
-    cols = _COLS.split(", ")
-    return ClientOut(**dict(zip(cols, row)))
+    return ClientOut(**row)
 
 @router.patch("/{client_id}", response_model=ClientOut)
 def patch_client(client_id: str, body: ClientPatch, conn: Conn):
@@ -47,8 +45,7 @@ def patch_client(client_id: str, body: ClientPatch, conn: Conn):
     row = conn.execute(f"SELECT {_COLS} FROM clients WHERE id=%s", [client_id]).fetchone()
     if not row:
         raise HTTPException(404)
-    cols = _COLS.split(", ")
-    return ClientOut(**dict(zip(cols, row)))
+    return ClientOut(**row)
 
 @router.delete("/{client_id}", status_code=204)
 def delete_client(client_id: str, conn: Conn):

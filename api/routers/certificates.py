@@ -18,8 +18,7 @@ def list_certificates(conn: Conn):
                   project_value, scope, file_name, mime_type, created_at
            FROM technical_certificates ORDER BY created_at DESC"""
     ).fetchall()
-    cols = ["id","client_name","project_description","start_date","end_date","project_value","scope","file_name","mime_type","created_at"]
-    return [CertificateOut(**dict(zip(cols, r))) for r in rows]
+    return [CertificateOut(**r) for r in rows]
 
 @router.post("", response_model=CertificateOut, status_code=201)
 async def create_certificate(
@@ -50,8 +49,7 @@ async def create_certificate(
         "SELECT id,client_name,project_description,start_date,end_date,project_value,scope,file_name,mime_type,created_at FROM technical_certificates WHERE id=%s",
         [cert_id]
     ).fetchone()
-    cols = ["id","client_name","project_description","start_date","end_date","project_value","scope","file_name","mime_type","created_at"]
-    return CertificateOut(**dict(zip(cols, row)))
+    return CertificateOut(**row)
 
 @router.get("/{cert_id}/file")
 def get_certificate_file(cert_id: str, conn: Conn):
@@ -60,7 +58,7 @@ def get_certificate_file(cert_id: str, conn: Conn):
     ).fetchone()
     if not row:
         raise HTTPException(404)
-    file_data, file_name, mime_type = row
+    file_data, file_name, mime_type = row["file_data"], row["file_name"], row["mime_type"]
     if not file_data:
         raise HTTPException(404, "No file attached")
     return Response(

@@ -1,15 +1,25 @@
+import uuid
+
 import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import MagicMock
 from api.main import app
 from api.deps import get_conn
 
+# get_conn usa row_factory=dict_row: linhas são dict, uuid vem como UUID.
+_CERT_ID = uuid.UUID("44444444-4444-4444-8444-444444444444")
+
 @pytest.fixture()
 def client():
     mock_conn = MagicMock()
     list_cur = MagicMock(); list_cur.fetchall.return_value = []
     fetch_cur = MagicMock()
-    fetch_cur.fetchone.return_value = ("cert-id","Acme",None,None,None,None,None,None,None,"2024-01-01T00:00:00")
+    fetch_cur.fetchone.return_value = {
+        "id": _CERT_ID, "client_name": "Acme", "project_description": None,
+        "start_date": None, "end_date": None, "project_value": None,
+        "scope": None, "file_name": None, "mime_type": None,
+        "created_at": "2024-01-01T00:00:00",
+    }
     def fake_execute(q, params=None):
         if "INSERT" in q: return MagicMock(rowcount=1)
         if "WHERE id=" in q: return fetch_cur
